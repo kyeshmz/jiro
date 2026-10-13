@@ -1,0 +1,27 @@
+{
+  "skill_name": "maintain-upstream",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We changed Jiro's how skill to keep model choice entirely with the host. A supplied inert upstream diff replaces explore/general with editor-specific subagent arguments and hardcodes a model. Give a dry-run maintenance plan. Do not modify files or fetch anything. Explain what Jiro should take, skip, and preserve, and how its local change affects its upstream selection rules. No upstream revision has been adopted or tested in this exercise.",
+      "expected_output": "Preserves host-authorized OpenCode agents and models, skips editor-specific arguments, updates adaptation/selection rules alongside local changes, and does not falsely advance import pins or claim verification.",
+      "files": [],
+      "expectations": [
+        "Rejects hardcoded model selection and editor-specific agent arguments.",
+        "Updates the import map or preservation rules for Jiro's local model-choice change.",
+        "Retains imported revisions and labels behavioral verification as unrun."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review Jiro's cleanup import in a dry run using only its current checked-in source records. Can we mark the playbook and helper synchronized at the helper's recorded 11713c683fe4add4fd403ea880580abbc9e0875f revision and immediately run install.sh to test them? Do not fetch or modify anything. Give the maintenance decision and safe next steps.",
+      "expected_output": "Separates the helper pin from the unpinned playbook, blocks a synchronization claim without source evidence or explicit baseline acknowledgement, and avoids a global install for verification.",
+      "files": [],
+      "expectations": [
+        "Identifies the playbook's unknown baseline separately from the helper's known pin.",
+        "Does not declare both sources synchronized or advance their pins without evidence.",
+        "Proposes isolated checks rather than installing into a real user's global config."
+      ]
+    }
+  ]
+}
