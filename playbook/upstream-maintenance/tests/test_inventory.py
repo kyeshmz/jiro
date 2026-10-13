@@ -7,12 +7,12 @@ import tempfile
 import unittest
 
 
-SKILL = Path(__file__).resolve().parents[1]
-REPO = SKILL.parents[2]
-SPEC = importlib.util.spec_from_file_location("inventory", SKILL / "scripts/inventory.py")
+MAINTENANCE = Path(__file__).resolve().parents[1]
+REPO = MAINTENANCE.parents[1]
+SPEC = importlib.util.spec_from_file_location("inventory", MAINTENANCE / "scripts/inventory.py")
 inventory = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(inventory)
-REGISTRY = json.loads((SKILL / "references/import-map.json").read_text())
+REGISTRY = json.loads((MAINTENANCE / "references/import-map.json").read_text())
 
 
 class InventoryTests(unittest.TestCase):
@@ -76,11 +76,27 @@ class InventoryTests(unittest.TestCase):
 
     def test_cli_is_read_only(self):
         before = subprocess.check_output(["git", "status", "--porcelain=v1", "--untracked-files=all"], cwd=REPO)
-        result = subprocess.run(["python3", str(SKILL / "scripts/inventory.py"), "--repo", str(REPO)], capture_output=True)
+        result = subprocess.run(["python3", str(MAINTENANCE / "scripts/inventory.py"), "--repo", str(REPO)], capture_output=True)
         after = subprocess.check_output(["git", "status", "--porcelain=v1", "--untracked-files=all"], cwd=REPO)
         self.assertEqual(result.returncode, 0, result.stderr.decode())
         self.assertEqual(before, after)
         self.assertEqual(len(json.loads(result.stdout)["imports"]), 5)
+
+    def test_maintenance_is_outside_opencode_skill_discovery(self):
+        self.assertFalse(MAINTENANCE.is_relative_to(REPO / ".opencode"))
+        self.assertFalse((REPO / ".opencode/skills/maintain-upstream").exists())
+        self.assertFalse(list(MAINTENANCE.rglob("SKILL.md")))
+        self.assertFalse((MAINTENANCE / "README.md").read_text().startswith("---\n"))
+
+    def test_maintenance_is_not_in_the_installer_sources(self):
+        installer = (REPO / "install.sh").read_text()
+        self.assertIn('SRC="$ROOT/.opencode/skills"', installer)
+        self.assertNotIn("upstream-maintenance", installer)
+        self.assertNotIn("maintain-upstream", installer)
+        self.assertEqual(
+            sorted(path.parent.name for path in (REPO / ".opencode/skills").glob("*/SKILL.md")),
+            ["create-verification-skill", "how", "show-me-your-work", "why"],
+        )
 
 
 if __name__ == "__main__":

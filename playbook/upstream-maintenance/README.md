@@ -1,23 +1,18 @@
----
-name: maintain-upstream
-description: Maintain Jiro's selective imports from upstream as Jiro evolves. Use when updating imported skills or playbooks, syncing cursor/plugins changes, changing what Jiro takes from upstream, adding or removing imports, or refreshing source revision records. Reassess take/skip choices against current Jiro behavior and preserve OpenCode-specific adaptations.
-metadata:
-  opencode/autoinvoke: false
----
-
-# Maintain upstream
+# Repository upstream maintenance
 
 Keep Jiro's selected upstream functionality current without turning it into a mirror. A local improvement can change which upstream behavior is useful. Review that relationship whenever an imported component changes.
 
-Resolve bundled resources from this skill's base directory. Work in the intended Jiro Git root, not a global installed skill directory. Read `references/import-map.json` as data. The checked-in Jiro copy is authoritative when a global installation is older.
+This is an internal maintenance process for this repository, not an OpenCode skill or an installable user feature. It lives outside skill discovery paths and `install.sh` does not distribute it.
+
+Resolve references and scripts relative to this directory. Work in the intended Jiro Git root. Read `references/import-map.json` as data.
 
 ## Establish scope
 
 1. Read the repository instructions, working-tree status, relevant local diff, import map, and affected `UPSTREAM.md` records. Preserve unrelated work.
-2. Run the read-only inventory helper from this skill's base directory:
+2. Run the read-only inventory helper from the repository root:
 
    ```bash
-   python3 <skill-base>/scripts/inventory.py --repo /path/to/jiro
+   python3 playbook/upstream-maintenance/scripts/inventory.py --repo .
    ```
 
    Supply `--base <local-ref>` when reviewing committed changes. The helper reports local paths and metadata only. It does not fetch or verify upstream behavior.
@@ -54,7 +49,7 @@ Update affected `UPSTREAM.md` records with immutable source links, the selected 
 
 Distinguish `importedRevision` from `reviewedThrough`. Advance an imported revision only when the selected changes have been adapted and verified. A skipped-only review may advance `reviewedThrough` after documenting every selected change, while retaining the original imported revision. Leave blocked ranges pending. Do not mark an entire import current after reviewing only one file or only part of the range.
 
-Keep the import map and provenance records consistent. When configuring oc-port-agent in the future, update its selections, mappings, acceptance criteria, and preservation rules with Jiro's changes. A policy change needs an explicit reviewed baseline reset. Do not reset to upstream HEAD merely to hide pending work, edit checkpoint hashes by hand, or weaken the CLI's `.opencode/**` protection. This skill is guided repository maintenance, not the restricted CLI runner.
+Keep the import map and provenance records consistent. When configuring oc-port-agent in the future, update its selections, mappings, acceptance criteria, and preservation rules with Jiro's changes. A policy change needs an explicit reviewed baseline reset. Do not reset to upstream HEAD merely to hide pending work, edit checkpoint hashes by hand, or weaken the CLI's `.opencode/**` protection. This playbook is a repository maintenance procedure, not the restricted CLI runner.
 
 Run the inventory again and the checks appropriate to the actual diff. Check frontmatter and bundled references for skill changes, Bash syntax for shell helpers, and Python syntax plus behavior tests for audit changes. Exercise helpers only in an owned disposable fixture with isolated configuration. Do not run `install.sh` against a real user's global config just to test a port.
 
@@ -62,7 +57,7 @@ Static checks cannot prove that an instruction-only skill preserves its behavior
 
 Do not commit, push, open or merge a PR, install globally, dispatch a workflow, deploy, or make separately billable provider calls unless the user authorizes that action. Respect stricter repository or host rules.
 
-## Return a reviewable result
+## Document the maintenance result
 
 Give a concise result containing:
 
@@ -73,3 +68,11 @@ Give a concise result containing:
 - Pending baseline gaps or blocked changes.
 
 Separate verified facts from proposed adaptations. Link only source artifacts actually inspected. If nothing needs changing, report the reviewed range and reasons rather than manufacturing a patch.
+
+## Check this maintenance tooling
+
+```bash
+python3 -m unittest discover -s playbook/upstream-maintenance/tests -v
+```
+
+The planning scenarios in `tests/scenarios.json` are repository test material, not an advertised agent capability.
