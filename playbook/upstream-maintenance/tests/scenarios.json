@@ -1,6 +1,6 @@
 {
-  "skill_name": "maintain-upstream",
-  "evals": [
+  "maintenance_name": "upstream-maintenance",
+  "scenarios": [
     {
       "id": 1,
       "prompt": "We changed Jiro's how skill to keep model choice entirely with the host. A supplied inert upstream diff replaces explore/general with editor-specific subagent arguments and hardcodes a model. Give a dry-run maintenance plan. Do not modify files or fetch anything. Explain what Jiro should take, skip, and preserve, and how its local change affects its upstream selection rules. No upstream revision has been adopted or tested in this exercise.",

@@ -98,7 +98,7 @@ def main():
     args = parser.parse_args()
     try:
         repo = Path(git(args.repo, "rev-parse", "--show-toplevel").decode().strip())
-        path = repo / ".opencode/skills/maintain-upstream/references/import-map.json"
+        path = repo / "playbook/upstream-maintenance/references/import-map.json"
         registry = json.loads(path.read_text(encoding="utf-8"))
         report = inspect(repo, registry, changed_paths(repo, args.base))
         print(json.dumps(report, indent=2))
