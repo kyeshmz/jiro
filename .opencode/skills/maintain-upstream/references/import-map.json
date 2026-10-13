@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "upstream": {
+    "repository": "https://github.com/cursor/plugins.git",
+    "ref": "main"
+  },
+  "imports": [
+    {
+      "id": "create-verification-skill",
+      "targetRoots": [".opencode/skills/create-verification-skill"],
+      "record": ".opencode/skills/create-verification-skill/UPSTREAM.md",
+      "license": ".opencode/skills/create-verification-skill/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/create-verification-skill",
+          "importedRevision": "11713c683fe4add4fd403ea880580abbc9e0875f",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Generate project skills under .opencode/skills and use explicit invocation.",
+        "Resolve bundled feature-map examples from the loaded skill's base directory.",
+        "Keep maintenance optional and preserve the upstream MIT notice."
+      ]
+    },
+    {
+      "id": "how",
+      "targetRoots": [".opencode/skills/how"],
+      "record": ".opencode/skills/how/UPSTREAM.md",
+      "license": ".opencode/skills/how/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/how",
+          "importedRevision": "11713c683fe4add4fd403ea880580abbc9e0875f",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Use OpenCode explore and general agents with supported arguments.",
+        "Authorize and confirm model choices through the host before selecting them.",
+        "Preserve the simple/complex split, read-only exploration, and output sections."
+      ]
+    },
+    {
+      "id": "show-me-your-work",
+      "targetRoots": [".opencode/skills/show-me-your-work"],
+      "record": ".opencode/skills/show-me-your-work/UPSTREAM.md",
+      "license": ".opencode/skills/show-me-your-work/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/show-me-your-work",
+          "importedRevision": "11713c683fe4add4fd403ea880580abbc9e0875f",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Use explicitly scoped OpenCode session exports, not editor transcript folders.",
+        "Preserve append-only TSV corrections, run boundaries, and spreadsheet-formula escaping.",
+        "Report a coverage gap when an authorized cross-family review cannot run."
+      ]
+    },
+    {
+      "id": "why",
+      "targetRoots": [".opencode/skills/why"],
+      "record": ".opencode/skills/why/UPSTREAM.md",
+      "license": ".opencode/skills/why/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/why",
+          "importedRevision": "11713c683fe4add4fd403ea880580abbc9e0875f",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Discover tools through OpenCode and confirm schemas rather than hardcoding editor MCP names.",
+        "Keep the seven-category coverage map and confidence-separated synthesis.",
+        "Treat missing history or remote access as a coverage gap."
+      ]
+    },
+    {
+      "id": "worktree-cleanup",
+      "targetRoots": [
+        "playbook/worktree-cleanup.md",
+        "playbook/worktree-cleanup.UPSTREAM.md",
+        "playbook/worktree-cleanup.LICENSE",
+        "playbook/scripts/worktree-audit.sh",
+        "playbook/scripts/worktree_audit.py"
+      ],
+      "record": "playbook/worktree-cleanup.UPSTREAM.md",
+      "license": "playbook/worktree-cleanup.LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/poteto-mode/playbooks/worktree-cleanup.md",
+          "importedRevision": null,
+          "reviewedThrough": null
+        },
+        {
+          "path": "pstack/skills/poteto-mode/scripts/worktree-audit.sh",
+          "importedRevision": "11713c683fe4add4fd403ea880580abbc9e0875f",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Require explicit scoped approval for deletion and keep removal non-forced by default.",
+        "Use NUL-delimited Git paths and explicitly supplied OpenCode session exports.",
+        "Never scan global chats or delete OpenCode state; session matches do not authorize deletion."
+      ]
+    }
+  ]
+}
