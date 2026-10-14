@@ -16,6 +16,8 @@ Resolve `references/` from this skill's loaded base directory. Work in the user'
 
 State what the agent does, when the parent should choose it, whether it may edit, and what it returns. For a one-off task, use the built-in `general` or `explore` agent through `delegate`; no agent file is needed.
 
+Jiro's workers are called chefs. Use the advertised `chef` agent for a one-off Jiro implementation or review task. A reusable Jiro-specific chef must load the exact `jiro` skill before working. Preserve explicit user-chosen IDs for specialized roles and confirm that the host advertises them before launch.
+
 Choose a unique lowercase kebab-case ID. Check existing project and global agents for collisions, including built-in IDs. Preserve an existing definition's location and unrelated instructions when updating it. Do not replace a different role with the same name without the user's approval.
 
 ## 2. Choose the location and dependencies
@@ -24,7 +26,7 @@ Default to `<target-repository>/.opencode/agents/<agent-id>.md`. Create a global
 
 An agent is a Markdown file with `description` and `mode: subagent` frontmatter. Its filename determines its ID. A reusable workflow is a separate `.opencode/skills/<skill-id>/SKILL.md` file with `name` and `description` frontmatter. Do not put agent definitions in `.opencode/skills/` or the repository's draft `agents/` directory.
 
-If the agent must follow a skill, verify that skill exists and include an instruction to load it in full before work. Read its supporting references when the skill requires them. Missing required skills are `BLOCKED`, not permission to skip the wrapper. Do not depend on `kye-mode`, `poteto-mode`, or any other unbundled skill unless it is actually available in the target environment.
+If the agent must follow a skill, verify that skill exists and include an instruction to load it in full before work. Read its supporting references when the skill requires them. Missing required skills are `BLOCKED`, not permission to skip the wrapper. Jiro chefs load `jiro`; do not replace it with `poteto-mode` or require another unbundled skill unless it is actually available in the target environment.
 
 ## 3. Write the definition
 

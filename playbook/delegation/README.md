@@ -1,6 +1,6 @@
-# Sous-chefs and workstations
+# Chefs and workstations
 
-Jiro carries pstack's core delegation patterns without requiring its full persona or cloud orchestration stack. Sous-chefs are OpenCode child agents. The chef assigns a bounded station, checks its output, and owns the result. Invoke these tools explicitly in OpenCode.
+Jiro carries pstack's core delegation patterns without requiring its full persona or cloud orchestration stack. Chefs are Jiro's OpenCode worker agents. Jiro assigns each chef a bounded station, checks its output, and owns the result. The entry skill is `jiro`, the command is `/jiro`, and the registered worker agent is `chef`. Invoke these tools explicitly in OpenCode.
 
 ## Tools and prep notes
 
@@ -31,7 +31,7 @@ Agent definitions and skills are different artifacts:
   reports/unit-a-attempt-1.md         # parent-captured child's final report
 ```
 
-`install.sh` distributes bundled skills and references, not generated agents or the draft `agents/chef.md`. A generated agent becomes usable only after OpenCode discovers its definition and advertises its ID; a file write alone is not a successful launch.
+`install.sh` distributes bundled skills, references, the `/jiro` command, and the registered `chef` worker linked from `agents/chef.md`. It does not install generated project agents. A generated chef or other specialized agent becomes usable only after OpenCode discovers its definition and advertises its ID; a file write alone is not a successful launch.
 
 ## How pstack writes the handoff
 

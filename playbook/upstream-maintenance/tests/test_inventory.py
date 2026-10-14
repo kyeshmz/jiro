@@ -31,12 +31,12 @@ class InventoryTests(unittest.TestCase):
         report = inventory.inspect(REPO, REGISTRY, [
             ".opencode/skills/how/SKILL.md",
             ".opencode/skills/however/SKILL.md",
-            "playbook/scripts/worktree_audit.py",
+            "recipes/scripts/worktree_audit.py",
             "README.md",
         ])
         imports = {entry["id"]: entry for entry in report["imports"]}
         self.assertEqual(imports["how"]["changedTargets"], [".opencode/skills/how/SKILL.md"])
-        self.assertEqual(imports["worktree-cleanup"]["changedTargets"], ["playbook/scripts/worktree_audit.py"])
+        self.assertEqual(imports["worktree-cleanup"]["changedTargets"], ["recipes/scripts/worktree_audit.py"])
 
     def test_duplicate_ids_are_rejected(self):
         registry = copy.deepcopy(REGISTRY)
@@ -91,8 +91,11 @@ class InventoryTests(unittest.TestCase):
 
     def test_maintenance_is_not_in_the_installer_sources(self):
         installer = (REPO / "install.sh").read_text()
-        self.assertIn('SRC="$ROOT/.opencode/skills"', installer)
+        sync = (REPO / "scripts/sync-opencode.ts").read_text()
+        self.assertIn('join(root, ".opencode", kind)', sync)
+        self.assertIn("source = sources(root, category)", sync)
         self.assertNotIn("upstream-maintenance", installer)
+        self.assertNotIn("upstream-maintenance", sync)
         self.assertNotIn("maintain-upstream", installer)
         installed_ids = {path.parent.name for path in (REPO / ".opencode/skills").glob("*/SKILL.md")}
         self.assertIn("jiro", installed_ids)

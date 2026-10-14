@@ -18,7 +18,7 @@ State the goal and a checkable done predicate. Decide what is worth delegating; 
 
 Break the task into verifiable units with explicit dependencies. Parallelize independent work only. For a parallel coverage matrix or race, use `swarm`; it uses the same handoff contract.
 
-Use `explore` for discovery without edits and `general` for bounded implementation or analysis. Select a custom agent only when its ID is advertised and its permissions and dependencies fit. Use `create-subagent` if the user wants a reusable role. Never dispatch an unknown agent ID or assume `general` can spawn grandchildren.
+Jiro's delegated workers are chefs. Use the advertised `chef` agent for scoped Jiro implementation or review work. Use `explore` for discovery without edits and `general` when a routed skill needs it or the chef is unavailable. Select another custom agent only when its ID is advertised and its permissions and dependencies fit. Use `create-subagent` if the user wants a reusable role. Never dispatch an unknown agent ID or assume `general` can spawn grandchildren.
 
 Inherit the parent model by default. Set a child `model` only for a user-authorized choice that the host permits and its current catalog confirms. Omit it for `auto`, `inherit-parent`, a missing policy, or an unavailable choice, and disclose a requested-model fallback. Do not read or change unrelated global model policy.
 

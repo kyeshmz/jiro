@@ -1,16 +1,18 @@
 ---
 name: jiro
-description: Jiro, your engineering chef for OpenCode. Choose a recipe, gather the right tools, delegate to sous-chefs when useful, and verify the result before serving it. Use when explicitly invoked as @jiro or /jiro, or when asked to work in Jiro's style.
+description: Jiro's verified engineering workflow for OpenCode. Choose a recipe, gather the right tools, delegate to chefs when useful, and verify the result before serving it. Use when explicitly invoked as @jiro or /jiro, or when asked to work in Jiro's style.
 license: MIT
 metadata:
   opencode/autoinvoke: false
 ---
 
-# Jiro, your engineering chef
+# Jiro
 
-Own the task from understanding through verification. Choose a recipe, load the tools its steps need, and report the evidence. Recipes are task playbooks. Tools are supporting skills. Delegated agents are sous-chefs. This is an OpenCode workflow, not a dependency on an installed pstack pack.
+Own the task from understanding through verification. Choose a recipe, load the tools its steps need, and report the evidence. Recipes are task playbooks. Tools are supporting skills. Jiro's delegated workers are chefs. The entry skill is `jiro` and the registered worker agent is `chef`. This is an OpenCode workflow, not a dependency on an installed pstack pack.
 
 Keep technical names, commands, ownership, and evidence precise. Kitchen language must not hide a risk, blocker, or permission boundary.
+
+Read `references/shared-rules.md` before working. Resolve every bundled reference from this skill's reported base directory, not the shell working directory. The parent owns the task, decisions, and final verification. Do not delegate the whole workflow to a worker.
 
 ## Mise en place
 
@@ -19,7 +21,7 @@ Keep technical names, commands, ownership, and evidence precise. Kitchen languag
 3. Put its numbered steps first in the task list, copied verbatim. If no task-list tool is available, keep a short checklist in the conversation. Record any skipped step with its reason.
 4. Execute the steps in the target repository or worktree. Generated project skills belong in `<target-repository>/.opencode/skills/<skill-id>/SKILL.md`, never in this installed pack. Write global skills only when requested.
 
-Carry this workflow through follow-up turns on the same task. Reassess routing when the requested outcome changes. Casual questions and an explicit opt-out do not need the workflow. Do not claim that OpenCode provides a persistent Custom Mode or a background scheduler.
+Apply the Jiro style to the active task and its follow-ups until the user switches styles. A new task needs a fresh scope and workflow. Casual questions and an explicit opt-out do not need the task checklist. If invoked without a task or an active goal, acknowledge the style and wait. Do not invent work or claim that OpenCode provides a persistent Custom Mode or a background scheduler.
 
 ## Recipe book
 
@@ -56,11 +58,38 @@ Load skills with OpenCode's `skill` tool using the exact ID. Supporting files ar
 - When available, load `delegate` for bounded handoffs, `swarm` for parallel coverage or competing attempts, and `create-subagent` for a reusable agent definition. Let those skills own their handoff contracts and isolation checks.
 - For browser exploration, user-flow verification, named browser sessions, or Playwright test authoring, load `playwright-cli` or the target project's existing verification harness. `playwright-mcp` remains optional reference material for an explicit MCP request; do not configure or re-enable its server during ordinary verification or maintenance. Confirm actual runtime availability and let the chosen skill own browser isolation and evidence capture.
 
-The four core companion skills, three delegation skills, two Playwright skills, `no-comments`, and `principle-laziness-protocol` are bundled with Jiro. Other host skills are used only when available. Bundled Playwright instructions do not imply an installed CLI or connected browser server. Do not route to unbundled `kye-mode`, `poteto-mode`, `arena`, `architect`, or other `principle-*` skills as though Jiro installed them. If a required companion cannot load, report the missing installation rather than silently switching packs.
+The four core companions, three delegation skills, two Playwright skills, `no-comments`, the principles below, and the local design, Effect, React, reflection, and cleanup tools are bundled with this checkout. Other host skills are used only when available. Bundled Playwright instructions do not imply an installed CLI or connected browser server. Do not substitute `poteto-mode`, `arena`, `architect`, or another mode for `jiro`. If a required companion cannot load, report the missing installation rather than silently switching packs.
+
+## Core principles
+
+Load only the principles whose triggers match the active task. Read the full skill before applying it. Do not preload the whole set on every turn.
+
+| Principle | Trigger and skill |
+| --- | --- |
+| Laziness Protocol | Load `principle-laziness-protocol` when simplifying a diff, removing unnecessary code, or considering new layers. |
+| Foundational Thinking | Load `principle-foundational-thinking` before choosing core types, data structures, access patterns, or shared-state ownership. |
+| Redesign from First Principles | Load `principle-redesign-from-first-principles` when integrating a new requirement into an existing design. |
+| Attack the Premise | Load `principle-attack-the-premise` after at least two fixes sharing one premise fail the same gate. |
+| Subtract Before You Add | Load `principle-subtract-before-you-add` when sequencing an addition, refactor, or rewrite. |
+| Minimize Reader Load | Load `minimize-reader-load` when tracing layers or hidden and mutable state makes code hard to understand. |
+
+`principle-minimize-reader-load` is a compatibility entry point that loads the same canonical `minimize-reader-load` skill. Do not maintain a second rule body or load both entry points without a reason.
+
+## Non-negotiables
+
+- Load `principle-build-the-lever` for non-trivial work whose execution or verification should be rerunnable. Prefer one deterministic tool over delegated hand edits. A proposed tool is not a built artifact.
+- Load `principle-fix-root-causes` when debugging. Reproduce, trace the mechanism, and inspect relevant persistent state after restart failures. Do not hide symptoms or reset user state without approval.
+- Load `code-organization` for domain models, module layout, public interfaces, ownership, and shared state. Compare distinct shapes when the decision is non-trivial.
+- Load `effect` for Effect code. Check the project's version and exact source APIs. Do not introduce Effect into an unrelated project or silently migrate versions.
+- Load `react-best-practices` for React performance, data-fetching, bundle-size, or rendering work. Read the relevant bundled rules and check the target's React and framework versions.
+- Load `composition-patterns` for React component APIs, compound components, providers, or boolean-prop proliferation. Respect its React 19 gate.
+- Load `reflect` only when reflection is requested. Its proposed skill edits and external writes still need approval. Load `bro` when the user asks for a plainer restatement.
+- Load `worktree-cleanup` after an authorized push or merge involving a finished temporary worktree, or when cleanup is requested. Audit first. Remove only explicitly approved paths.
+- Read a routed skill in full before following it. Report unavailable skills, tools, models, and evidence honestly. Never claim a review that did not run.
 
 ## Kitchen standards
 
-Laziness Protocol has its own bundled tool. Apply the remaining standards directly without assuming other principle skills are installed.
+Apply these standards directly and load the matching bundled principles when their triggers apply.
 
 - Choose the smallest change that solves the problem. Remove dead weight before adding abstractions. Do not delete unfamiliar work merely because it looks unused.
 - Name the data shape before writing stateful logic. Encode domain states and transitions in structures instead of scattered conditionals. Validate external input at boundaries and trust established internal types.
@@ -80,15 +109,17 @@ Proceed with reversible work inside the user's request. Tools being available do
 
 For worktree or simulator cleanup, audit usage and contents first. Present the exact deletion set and obtain approval. Hold uncertain ownership, in-use worktrees, and uncommitted data. Never delete OpenCode state or use broad recursive deletion as a cleanup shortcut. If the target repository provides a cleanup playbook, read its stricter gates before proceeding.
 
-## Sous-chefs
+## Chefs
 
-Delegate only when independent work benefits from separate context. Use OpenCode's `subagent` tool with a registered `explore` or `general` agent. Jiro does not register a custom agent. Routed skills own their agent selection and workflow.
+Delegate only when independent work benefits from separate context. Do small local work directly. Jiro's workers are chefs. This checkout registers the exact agent ID `chef` for scoped Jiro implementation or review work. Give each chef this skill's absolute `SKILL.md` path, the original brief, later constraints, its working directory, owned files, and required evidence. Use registered `explore` or `general` agents where the routed skill requires them. Routed skills keep their own agent selection and workflow.
 
 Include the original request, later directives, working directory, scope, relevant file pointers, allowed writes, and expected evidence in every child prompt. A general child doing Jiro work must load `jiro` in full before starting. For read-only work, forbid edits, commits, and external writes explicitly. Do not pass unsupported `readonly` or `subagent_type` arguments.
 
 Use `background: true` only for independent work while the parent continues elsewhere. Wait for completion notifications. Do not poll. Start fresh children for new tasks or fix rounds. Resume only when essential state is costly to move, such as an uncommitted checkout or a running process.
 
 Inherit the current model by omitting `model`. Set a model only when the user or applicable host instructions authorize it and the host's model catalog confirms its exact ID. Do not introduce pstack model defaults or change global model configuration. Companion skills' role settings remain subject to the host's model-selection rules.
+
+Read the user's pstack role configuration only when a routed skill uses it. Follow the host's authorization rules and never guess model identifiers.
 
 You own delegated work. Inspect the resulting artifacts and diff, rerun the important checks, and write your own summary. Never describe self-review or same-family review as independent cross-model review.
 

@@ -20,7 +20,8 @@
       "preserve": [
         "Keep the jiro entry ID, explicit invocation, and OpenCode command wrapper.",
         "Use bundled companion tools and Jiro-native recipes without unbundled pstack dependencies.",
-        "Keep the chef, recipes, tools, and sous-chefs vocabulary without changing technical IDs or verification contracts.",
+        "Preserve the local six-principle router, scoped Chef worker, shared rules, Effect and React guidance, reflection, and cleanup tools.",
+        "Keep jiro as the entry skill, /jiro as its command, and chefs as its workers under the registered chef agent ID without weakening verification contracts.",
         "Resolve resources from the loaded skill base and inherit models unless host-authorized.",
         "Preserve authorization gates, evidence-backed verification, and the upstream MIT notice."
       ]
@@ -46,7 +47,7 @@
         "Keep explicit no-comments invocation and the bundled read-only reviewer prompt with a built-in agent fallback.",
         "Preserve comment exceptions, scoped root-cause flags, parent-owned edits, one fresh retry, and verified constraint encodings.",
         "Hold uncertain protected comments and user changes; never broadly revert or widen the scope.",
-        "Do not require unbundled pstack skills, custom-agent installation, or global model settings; retain the MIT notice."
+        "Do not require unbundled pstack skills or custom-agent installation; inherit models except when a pstack caller has host-authorized role settings, and retain the MIT notice."
       ]
     },
     {
@@ -154,7 +155,7 @@
       "preserve": [
         "Write project-local OpenCode V2 agent definitions; global only when requested.",
         "Verify required skills, preserve existing definitions, and default to model inheritance.",
-        "Distinguish a validated file from an advertised and live-tested agent ID."
+        "Distinguish a validated file from an advertised and live-tested agent ID; Jiro workers are chefs that load jiro."
       ]
     },
     {
@@ -196,7 +197,7 @@
       "preserve": [
         "Keep frame/fan-out/aggregate/report, declared race rules, exact SHA and measurement receipts, and explicit gaps.",
         "Use the bundled delegate contract and parent-owned records with supported OpenCode subagent arguments.",
-        "Inherit models unless user-authorized and host-confirmed; account for every child before claiming completion."
+        "Inherit models unless user-authorized and host-confirmed, preserve conditional pstack role settings, and account for every child before claiming completion."
       ]
     },
     {
@@ -248,14 +249,15 @@
     {
       "id": "worktree-cleanup",
       "targetRoots": [
-        "playbook/worktree-cleanup.md",
-        "playbook/worktree-cleanup.UPSTREAM.md",
-        "playbook/worktree-cleanup.LICENSE",
-        "playbook/scripts/worktree-audit.sh",
-        "playbook/scripts/worktree_audit.py"
+        "recipes/worktree-cleanup.md",
+        "recipes/worktree-cleanup.UPSTREAM.md",
+        "recipes/worktree-cleanup.LICENSE",
+        "recipes/scripts/worktree-audit.sh",
+        "recipes/scripts/worktree_audit.py",
+        ".opencode/skills/worktree-cleanup"
       ],
-      "record": "playbook/worktree-cleanup.UPSTREAM.md",
-      "license": "playbook/worktree-cleanup.LICENSE",
+      "record": "recipes/worktree-cleanup.UPSTREAM.md",
+      "license": "recipes/worktree-cleanup.LICENSE",
       "sources": [
         {
           "path": "pstack/skills/poteto-mode/playbooks/worktree-cleanup.md",
@@ -273,6 +275,239 @@
         "Use NUL-delimited Git paths and explicitly supplied OpenCode session exports.",
         "Never scan global chats or delete OpenCode state; session matches do not authorize deletion."
       ]
+    },
+    {
+      "id": "bro",
+      "targetRoots": [".opencode/skills/bro"],
+      "record": ".opencode/skills/bro/UPSTREAM.md",
+      "license": ".opencode/skills/bro/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/bro/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Keep explicit invocation, plain restatement of the previous reply, and the MIT notice."]
+    },
+    {
+      "id": "reflect",
+      "targetRoots": [".opencode/skills/reflect"],
+      "record": ".opencode/skills/reflect/UPSTREAM.md",
+      "license": ".opencode/skills/reflect/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/reflect/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Keep all three review lenses, separate synthesis, scoped session evidence, and approval before durable edits or external writes."]
+    },
+    {
+      "id": "code-organization",
+      "targetRoots": [".opencode/skills/code-organization"],
+      "record": ".opencode/skills/code-organization/UPSTREAM.md",
+      "license": ".opencode/skills/code-organization/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/architect/SKILL.md",
+          "importedRevision": "1dcc2bacde73ddd284803b7af28164d0436198fc",
+          "reviewedThrough": null
+        },
+        {
+          "path": "pstack/skills/architect/references/design-red-flags.md",
+          "importedRevision": "1dcc2bacde73ddd284803b7af28164d0436198fc",
+          "reviewedThrough": null
+        },
+        {
+          "path": "pstack/skills/principle-model-the-domain/SKILL.md",
+          "importedRevision": "1dcc2bacde73ddd284803b7af28164d0436198fc",
+          "reviewedThrough": null
+        },
+        {
+          "path": "pstack/skills/principle-boundary-discipline/SKILL.md",
+          "importedRevision": "1dcc2bacde73ddd284803b7af28164d0436198fc",
+          "reviewedThrough": null
+        },
+        {
+          "path": "pstack/skills/principle-encode-lessons-in-structure/SKILL.md",
+          "importedRevision": "1dcc2bacde73ddd284803b7af28164d0436198fc",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Keep domain ownership, caller-first design, private boundaries, source-of-truth checks, and reader-load review without requiring an architect agent."]
+    },
+    {
+      "id": "minimize-reader-load",
+      "targetRoots": [".opencode/skills/minimize-reader-load"],
+      "record": ".opencode/skills/minimize-reader-load/UPSTREAM.md",
+      "license": ".opencode/skills/minimize-reader-load/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-minimize-reader-load/SKILL.md",
+          "importedRevision": "1dcc2bacde73ddd284803b7af28164d0436198fc",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Keep one canonical reader-load body, both tracing and hidden-state axes, and behavior-preserving verification."]
+    },
+    {
+      "id": "effect",
+      "upstream": {"repository": "https://github.com/anomalyco/opencode.git", "ref": "dev"},
+      "targetRoots": [".opencode/skills/effect"],
+      "record": ".opencode/skills/effect/UPSTREAM.md",
+      "license": ".opencode/skills/effect/LICENSE",
+      "sources": [
+        {
+          "path": ".opencode/skills/effect/SKILL.md",
+          "importedRevision": "23e3493ab2efb6b8c00725cfd652b7f946af5343",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Check target Effect versions and source APIs, preserve scoped services and tests, and do not clone dependencies or migrate unrelated projects automatically."]
+    },
+    {
+      "id": "react-best-practices",
+      "upstream": {"repository": "https://github.com/wholeearthrobotics/agent-skills.git", "ref": "main"},
+      "targetRoots": [".opencode/skills/react-best-practices"],
+      "record": ".opencode/skills/react-best-practices/UPSTREAM.md",
+      "license": ".opencode/skills/react-best-practices/SKILL.md",
+      "sources": [
+        {
+          "path": "skills/react-best-practices",
+          "importedRevision": "abd39e05df96b6ce3524050045b9131eb2fea0b3",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Keep the complete 70-rule bundle, compiled guide, author metadata, content-hash manifest, and original MIT declaration without inventing a standalone license."]
+    },
+    {
+      "id": "composition-patterns",
+      "upstream": {"repository": "https://github.com/wholeearthrobotics/agent-skills.git", "ref": "main"},
+      "targetRoots": [".opencode/skills/composition-patterns"],
+      "record": ".opencode/skills/composition-patterns/UPSTREAM.md",
+      "license": ".opencode/skills/composition-patterns/SKILL.md",
+      "sources": [
+        {
+          "path": "skills/composition-patterns",
+          "importedRevision": "abd39e05df96b6ce3524050045b9131eb2fea0b3",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Keep all eight rules and resources, the normalized skill ID, React 19 gate, content-hash manifest, and original MIT declaration."]
+    },
+    {
+      "id": "principle-foundational-thinking",
+      "targetRoots": [".opencode/skills/principle-foundational-thinking"],
+      "record": ".opencode/skills/principle-foundational-thinking/UPSTREAM.md",
+      "license": ".opencode/skills/principle-foundational-thinking/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-foundational-thinking/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Choose core data shapes and ownership before logic, retain subtraction-first sequencing, and keep project-scoped outputs."]
+    },
+    {
+      "id": "principle-redesign-from-first-principles",
+      "targetRoots": [".opencode/skills/principle-redesign-from-first-principles"],
+      "record": ".opencode/skills/principle-redesign-from-first-principles/UPSTREAM.md",
+      "license": ".opencode/skills/principle-redesign-from-first-principles/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-redesign-from-first-principles/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Integrate requirements as day-one assumptions, preserve incremental verification, and avoid unrequested rewrites."]
+    },
+    {
+      "id": "principle-attack-the-premise",
+      "targetRoots": [".opencode/skills/principle-attack-the-premise"],
+      "record": ".opencode/skills/principle-attack-the-premise/UPSTREAM.md",
+      "license": ".opencode/skills/principle-attack-the-premise/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-attack-the-premise/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Require a written premise and per-actor census after repeated failures before attempting another fix."]
+    },
+    {
+      "id": "principle-subtract-before-you-add",
+      "targetRoots": [".opencode/skills/principle-subtract-before-you-add"],
+      "record": ".opencode/skills/principle-subtract-before-you-add/UPSTREAM.md",
+      "license": ".opencode/skills/principle-subtract-before-you-add/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-subtract-before-you-add/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Confirm usage before subtraction, keep behavior checks green, and separate code removal from deletion of user data."]
+    },
+    {
+      "id": "principle-minimize-reader-load",
+      "targetRoots": [".opencode/skills/principle-minimize-reader-load"],
+      "record": ".opencode/skills/principle-minimize-reader-load/UPSTREAM.md",
+      "license": ".opencode/skills/principle-minimize-reader-load/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-minimize-reader-load/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Keep the compatibility ID forwarding to minimize-reader-load rather than duplicating its rule body."]
+    },
+    {
+      "id": "principle-build-the-lever",
+      "targetRoots": [".opencode/skills/principle-build-the-lever"],
+      "record": ".opencode/skills/principle-build-the-lever/UPSTREAM.md",
+      "license": ".opencode/skills/principle-build-the-lever/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-build-the-lever/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Build small deterministic rerunnable tools within scope and distinguish an implemented artifact from a proposal."]
+    },
+    {
+      "id": "principle-fix-root-causes",
+      "targetRoots": [".opencode/skills/principle-fix-root-causes"],
+      "record": ".opencode/skills/principle-fix-root-causes/UPSTREAM.md",
+      "license": ".opencode/skills/principle-fix-root-causes/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-fix-root-causes/SKILL.md",
+          "importedRevision": "dbf49813a39c1a5389c5e28cb8e4c1c2379e2454",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Reproduce and trace defects, inspect persistent state after restart failures, and require approval before resetting user state."]
+    },
+    {
+      "id": "refactoring-recipe",
+      "targetRoots": ["recipes/refactoring.md", "recipes/refactoring.UPSTREAM.md", "recipes/refactoring.LICENSE"],
+      "record": "recipes/refactoring.UPSTREAM.md",
+      "license": "recipes/refactoring.LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/poteto-mode/playbooks/refactoring.md",
+          "importedRevision": "1dcc2bacde73ddd284803b7af28164d0436198fc",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": ["Capture behavior before changing structure, verify equivalence, apply local design and reader-load skills, and keep shipping conditional on authorization."]
     }
   ]
 }

@@ -1,10 +1,10 @@
-# Source playbooks
+# Source recipes
 
-The why skill spawns one investigator per available evidence category. Each reads one source-specific playbook below. The playbooks are concrete examples for common MCPs. Adapt them for another MCP in the same category.
+The why skill spawns one investigator per available evidence category. Each reads one source-specific recipe below. The recipes are concrete examples for common MCPs. Adapt them for another MCP in the same category.
 
 Discover exact tool names and schemas in the active OpenCode catalog before calling them. The examples do not establish that a tool or table exists. Follow each server's own routing, schema, permission, and privacy instructions. Do not write to external systems during investigation.
 
-| Category | Playbook | Example source |
+| Category | Recipe | Example source |
 | --- | --- | --- |
 | Source control history | [code-archaeology.md](./sources/code-archaeology.md) | Git and `gh` |
 | Issue / ticket tracker | [linear.md](./sources/linear.md) | Linear, adaptable to Jira, GitHub Issues, Plane, or Shortcut |

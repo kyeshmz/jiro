@@ -1,0 +1,1 @@
+../../../../recipes/authoring-a-skill.md

@@ -1,0 +1,5 @@
+# Upstream source
+
+Adapted from [PStack's redesign-from-first-principles principle](https://raw.githubusercontent.com/cursor/plugins/dbf49813a39c1a5389c5e28cb8e4c1c2379e2454/pstack/skills/principle-redesign-from-first-principles/SKILL.md) at revision `dbf49813a39c1a5389c5e28cb8e4c1c2379e2454`.
+
+OpenCode conversion follows the [existing port's installer](https://github.com/kyeshmz/opencode-pstack/blob/84220454f9f2bb61e771c1862fea8d404ffc8ea4/scripts/install-opencode.py) and [conversion rules](https://github.com/kyeshmz/opencode-pstack/blob/84220454f9f2bb61e771c1862fea8d404ffc8ea4/scripts/opencode-transform.py). Day-one requirement integration, reference updates, and incremental delivery are retained. Native invocation metadata and explicit authorization limits keep the principle usable in OpenCode without Cursor tools or unrequested rewrites. The upstream MIT notice is preserved in [LICENSE](LICENSE).

@@ -1,0 +1,18 @@
+{
+  "name": "jiro",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "bash install.sh",
+    "sync:check": "bash install.sh --check",
+    "smoke:mode": "bun run scripts/smoke-jiro.ts",
+    "typecheck": "bun check scripts/sync-opencode.ts scripts/smoke-jiro.ts tests/sync-opencode.test.ts tests/principles.test.ts tests/frontend-skills.test.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "commander": "15.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.3"
+  }
+}

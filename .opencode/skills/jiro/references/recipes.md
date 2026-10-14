@@ -1,6 +1,6 @@
 # Jiro recipe book
 
-Read the recipe selected by the chef. Copy its numbered steps into the task list before adding task-specific items. These are Jiro-native workflows, not the full pstack playbook collection. Prep establishes the scope, cooking makes the change, and tasting proves the result before serving it.
+Read the recipe selected by Jiro. Copy its numbered steps into the task list before adding task-specific items. These are Jiro-native workflows, not the full pstack playbook collection. Jiro owns the workflow and verifies the work of delegated chefs. Prep establishes the scope, cooking makes the change, and tasting proves the result before serving it.
 
 ## Investigation
 

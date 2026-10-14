@@ -54,4 +54,4 @@ Useful investigation patterns include:
 
 ## What to return
 
-Give the finding type, confirmed fully-qualified table, exact query, time window, compact numeric summary, relationship to the ship date, and evidence strength. Do not dump raw rows. Follow the active analytics server's metric-catalog and schema-discovery rules when adapting this playbook to another product.
+Give the finding type, confirmed fully-qualified table, exact query, time window, compact numeric summary, relationship to the ship date, and evidence strength. Do not dump raw rows. Follow the active analytics server's metric-catalog and schema-discovery rules when adapting this recipe to another product.

@@ -48,7 +48,7 @@ class JiroStructureTests(unittest.TestCase):
 
     def test_chef_theme_preserves_technical_skill_ids(self):
         text = SKILL.read_text()
-        for heading in ("Mise en place", "Recipe book", "Tools", "Sous-chefs", "Taste and serve"):
+        for heading in ("Mise en place", "Recipe book", "Tools", "Chefs", "Taste and serve"):
             self.assertIn(f"## {heading}\n", text)
         self.assertIn("Recipes are task playbooks", text)
         self.assertIn("Tools are supporting skills", text)

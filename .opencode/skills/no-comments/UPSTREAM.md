@@ -16,4 +16,6 @@ The installed OpenCode copy was also inspected for tool-name conversion. Its mac
 
 `references/reviewer-prompt.md` is the adapted reviewer body. It is a bundled prompt, not an automatically registered OpenCode agent. Static packaging checks do not establish full upstream parity or live reviewer behavior.
 
+This checkout also preserves the older installed OpenCode port's conditional integration with host-authorized pstack role settings. Ordinary Jiro review still inherits the active model. A pstack caller uses only its required role configuration and confirmed model IDs without changing user settings.
+
 **Read-only smoke test.** The adapted rules were passed to the advertised `comment-sicko` agent for one owned JavaScript fixture. It proposed removing two narration comments, protected the SPDX license header and public API doc comment, reported no structural flags, and left the file unchanged. This covers that small classification case only. The `general` fallback, actual deletion/root-cause fixes, retry behavior, and constraint-encoding flow remain untested live.

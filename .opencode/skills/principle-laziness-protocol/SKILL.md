@@ -20,3 +20,9 @@ Aim for the most result with the least code and complexity.
 **The test:** If a human developer would find the code exhausting to maintain, it is a bad solution.
 
 Apply within the authorized task. Preserve work you did not make. A read-only question does not authorize flattening or deleting code; report the simpler design instead. This principle does not authorize wider scope or external writes.
+
+Verify the simpler shape against the actual requirement. Fewer lines are not a win if they drop required behavior or necessary boundary validation. Confirm that apparently dead code is unused before deleting it. Use [Minimize reader load](../minimize-reader-load/SKILL.md) to check both indirection and hidden state.
+
+## OpenCode scope
+
+Resolve linked skills from this skill's base directory. Work in the user's target repository or assigned worktree, not the installed stack. An investigation-only request permits recommendations, not edits. This principle does not authorize discarding unrelated files, user state, or test evidence.

@@ -100,7 +100,7 @@ def inspect(repo, registry, changed=()):
         })
     discovered = {
         path.relative_to(repo).as_posix()
-        for pattern in (".opencode/skills/**/UPSTREAM.md", "playbook/**/*.UPSTREAM.md")
+        for pattern in (".opencode/skills/**/UPSTREAM.md", "playbook/**/*.UPSTREAM.md", "recipes/**/*.UPSTREAM.md")
         for path in repo.glob(pattern)
     }
     report["unmappedRecords"] = sorted(discovered - records)
@@ -119,8 +119,8 @@ def git(repo, *args):
 
 def changed_paths(repo, base):
     revision = git(repo, "rev-parse", "--verify", "--end-of-options", base + "^{commit}").decode().strip()
-    tracked = git(repo, "diff", "--no-ext-diff", "--no-textconv", "--name-only", "--no-renames", "-z", revision, "--", ".opencode", "playbook")
-    untracked = git(repo, "ls-files", "--others", "--exclude-standard", "-z", "--", ".opencode", "playbook")
+    tracked = git(repo, "diff", "--no-ext-diff", "--no-textconv", "--name-only", "--no-renames", "-z", revision, "--", ".opencode", "playbook", "recipes")
+    untracked = git(repo, "ls-files", "--others", "--exclude-standard", "-z", "--", ".opencode", "playbook", "recipes")
     return sorted({path.decode("utf-8") for path in (tracked + untracked).split(b"\0") if path})
 
 

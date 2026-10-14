@@ -24,6 +24,8 @@ Give the reviewer the original request, later constraints, absolute working dire
 
 Start a fresh child. Omit `model` unless the user or applicable host instructions authorize a choice confirmed by the host's model catalog. Do not read or change unrelated global model policy. Use background execution only for independent work and wait for completion notifications rather than polling.
 
+When the caller is following a pstack workflow, honor its existing host-authorized per-role settings. Read only the role configuration that the host instructions require, confirm the exact model ID, and omit `model` for `auto`, `inherit-parent`, missing roles, or unavailable configured models. Report requested-model fallbacks and never change those settings as part of review.
+
 ## Steps
 
 1. **Inspect.** Spawn the scoped reviewer with its bundled rules. Defer to its fresh perspective, then verify its evidence yourself.

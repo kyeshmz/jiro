@@ -11,17 +11,26 @@ REPO = Path(__file__).resolve().parents[2]
 
 class InstallTests(unittest.TestCase):
     def setUp(self):
-        self.scratch = tempfile.TemporaryDirectory(prefix="jiro-install-")
+        self.scratch = tempfile.TemporaryDirectory(prefix="jiro-install-", dir="/tmp/opencode")
         self.addCleanup(self.scratch.cleanup)
         self.root = Path(self.scratch.name)
         self.checkout = self.root / "checkout"
         self.checkout.mkdir()
         shutil.copy2(REPO / "install.sh", self.checkout / "install.sh")
         shutil.copytree(REPO / ".opencode", self.checkout / ".opencode")
-        (self.checkout / ".git/hooks").mkdir(parents=True)
+        (self.checkout / "scripts").mkdir()
+        shutil.copy2(REPO / "scripts/sync-opencode.ts", self.checkout / "scripts/sync-opencode.ts")
+        (self.checkout / "node_modules").symlink_to(REPO / "node_modules", target_is_directory=True)
         self.config = self.root / "config"
         self.base = self.config / "opencode"
-        self.env = {**os.environ, "HOME": str(self.root / "home"), "XDG_CONFIG_HOME": str(self.config)}
+        self.env = {
+            **os.environ,
+            "HOME": str(self.root / "home"),
+            "XDG_CONFIG_HOME": str(self.config),
+            "GIT_CONFIG_GLOBAL": "/dev/null",
+            "GIT_CONFIG_NOSYSTEM": "1",
+        }
+        subprocess.run(["git", "init", "-q", str(self.checkout)], env=self.env, check=True, capture_output=True)
 
     def install(self):
         return subprocess.run(
@@ -48,7 +57,10 @@ class InstallTests(unittest.TestCase):
             sorted(path.name for path in (self.checkout / ".opencode/skills").iterdir() if path.is_dir()),
         )
         self.assertTrue(os.access(self.checkout / ".git/hooks/post-merge", os.X_OK))
-        self.assertFalse((self.base / "agents/chef.md").exists())
+        self.assertEqual(
+            (self.base / "agents/chef.md").read_bytes(),
+            (self.checkout / ".opencode/agents/chef.md").read_bytes(),
+        )
         self.assertFalse((self.base / "skills/maintain-upstream").exists())
 
     def test_reinstall_backs_up_and_replaces_managed_command(self):

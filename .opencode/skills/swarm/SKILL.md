@@ -29,9 +29,11 @@ Track four phases, using a todo tool when available or the run plan otherwise.
 6. Claim `<target-repository>/.delegation/<task-slug>/run-<n>/` with exclusive creation using the next unused integer, or use a unique host-scratch run directory when repository writes are forbidden. If another parent claimed the directory, choose the next integer rather than reusing it. Save the plan and each filled `briefs/<unit-id>-attempt-1.md` before dispatch. The parent alone writes coordination records.
 7. For commit verification, put the exact SHAs in each brief. For measurement, include sample count, sample definition, order, and method. Record both in the result. Include the absolute working directory and any requested branch; do not switch the parent's checkout to satisfy a worker.
 
+When the caller is following a pstack workflow, honor its existing host-authorized swarm-worker role settings. Read only the role configuration that the host instructions require and apply the same confirmation and fallback rules as step 4. Do not change user model settings as part of a swarm run.
+
 ## Phase B: Fan out
 
-Use the host's `subagent` tool with `agent: general`, `background: true`, a short `description`, and the filled brief as `prompt`. Use `explore` for discovery-only slices or an advertised custom agent whose role and permissions fit. Omit `model` unless Phase A authorized it. Do not pass Cursor-only cloud or Task arguments.
+Jiro's swarm workers are chefs. Use the host's `subagent` tool with the advertised `chef` agent for Jiro implementation or review slices, `background: true`, a short `description`, and the filled brief as `prompt`. Use `general` when the chef is unavailable, `explore` for discovery-only slices, or another advertised agent whose role and permissions fit. Omit `model` unless Phase A authorized it. Do not pass Cursor-only cloud or Task arguments.
 
 Launch all independent workers together up to the cap. Refill from queued independent slices when completion notifications arrive. Continue useful parent work; do not sleep or poll. Dependencies wait for accepted results and receive their predecessor's report and artifact pointers.
 

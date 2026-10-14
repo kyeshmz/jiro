@@ -1,0 +1,241 @@
+#!/usr/bin/env bun
+import { Command } from "commander"
+import { createHash } from "node:crypto"
+import {
+  chmodSync,
+  cpSync,
+  existsSync,
+  lstatSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  renameSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs"
+import { homedir } from "node:os"
+import { dirname, isAbsolute, join, relative, resolve } from "node:path"
+import { spawnSync } from "node:child_process"
+
+const manifests = {
+  skills: "jiro-manifest.txt",
+  commands: "jiro-commands-manifest.txt",
+  agents: "jiro-agents-manifest.txt",
+} as const
+type Kind = keyof typeof manifests
+type Change = { kind: Kind; name: string; staged?: string }
+type Options = { check?: boolean; hooks: boolean }
+const hookMarker = "# jiro:opencode-sync"
+const hookBody = `#!/usr/bin/env bash
+${hookMarker}
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+exec bash "$ROOT/install.sh" --no-hooks
+`
+const legacyHooks = new Set(["jiro", "kstack"].map((brand) => `#!/usr/bin/env bash
+# Auto-sync ${brand} skills to the OpenCode config after \`git pull\`.
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+exec "$ROOT/install.sh"
+`))
+
+function present(path: string) {
+  return existsSync(path) || lstatSync(path, { throwIfNoEntry: false })?.isSymbolicLink() === true
+}
+
+function validateName(name: string, kind: Kind) {
+  const valid = kind === "skills"
+    ? /^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)
+    : !isAbsolute(name) && !name.split("/").some((part) => part === ".." || part === "" || part === ".")
+      && name.endsWith(".md") && !name.includes("\\")
+  if (!valid) throw new Error(`Invalid ${kind} manifest entry: ${JSON.stringify(name)}`)
+}
+
+function files(directory: string): string[] {
+  return readdirSync(directory).sort().flatMap((name) => {
+    const path = join(directory, name)
+    return statSync(path).isDirectory() ? files(path) : [path]
+  })
+}
+
+function sources(root: string, kind: Kind) {
+  const directory = join(root, ".opencode", kind)
+  if (!existsSync(directory)) {
+    if (kind === "skills") throw new Error(`Source skills directory missing: ${directory}`)
+    return new Map<string, string>()
+  }
+  const paths = kind === "skills"
+    ? readdirSync(directory).sort().map((name) => join(directory, name)).filter((path) => statSync(path).isDirectory())
+    : files(directory).filter((path) => path.endsWith(".md"))
+  return new Map(paths.map((path) => [relative(directory, path), path]))
+}
+
+function validateEntry(name: string, path: string, kind: Kind) {
+  validateName(name, kind)
+  const entry = kind === "skills" ? join(path, "SKILL.md") : path
+  const text = readFileSync(entry, "utf8")
+  const frontmatter = /^---\n([\s\S]*?)\n---/.exec(text)?.[1]
+  if (!frontmatter || !/^description:\s*\S/m.test(frontmatter)) {
+    throw new Error(`validation failed: Frontmatter needs a description: ${entry}`)
+  }
+  if (kind === "skills" && !frontmatter.split("\n").includes(`name: ${name}`)) {
+    throw new Error(`Skill name must match its directory: ${entry}`)
+  }
+  if (kind === "commands" && name === "jiro.md"
+    && (!text.includes("<!-- jiro:command -->") || !text.includes("$ARGUMENTS") || !text.includes("exact ID `jiro`"))) {
+    throw new Error(`validation failed: /jiro must load the exact skill ID and forward arguments: ${entry}`)
+  }
+}
+
+function fingerprint(path: string): string {
+  const info = lstatSync(path)
+  if (info.isSymbolicLink()) return "symlink"
+  if (info.isDirectory()) {
+    return JSON.stringify(readdirSync(path).sort().map((name) => [name, fingerprint(join(path, name))]))
+  }
+  return createHash("sha256").update(readFileSync(path)).update(String(info.mode & 0o111)).digest("hex")
+}
+
+function destination(base: string, kind: Kind, name: string) {
+  const directory = join(base, kind)
+  const path = join(directory, name)
+  for (let parent = dirname(path); parent !== base; parent = dirname(parent)) {
+    const info = lstatSync(parent, { throwIfNoEntry: false })
+    if (info && (!info.isDirectory() || info.isSymbolicLink())) {
+      throw new Error(`Destination parent must be an ordinary directory: ${parent}`)
+    }
+  }
+  return path
+}
+
+function installHooks(root: string) {
+  const custom = spawnSync("git", ["-C", root, "config", "--get", "core.hooksPath"], { encoding: "utf8" })
+  if (custom.status === 0) {
+    console.log(`Custom hooks path preserved: ${custom.stdout.trim()}. Run ./install.sh after changes.`)
+    return
+  }
+  const result = spawnSync("git", ["-C", root, "rev-parse", "--git-path", "hooks"], { encoding: "utf8" })
+  if (result.status !== 0) return
+  const hooks = resolve(root, result.stdout.trim())
+  mkdirSync(hooks, { recursive: true })
+  for (const name of ["post-commit", "post-merge"]) {
+    const hook = join(hooks, name)
+    const info = lstatSync(hook, { throwIfNoEntry: false })
+    const text = info?.isFile() ? readFileSync(hook, "utf8") : undefined
+    if (info && (!info.isFile() || (text !== hookBody && !legacyHooks.has(text ?? "")))) {
+      console.log(`Custom hook preserved: ${hook}. Run ./install.sh after changes.`)
+      continue
+    }
+    if (text !== hookBody) {
+      writeFileSync(hook, hookBody)
+      console.log(`Installed sync hook: ${hook}`)
+    }
+    chmodSync(hook, statSync(hook).mode | 0o111)
+  }
+}
+
+function sync(root: string, base: string, options: Options) {
+  const owned = Object.entries(manifests).map(([kind, manifest]) => {
+    const category = kind as Kind
+    const source = sources(root, category)
+    for (const [name, path] of source) validateEntry(name, path, category)
+    let previous = join(base, manifest)
+    if (category === "skills" && !existsSync(previous)) previous = join(base, "kstack-manifest.txt")
+    const names = existsSync(previous) ? readFileSync(previous, "utf8").split("\n").filter(Boolean) : []
+    for (const name of names) {
+      validateName(name, category)
+      destination(base, category, name)
+    }
+    for (const name of source.keys()) destination(base, category, name)
+    const command = category === "commands" && source.has("jiro.md")
+      ? destination(base, category, "jiro.md") : undefined
+    const info = command ? lstatSync(command, { throwIfNoEntry: false }) : undefined
+    const custom = info?.isSymbolicLink() || (info?.isFile() && !names.includes("jiro.md")
+      && !readFileSync(command!, "utf8").split("\n").includes("<!-- jiro:command -->"))
+    if (custom) {
+      source.delete("jiro.md")
+      console.log("preserved custom /jiro command; use @jiro to load the skill directly")
+    }
+    return { kind: category, manifest, source, names: custom ? names.filter((name) => name !== "jiro.md") : names }
+  })
+
+  mkdirSync(base, { recursive: true })
+  const staging = mkdtempSync(join(base, ".jiro-sync-"))
+  try {
+    const changes: Change[] = []
+    const inventoryChanges = owned.filter(({ manifest, source }) => {
+      const path = join(base, manifest)
+      const expected = [...source.keys()].map((name) => `${name}\n`).join("")
+      return !existsSync(path) || readFileSync(path, "utf8") !== expected
+    })
+    for (const { kind, source, names } of owned) {
+      for (const [name, path] of source) {
+        const staged = join(staging, kind, name)
+        mkdirSync(dirname(staged), { recursive: true })
+        cpSync(path, staged, { recursive: true, dereference: true })
+        const installed = destination(base, kind, name)
+        if (!present(installed) || fingerprint(staged) !== fingerprint(installed)) changes.push({ kind, name, staged })
+      }
+      for (const name of names) {
+        if (!source.has(name) && present(destination(base, kind, name))) changes.push({ kind, name })
+      }
+    }
+    if (options.check) {
+      for (const { kind, name } of changes) console.log(`Out of sync: ${kind}/${name}`)
+      for (const { manifest } of inventoryChanges) console.log(`Out of sync: ${manifest}`)
+      if (changes.length || inventoryChanges.length) return 1
+      console.log("Local OpenCode matches Jiro's skills, commands, and agents.")
+      return 0
+    }
+
+    let backup: string | undefined
+    for (const { kind, name, staged } of changes) {
+      const installed = destination(base, kind, name)
+      if (present(installed)) {
+        if (!backup) {
+          const backups = join(dirname(base), "opencode-jiro-backups")
+          mkdirSync(backups, { recursive: true })
+          backup = mkdtempSync(join(backups, "sync-"))
+        }
+        const saved = join(backup, kind, name)
+        mkdirSync(dirname(saved), { recursive: true })
+        renameSync(installed, saved)
+      }
+      if (staged) {
+        mkdirSync(dirname(installed), { recursive: true })
+        renameSync(staged, installed)
+      }
+      console.log(`Synced: ${kind}/${name}`)
+    }
+    for (const { manifest, source } of owned) {
+      const staged = join(staging, manifest)
+      writeFileSync(staged, [...source.keys()].map((name) => `${name}\n`).join(""))
+      renameSync(staged, join(base, manifest))
+    }
+    if (backup) console.log(`Replaced entries preserved: ${backup}`)
+    if (options.hooks) installHooks(root)
+    console.log(`Synced ${changes.length} entries. Local OpenCode is current.`)
+    return 0
+  } finally {
+    rmSync(staging, { recursive: true, force: true })
+  }
+}
+
+const program = new Command()
+  .name("jiro-sync")
+  .description("Sync Jiro's OpenCode skills, commands, and agents. Preserve replaced entries in backups.")
+  .argument("[root]", "Jiro checkout", resolve(import.meta.dir, ".."))
+  .option("--check", "Check installed definitions without replacing them")
+  .option("--no-hooks", "Sync without installing Git hooks")
+  .action((root: string, options: Options) => {
+    const config = process.env.XDG_CONFIG_HOME || join(homedir(), ".config")
+    try {
+      process.exitCode = sync(resolve(root), resolve(config, "opencode"), options)
+    } catch (error) {
+      program.error(`Jiro sync failed: ${error instanceof Error ? error.message : String(error)}`)
+    }
+  })
+
+program.parse()
