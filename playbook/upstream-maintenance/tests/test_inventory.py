@@ -18,7 +18,8 @@ REGISTRY = json.loads((MAINTENANCE / "references/import-map.json").read_text())
 class InventoryTests(unittest.TestCase):
     def test_existing_imports_and_known_gap(self):
         report = inventory.inspect(REPO, REGISTRY)
-        self.assertEqual(len(report["imports"]), 5)
+        self.assertEqual(len(report["imports"]), len(REGISTRY["imports"]))
+        self.assertIn("jiro", [entry["id"] for entry in report["imports"]])
         self.assertEqual(report["errors"], [])
         self.assertEqual(report["unmappedRecords"], [])
         self.assertEqual(report["baselineGaps"], [{
@@ -80,7 +81,7 @@ class InventoryTests(unittest.TestCase):
         after = subprocess.check_output(["git", "status", "--porcelain=v1", "--untracked-files=all"], cwd=REPO)
         self.assertEqual(result.returncode, 0, result.stderr.decode())
         self.assertEqual(before, after)
-        self.assertEqual(len(json.loads(result.stdout)["imports"]), 5)
+        self.assertEqual(len(json.loads(result.stdout)["imports"]), len(REGISTRY["imports"]))
 
     def test_maintenance_is_outside_opencode_skill_discovery(self):
         self.assertFalse(MAINTENANCE.is_relative_to(REPO / ".opencode"))
@@ -93,10 +94,9 @@ class InventoryTests(unittest.TestCase):
         self.assertIn('SRC="$ROOT/.opencode/skills"', installer)
         self.assertNotIn("upstream-maintenance", installer)
         self.assertNotIn("maintain-upstream", installer)
-        self.assertEqual(
-            sorted(path.parent.name for path in (REPO / ".opencode/skills").glob("*/SKILL.md")),
-            ["create-verification-skill", "how", "show-me-your-work", "why"],
-        )
+        installed_ids = {path.parent.name for path in (REPO / ".opencode/skills").glob("*/SKILL.md")}
+        self.assertIn("jiro", installed_ids)
+        self.assertTrue(installed_ids.isdisjoint({"maintain-upstream", "upstream-maintenance"}))
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ from pathlib import Path, PurePosixPath
 import re
 import subprocess
 import sys
+from urllib.parse import urlparse
 
 
 def relative_path(value):
@@ -21,6 +22,36 @@ def contains(root, path):
     return path == root or path.startswith(root + "/")
 
 
+def upstream_for(registry, entry):
+    upstream = entry.get("upstream", registry.get("upstream"))
+    if not isinstance(upstream, dict):
+        raise ValueError("each import needs an upstream repository and ref")
+    repository = upstream.get("repository")
+    ref = upstream.get("ref")
+    if not isinstance(repository, str) or not isinstance(ref, str) or not ref.strip():
+        raise ValueError("each import needs an upstream repository and ref")
+    parsed = urlparse(repository)
+    if parsed.scheme != "https" or not parsed.netloc or not parsed.path.strip("/") or parsed.username or parsed.password or parsed.query or parsed.fragment:
+        raise ValueError("upstream repository must be an HTTPS URL without credentials")
+    if any(ord(character) < 32 for character in repository + ref):
+        raise ValueError("control characters are not allowed in upstream metadata")
+    return {"repository": repository, "ref": ref}
+
+
+def source_pin_recorded(text, upstream, revision, path):
+    repository = upstream["repository"].rstrip("/").removesuffix(".git")
+    suffix = "/" + revision + "/" + path
+    candidates = [repository + "/blob" + suffix, repository + "/tree" + suffix]
+    parsed = urlparse(repository)
+    if parsed.hostname == "github.com":
+        candidates.append("https://raw.githubusercontent.com" + parsed.path + suffix)
+    for url in re.findall(r'https://[^\s<>()\]`"]+', text):
+        source = urlparse(url)._replace(query="", fragment="").geturl()
+        if any(source == candidate or source.startswith(candidate + "/") for candidate in candidates):
+            return True
+    return False
+
+
 def inspect(repo, registry, changed=()):
     if registry.get("version") != 1 or not registry.get("imports"):
         raise ValueError("unsupported or empty import map")
@@ -32,6 +63,7 @@ def inspect(repo, registry, changed=()):
         if identifier in identifiers:
             raise ValueError("duplicate import id")
         identifiers.add(identifier)
+        upstream = upstream_for(registry, entry)
         record = relative_path(entry["record"])
         if record in records:
             raise ValueError("duplicate provenance record")
@@ -57,10 +89,11 @@ def inspect(repo, registry, changed=()):
             revision = source["importedRevision"]
             if revision is None:
                 report["baselineGaps"].append({"id": identifier, "source": source["path"]})
-            elif "/" + revision + "/" + source["path"] not in record_text:
-                report["errors"].append("source pin missing from provenance: " + record)
+            elif not source_pin_recorded(record_text, upstream, revision, source["path"]):
+                report["errors"].append("source pin or repository missing from provenance: " + record)
         report["imports"].append({
             "id": identifier,
+            "upstream": upstream,
             "record": record,
             "sources": entry["sources"],
             "changedTargets": sorted(path for path in changed if any(contains(root, path) for root in roots)),
@@ -86,8 +119,8 @@ def git(repo, *args):
 
 def changed_paths(repo, base):
     revision = git(repo, "rev-parse", "--verify", "--end-of-options", base + "^{commit}").decode().strip()
-    tracked = git(repo, "diff", "--no-ext-diff", "--no-textconv", "--name-only", "--no-renames", "-z", revision, "--", ".opencode/skills", "playbook")
-    untracked = git(repo, "ls-files", "--others", "--exclude-standard", "-z", "--", ".opencode/skills", "playbook")
+    tracked = git(repo, "diff", "--no-ext-diff", "--no-textconv", "--name-only", "--no-renames", "-z", revision, "--", ".opencode", "playbook")
+    untracked = git(repo, "ls-files", "--others", "--exclude-standard", "-z", "--", ".opencode", "playbook")
     return sorted({path.decode("utf-8") for path in (tracked + untracked).split(b"\0") if path})
 
 

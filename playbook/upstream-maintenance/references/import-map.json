@@ -6,6 +6,68 @@
   },
   "imports": [
     {
+      "id": "jiro",
+      "targetRoots": [".opencode/skills/jiro"],
+      "record": ".opencode/skills/jiro/UPSTREAM.md",
+      "license": ".opencode/skills/jiro/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/poteto-mode/SKILL.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the jiro entry ID, explicit invocation, and OpenCode command wrapper.",
+        "Use bundled companion tools and Jiro-native recipes without unbundled pstack dependencies.",
+        "Keep the chef, recipes, tools, and sous-chefs vocabulary without changing technical IDs or verification contracts.",
+        "Resolve resources from the loaded skill base and inherit models unless host-authorized.",
+        "Preserve authorization gates, evidence-backed verification, and the upstream MIT notice."
+      ]
+    },
+    {
+      "id": "no-comments",
+      "targetRoots": [".opencode/skills/no-comments"],
+      "record": ".opencode/skills/no-comments/UPSTREAM.md",
+      "license": ".opencode/skills/no-comments/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/no-comments/SKILL.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        },
+        {
+          "path": "pstack/agents/comment-sicko.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep explicit no-comments invocation and the bundled read-only reviewer prompt with a built-in agent fallback.",
+        "Preserve comment exceptions, scoped root-cause flags, parent-owned edits, one fresh retry, and verified constraint encodings.",
+        "Hold uncertain protected comments and user changes; never broadly revert or widen the scope.",
+        "Do not require unbundled pstack skills, custom-agent installation, or global model settings; retain the MIT notice."
+      ]
+    },
+    {
+      "id": "principle-laziness-protocol",
+      "targetRoots": [".opencode/skills/principle-laziness-protocol"],
+      "record": ".opencode/skills/principle-laziness-protocol/UPSTREAM.md",
+      "license": ".opencode/skills/principle-laziness-protocol/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/principle-laziness-protocol/SKILL.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the exact principle-laziness-protocol ID, explicit invocation, and Jiro routing triggers.",
+        "Retain the six upstream rules and maintainer-effort test without widening scope or discarding user work.",
+        "Do not add machine-specific paths, global model policy, or external-tool dependencies; retain the MIT notice."
+      ]
+    },
+    {
       "id": "create-verification-skill",
       "targetRoots": [".opencode/skills/create-verification-skill"],
       "record": ".opencode/skills/create-verification-skill/UPSTREAM.md",
@@ -75,6 +137,112 @@
         "Discover tools through OpenCode and confirm schemas rather than hardcoding editor MCP names.",
         "Keep the seven-category coverage map and confidence-separated synthesis.",
         "Treat missing history or remote access as a coverage gap."
+      ]
+    },
+    {
+      "id": "create-subagent",
+      "targetRoots": [".opencode/skills/create-subagent"],
+      "record": ".opencode/skills/create-subagent/UPSTREAM.md",
+      "license": ".opencode/skills/create-subagent/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/agents/poteto-agent.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Write project-local OpenCode V2 agent definitions; global only when requested.",
+        "Verify required skills, preserve existing definitions, and default to model inheritance.",
+        "Distinguish a validated file from an advertised and live-tested agent ID."
+      ]
+    },
+    {
+      "id": "delegate",
+      "targetRoots": [".opencode/skills/delegate", "playbook/delegation"],
+      "record": ".opencode/skills/delegate/UPSTREAM.md",
+      "license": ".opencode/skills/delegate/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/poteto-mode/SKILL.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        },
+        {
+          "path": "pstack/skills/poteto-mode/playbooks/orchestrate.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Use bounded OpenCode child sessions, fresh by default, with self-contained per-attempt briefs.",
+        "Keep parent-only coordination writes, isolated resources, and parent acceptance separate from worker status.",
+        "Write unique local run records or host scratch for repository-read-only work; never overwrite attempts.",
+        "Do not import cloud scheduling, nested coordinators, automatic shipping, or broad external-action autonomy."
+      ]
+    },
+    {
+      "id": "swarm",
+      "targetRoots": [".opencode/skills/swarm"],
+      "record": ".opencode/skills/swarm/UPSTREAM.md",
+      "license": ".opencode/skills/swarm/LICENSE",
+      "sources": [
+        {
+          "path": "pstack/skills/swarm/SKILL.md",
+          "importedRevision": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep frame/fan-out/aggregate/report, declared race rules, exact SHA and measurement receipts, and explicit gaps.",
+        "Use the bundled delegate contract and parent-owned records with supported OpenCode subagent arguments.",
+        "Inherit models unless user-authorized and host-confirmed; account for every child before claiming completion."
+      ]
+    },
+    {
+      "id": "playwright-mcp",
+      "upstream": {
+        "repository": "https://github.com/microsoft/playwright-mcp.git",
+        "ref": "main"
+      },
+      "targetRoots": [".opencode/skills/playwright-mcp", "playbook/playwright"],
+      "record": ".opencode/skills/playwright-mcp/UPSTREAM.md",
+      "license": ".opencode/skills/playwright-mcp/LICENSE",
+      "sources": [
+        {
+          "path": "README.md",
+          "importedRevision": "b8b4183e099f136cbec0388a6088d4aa2f6b9685",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the MCP skill as opt-in reference material; do not restore server configuration or enable MCP without an explicit user request.",
+        "Retain the reviewed runtime example and safe V2 setup recipe with isolated headless profiles, disabled page WebMCP, and workspace file-access guardrails.",
+        "Discover active tool schemas, isolate browser drivers, verify real user outcomes, and retain owned evidence.",
+        "Preserve Apache-2.0 attribution and modified-file notices; no global setup or external writes without authorization."
+      ]
+    },
+    {
+      "id": "playwright-cli",
+      "upstream": {
+        "repository": "https://github.com/microsoft/playwright-cli.git",
+        "ref": "main"
+      },
+      "targetRoots": [".opencode/skills/playwright-cli"],
+      "record": ".opencode/skills/playwright-cli/UPSTREAM.md",
+      "license": ".opencode/skills/playwright-cli/LICENSE",
+      "sources": [
+        {
+          "path": "skills/playwright-cli",
+          "importedRevision": "b85c7a736bb473bf55b584e54a09ffa698d6d871",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the official CLI skill and its bundled references adapted for explicit OpenCode invocation.",
+        "Resolve references from the loaded skill base and verify installed CLI feature availability.",
+        "Use uniquely named sessions and isolated outputs; clean up only owned state and preserve evidence.",
+        "Preserve Apache-2.0 attribution and modified-file notices; package installation, publishing, and destructive cleanup require authorization."
       ]
     },
     {

@@ -5,7 +5,12 @@
 .dev.vars
 .dev.vars.*
 .audit/
+.delegation/
 artifacts/
+.playwright-cli/
+playwright-report/
+test-results/
+*.auth-state.json
 decisions.tsv
 *.log
 __pycache__/

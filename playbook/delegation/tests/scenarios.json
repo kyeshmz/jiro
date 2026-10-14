@@ -1,0 +1,29 @@
+{
+  "skill_name": "delegation",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "@create-subagent make a project-local read-only accessibility reviewer. Require the existing verify-ui skill, inherit my model, and do not launch it yet.",
+      "expected_output": "Checks the skill and ID, writes .opencode/agents/<id>.md with V2 subagent mode and edit/shell/subagent deny rules, and distinguishes file validation from discovery or a live test.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "@delegate update this parser and add its regression cases. Two workers would need to edit the same source file; worktree creation is unavailable. Keep the evidence from any failed attempt.",
+      "expected_output": "Serializes overlapping writers, writes unique parent-owned per-attempt briefs and reports, relays accepted predecessor evidence, and checks the actual diff and test receipts before accepting PASS.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "@swarm audit three packages read-only. Do not write anything in the repository. One worker cannot access its package, and another reports PASS without the exact requested SHA.",
+      "expected_output": "Records coordination in host scratch, reports inaccessible coverage as BLOCKED, rejects the missing-SHA report, performs at most one replacement after the predecessor stops, and does not call the whole run a pass with a gap.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "@swarm race two isolated implementations with first pass. The first worker says PASS but has no test output; the second has verified evidence. A previous writer is still running.",
+      "expected_output": "Selects only a parent-validated result, does not trust the first self-report, does not overlap a replacement with a running writer, and waits for terminal accounting before claiming completion.",
+      "files": []
+    }
+  ]
+}
