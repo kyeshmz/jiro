@@ -16,3 +16,9 @@ decisions.tsv
 __pycache__/
 *.py[cod]
 node_modules/
+.tools/
+.oc-port/cache/
+.oc-port/context/
+.oc-port/policies/
+.oc-port/result.json
+.oc-port/agent-output.log

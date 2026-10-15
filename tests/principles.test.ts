@@ -3,7 +3,8 @@ import { existsSync, readFileSync } from "node:fs"
 import { join, resolve } from "node:path"
 
 const root = resolve(import.meta.dir, "..")
-const skills = join(root, ".opencode/skills")
+const skills = join(root, "skills")
+const catalog = JSON.parse(readFileSync(join(root, "upstream.json"), "utf8"))
 const principles = [
   "principle-attack-the-premise",
   "principle-build-the-lever",
@@ -26,19 +27,19 @@ for (const id of principles) {
     expect(frontmatter).toContain("license: MIT")
     expect(frontmatter).toContain("  opencode/autoinvoke: false")
     expect(readFileSync(join(directory, "LICENSE"), "utf8")).toContain("Copyright (c) 2026 Lauren Tan")
-    const provenance = readFileSync(join(directory, "UPSTREAM.md"), "utf8")
+    const provenance = catalog.imports.find((entry: { id: string }) => entry.id === id).provenance as string
     expect(provenance).toContain(`cursor/plugins/dbf49813a39c1a5389c5e28cb8e4c1c2379e2454/pstack/skills/${id}/SKILL.md`)
-    for (const text of [source, provenance]) {
+    for (const [text, base] of [[source, directory], [provenance, root]]) {
       for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
         const target = match[1]!
         if (/^[a-z]+:/.test(target) || target.startsWith("#")) continue
-        expect(existsSync(resolve(directory, target.split("#")[0]!))).toBe(true)
+        expect(existsSync(resolve(base!, target.split("#")[0]!))).toBe(true)
       }
     }
     const mode = readFileSync(join(skills, "jiro/SKILL.md"), "utf8")
     const canonical = id === "principle-minimize-reader-load" ? "minimize-reader-load" : id
     expect(mode).toContain(`Load \`${canonical}\``)
-    const smoke = readFileSync(join(root, "recipes/scripts/smoke-skills.py"), "utf8")
+    const smoke = readFileSync(join(root, "scripts/smoke-skills.py"), "utf8")
     if (id === "principle-minimize-reader-load") {
       expect(smoke.split("NOTES =")[0]).toContain(`CASES["${id}"] = (`)
       expect(smoke.split("NOTES =")[0]).toContain(`+ CASES["${canonical}"]`)

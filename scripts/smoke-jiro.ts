@@ -115,7 +115,7 @@ class StoreAdapter {
           }
           const installedCommand = join(dirname(installed), "commands", `${item.command}.md`)
           const definition = readFileSync(installedCommand, "utf8")
-          const sourceCommand = join(resolve(import.meta.dir, ".."), ".opencode/commands", `${item.command}.md`)
+          const sourceCommand = join(resolve(import.meta.dir, ".."), "commands", `${item.command}.md`)
           if (definition !== readFileSync(sourceCommand, "utf8")) throw new Error("Installed command differs from Jiro")
           const template = definition.replace(/^---\n[\s\S]*?\n---\s*/, "").trim()
           prompt(template.replaceAll("$ARGUMENTS", item.text))

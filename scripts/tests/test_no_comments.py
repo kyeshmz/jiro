@@ -1,10 +1,11 @@
 from pathlib import Path
+import json
 import re
 import unittest
 
 
 REPO = Path(__file__).resolve().parents[2]
-TOOL = REPO / ".opencode/skills/no-comments"
+TOOL = REPO / "skills/no-comments"
 
 
 class NoCommentsTests(unittest.TestCase):
@@ -16,7 +17,7 @@ class NoCommentsTests(unittest.TestCase):
         self.assertIn("Otherwise use `general`", text)
         self.assertIn("when the host advertises that exact agent ID", text)
         self.assertNotIn("subagent_type:", text)
-        self.assertFalse((REPO / ".opencode/agents/comment-sicko.md").exists())
+        self.assertFalse((REPO / "agents/comment-sicko.md").exists())
 
     def test_all_protected_exception_classes_are_present(self):
         reviewer = (TOOL / "references/reviewer-prompt.md").read_text()
@@ -40,16 +41,16 @@ class NoCommentsTests(unittest.TestCase):
 
     def test_source_license_and_local_links(self):
         self.assertIn("Copyright (c) 2026 Lauren Tan", (TOOL / "LICENSE").read_text())
-        record = (TOOL / "UPSTREAM.md").read_text()
+        record = next(entry["provenance"] for entry in json.loads((REPO / "upstream.json").read_text())["imports"] if entry["id"] == TOOL.name)
         for path in ("pstack/skills/no-comments/SKILL.md", "pstack/agents/comment-sicko.md"):
             self.assertIn("/ccb5507cec1546dc88135c1139c811e6c59115ba/" + path, record)
-        for file in (TOOL / "SKILL.md", TOOL / "UPSTREAM.md"):
-            for target in re.findall(r"\]\(([^)]+)\)", file.read_text()):
+        for text, base in (((TOOL / "SKILL.md").read_text(), TOOL), (record, REPO)):
+            for target in re.findall(r"\]\(([^)]+)\)", text):
                 if not target.startswith("https://"):
-                    self.assertTrue((file.parent / target).is_file())
+                    self.assertTrue((base / target).is_file())
 
     def test_jiro_routes_to_the_tool(self):
-        self.assertIn("load `no-comments`", (REPO / ".opencode/skills/jiro/SKILL.md").read_text())
+        self.assertIn("load `no-comments`", (REPO / "skills/jiro/SKILL.md").read_text())
         self.assertIn("[`@no-comments`]", (REPO / "README.md").read_text())
 
 

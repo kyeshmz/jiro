@@ -1,4 +1,5 @@
 import os
+import json
 from pathlib import Path
 import re
 import shutil
@@ -8,7 +9,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKILLS = ROOT / ".opencode/skills"
+SKILLS = ROOT / "skills"
 IMPORTED = ("show-me-your-work", "reflect", "bro", "effect")
 REFLECTION_REFERENCES = (
     "judgment-reviewer.md", "tooling-reviewer.md", "divergent-reviewer.md", "synthesizer.md",
@@ -17,6 +18,7 @@ REFLECTION_REFERENCES = (
 
 class ImportedSkillTests(unittest.TestCase):
     def test_requested_skills_have_invocation_metadata_and_provenance(self):
+        entries = {entry["id"]: entry for entry in json.loads((ROOT / "upstream.json").read_text())["imports"]}
         for name in IMPORTED:
             with self.subTest(skill=name):
                 directory = SKILLS / name
@@ -36,7 +38,7 @@ class ImportedSkillTests(unittest.TestCase):
                     copyright = "Copyright (c) 2026 Lauren Tan"
                     source = rf"cursor/plugins/[a-f0-9]{{40}}/pstack/skills/{name}/SKILL\.md"
                 self.assertIn(copyright, (directory / "LICENSE").read_text())
-                self.assertRegex((directory / "UPSTREAM.md").read_text(), source)
+                self.assertRegex(entries[name]["provenance"], source)
 
     def test_reflection_bundles_all_prompt_templates(self):
         directory = SKILLS / "reflect"
@@ -61,11 +63,14 @@ class ImportedSkillTests(unittest.TestCase):
                                "State it more simply and concisely, like one human talking to another.")
 
     def test_installer_copies_requested_skills_and_keeps_unrelated_skills(self):
-        with tempfile.TemporaryDirectory(prefix="jiro-import-install-", dir="/tmp/opencode") as temporary:
+        scratch = Path(tempfile.gettempdir()) / "opencode"
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="jiro-import-install-", dir=scratch) as temporary:
             directory = Path(temporary)
             checkout = directory / "checkout"
-            shutil.copytree(SKILLS, checkout / ".opencode/skills")
+            shutil.copytree(SKILLS, checkout / "skills")
             shutil.copy2(ROOT / "install.sh", checkout / "install.sh")
+            shutil.copy2(ROOT / "upstream.json", checkout / "upstream.json")
             (checkout / "scripts").mkdir()
             shutil.copy2(ROOT / "scripts/sync-opencode.ts", checkout / "scripts/sync-opencode.ts")
             (checkout / "node_modules").symlink_to(ROOT / "node_modules", target_is_directory=True)

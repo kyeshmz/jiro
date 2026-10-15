@@ -12,7 +12,7 @@ from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
-spec = importlib.util.spec_from_file_location("skill_smoke", ROOT / "recipes/scripts/smoke-skills.py")
+spec = importlib.util.spec_from_file_location("skill_smoke", ROOT / "scripts/smoke-skills.py")
 smoke = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(smoke)
 
@@ -26,7 +26,9 @@ def messages(skill, text):
 
 class SmokeTests(unittest.TestCase):
     def setUp(self):
-        self.temporary = tempfile.TemporaryDirectory(prefix="jiro-smoke-unit-", dir="/tmp/opencode")
+        scratch = Path(tempfile.gettempdir()) / "opencode"
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.temporary = tempfile.TemporaryDirectory(prefix="jiro-smoke-unit-", dir=scratch)
         self.addCleanup(self.temporary.cleanup)
         self.root = Path(self.temporary.name)
 
@@ -80,7 +82,7 @@ else:
 
     def installed(self):
         installed = self.root / "installed"
-        shutil.copytree(ROOT / ".opencode/skills", installed)
+        shutil.copytree(ROOT / "skills", installed)
         return installed
 
     def test_event_parser_ignores_noise(self):
@@ -166,7 +168,7 @@ else:
                       smoke.validate("effect", directory, None, output)[0])
 
     def test_live_smoke_coverage_gaps_are_explicit(self):
-        bundled = {path.name for path in (ROOT / ".opencode/skills").iterdir() if path.is_dir()}
+        bundled = {path.name for path in (ROOT / "skills").iterdir() if path.is_dir()}
         mode_smoke = (ROOT / "scripts/smoke-jiro.ts").read_text()
         self.assertIn('command: "jiro"', mode_smoke)
         self.assertIn('skills: ["jiro"]', mode_smoke)
@@ -381,7 +383,7 @@ else:
     def test_interruption_preserves_report_and_cleans_fixture(self):
         binary = self.fake_cli(interrupted=True)
         output = self.root / "results"
-        result = subprocess.run([sys.executable, str(ROOT / "recipes/scripts/smoke-skills.py"),
+        result = subprocess.run([sys.executable, str(ROOT / "scripts/smoke-skills.py"),
                                  "--opencode", str(binary), "--skills-dir", str(self.installed()),
                                  "--output", str(output), "--skill", "minimize-reader-load"],
                                 capture_output=True, text=True, timeout=10)
@@ -399,7 +401,7 @@ else:
             self.assertIn(name + ": NOT_RUN (packaging checks only; no live smoke case)", output.getvalue())
 
     def test_unknown_skills_still_block_even_a_dry_run(self):
-        (self.root / ".opencode/skills/new-unknown").mkdir(parents=True)
+        (self.root / "skills/new-unknown").mkdir(parents=True)
         with mock.patch.object(smoke, "ROOT", self.root), contextlib.redirect_stderr(io.StringIO()) as errors:
             with self.assertRaises(SystemExit) as failure:
                 smoke.main(["--dry-run"])

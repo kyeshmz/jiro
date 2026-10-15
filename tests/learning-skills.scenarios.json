@@ -1,0 +1,44 @@
+{
+  "evals": [
+    {
+      "id": 1,
+      "skill": "correct",
+      "prompt": "@correct use this supplied fictional history for a read-only proposal. Two separate agent changes copied configuration names into a second hand-maintained registry. Both were reverted after the user found missing entries. Our instruction file already says to keep them aligned, but no check enforces it. Rank the possible fixes, explain how to prove the chosen enforcement against those historical mistakes in an isolated fixture, and show the rule-to-enforcement table. Do not edit files or invent commit IDs.",
+      "expected_output": "One evidenced recurring class, a single-source-of-truth architecture proposal before lint or tests, an isolated negative-proof plan, and a table that marks the proposed enforcement as not yet implemented. No edits, invented IDs, or claimed CI run.",
+      "files": [],
+      "assertions": [
+        "Distinguishes supplied fictional repeat evidence from observed repository history.",
+        "Chooses one configuration owner before lower-level checks and explains the rejected levels.",
+        "Pairs the rule with proposed enforcement and labels the unexecuted proof.",
+        "Keeps the read-only scope."
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "teach",
+      "prompt": "@teach explain this disposable repository's request-to-parser-to-store flow so I can maintain it. Use both how and why. Only local code and Git history are available. There are three moving parts, and the oldest design rationale is missing. Give a complete one-shot explanation with diagrams that add one part at a time. Do not quiz me, edit files, install tools, or use a billable image tool.",
+      "expected_output": "Actual how and why skill loads and completed read-only investigation, one plain account, a series of incremental diagrams, and confidence language that preserves the missing historical rationale. Unslop is loaded for polishing without removing uncertainty.",
+      "files": [],
+      "assertions": [
+        "Recorded tool calls show actual how, why, and unslop skill loads, not only claims.",
+        "Independent investigations complete before their findings are combined.",
+        "Diagrams redraw the prior picture and add one part or edge instead of showing everything at once.",
+        "Preserves missing-history confidence and unavailable-source gaps.",
+        "Makes no repository edits or unauthorized external calls."
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "unslop",
+      "prompt": "@unslop rewrite only this text. Preserve the API name, figure, citation, and real uncertainty. 'It is important to note that the compiler serves as a crucial validation substrate, ensuring a vibrant developer experience. `.toSQL()` returns the exact string sent to the database [compiler.ts:42]. The benchmark measured 18 ms. We do not yet know whether this improvement holds for large inputs.' Return only the revised text.",
+      "expected_output": "Plain rewritten text without the filler and metaphor. Keeps `.toSQL()`, [compiler.ts:42], the measured 18 ms, and the unknown result for large inputs. No stronger claim, invented evidence, or edit report.",
+      "files": [],
+      "assertions": [
+        "Removes filler, 'serves as', and the vague validation metaphor.",
+        "Preserves the API identifier, citation, and measured value.",
+        "Preserves the uncertainty about large inputs.",
+        "Returns rewritten prose only."
+      ]
+    }
+  ]
+}

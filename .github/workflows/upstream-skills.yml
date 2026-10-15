@@ -1,0 +1,77 @@
+name: Update imported skills
+on:
+  schedule:
+    - cron: '23 8 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Check upstreams without a model, or create one tested draft update PR
+        type: choice
+        options: [check, sync]
+        default: sync
+permissions:
+  contents: read
+concurrency:
+  group: upstream-skills
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Require a published, reviewed updater revision
+        env:
+          UPDATER_REF: ${{ vars.OC_PORT_AGENT_REF }}
+        run: |
+          if [[ ! "$UPDATER_REF" =~ ^[a-f0-9]{40}$ ]]; then
+            echo 'Set OC_PORT_AGENT_REF to the published commit containing the skill-sync support.' >&2
+            exit 1
+          fi
+      - name: Check out Jiro
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+          persist-credentials: false
+          token: ${{ secrets.OC_PORT_GITHUB_TOKEN || github.token }}
+      - name: Check out the pinned updater
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: kyeshmz/oc-port-agent
+          ref: ${{ vars.OC_PORT_AGENT_REF }}
+          path: .tools/oc-port-agent
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Build and test the pinned updater
+        working-directory: .tools/oc-port-agent
+        run: |
+          npm ci
+          npm test
+      - name: Install pinned OpenCode V2
+        if: github.event_name == 'schedule' || inputs.mode == 'sync'
+        run: npm install --global @opencode/cli@2.0.26
+      - name: Prepare host Git authentication
+        env:
+          GH_TOKEN: ${{ secrets.OC_PORT_GITHUB_TOKEN || github.token }}
+        run: gh auth setup-git
+      - name: Check or update imported skills
+        env:
+          MODE: ${{ inputs.mode || 'sync' }}
+          TARGET_REPOSITORY: ${{ github.repository }}
+          TARGET_BASE: ${{ github.event.repository.default_branch }}
+          GH_TOKEN: ${{ secrets.OC_PORT_GITHUB_TOKEN || github.token }}
+          OC_PORT_MODEL: ${{ vars.OC_PORT_MODEL }}
+          OC_PORT_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+          OC_PORT_API_KEY_ENV: ${{ vars.OC_PORT_API_KEY_ENV || 'OPENCODE_API_KEY' }}
+        run: |
+          if [[ "$MODE" == 'check' ]]; then
+            python3 playbook/upstream-maintenance/scripts/sync.py check --tool .tools/oc-port-agent/dist/src/cli.js
+          else
+            python3 playbook/upstream-maintenance/scripts/sync.py sync --tool .tools/oc-port-agent/dist/src/cli.js --publish --repository "$TARGET_REPOSITORY" --base "$TARGET_BASE"
+          fi

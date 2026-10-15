@@ -5,15 +5,17 @@ import unittest
 
 
 REPO = Path(__file__).resolve().parents[2]
-SKILLS = REPO / ".opencode/skills"
+SKILLS = REPO / "skills"
 
 
 class PlaywrightPortTests(unittest.TestCase):
     def test_mcp_config_is_removed_and_not_a_maintenance_target(self):
         self.assertFalse((REPO / ".opencode/opencode.jsonc").exists())
-        registry = json.loads((REPO / "playbook/upstream-maintenance/references/import-map.json").read_text())
+        self.assertFalse((REPO / "opencode.jsonc").exists())
+        registry = json.loads((REPO / "upstream.json").read_text())
         entry = next(entry for entry in registry["imports"] if entry["id"] == "playwright-mcp")
         self.assertNotIn(".opencode/opencode.jsonc", entry["targetRoots"])
+        self.assertNotIn("opencode.jsonc", entry["targetRoots"])
         self.assertTrue(any("do not restore server configuration" in rule for rule in entry["preserve"]))
 
     def test_skills_are_explicit_and_keep_apache_license(self):
@@ -41,12 +43,12 @@ class PlaywrightPortTests(unittest.TestCase):
         self.assertLess(len((SKILLS / "playwright-cli/SKILL.md").read_text().splitlines()), 500)
 
     def test_playwright_ports_are_registered_separately(self):
-        registry = json.loads((REPO / "playbook/upstream-maintenance/references/import-map.json").read_text())
+        registry = json.loads((REPO / "upstream.json").read_text())
         entries = {entry["id"]: entry for entry in registry["imports"]}
         for identifier in ("playwright-mcp", "playwright-cli"):
             entry = entries[identifier]
             self.assertEqual(entry["upstream"]["repository"], f"https://github.com/microsoft/{identifier}.git")
-            record = (REPO / entry["record"]).read_text()
+            record = entry["provenance"]
             for source in entry["sources"]:
                 self.assertIn("/" + source["importedRevision"] + "/" + source["path"], record)
             self.assertTrue((REPO / entry["license"]).is_file())

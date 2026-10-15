@@ -11,13 +11,17 @@ REPO = Path(__file__).resolve().parents[2]
 
 class InstallTests(unittest.TestCase):
     def setUp(self):
-        self.scratch = tempfile.TemporaryDirectory(prefix="jiro-install-", dir="/tmp/opencode")
+        scratch = Path(tempfile.gettempdir()) / "opencode"
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.scratch = tempfile.TemporaryDirectory(prefix="jiro-install-", dir=scratch)
         self.addCleanup(self.scratch.cleanup)
         self.root = Path(self.scratch.name)
         self.checkout = self.root / "checkout"
         self.checkout.mkdir()
         shutil.copy2(REPO / "install.sh", self.checkout / "install.sh")
-        shutil.copytree(REPO / ".opencode", self.checkout / ".opencode")
+        shutil.copy2(REPO / "upstream.json", self.checkout / "upstream.json")
+        for kind in ("skills", "commands", "agents"):
+            shutil.copytree(REPO / kind, self.checkout / kind)
         (self.checkout / "scripts").mkdir()
         shutil.copy2(REPO / "scripts/sync-opencode.ts", self.checkout / "scripts/sync-opencode.ts")
         (self.checkout / "node_modules").symlink_to(REPO / "node_modules", target_is_directory=True)
@@ -45,21 +49,21 @@ class InstallTests(unittest.TestCase):
     def test_installs_entry_and_all_bundled_resources(self):
         result = self.install()
         self.assertEqual(result.returncode, 0, result.stderr)
-        for source in (self.checkout / ".opencode/skills").rglob("*"):
+        for source in (self.checkout / "skills").glob("*/**/*"):
             if source.is_file():
-                installed = self.base / "skills" / source.relative_to(self.checkout / ".opencode/skills")
+                installed = self.base / "skills" / source.relative_to(self.checkout / "skills")
                 self.assertEqual(installed.read_bytes(), source.read_bytes())
         command = self.base / "commands/jiro.md"
-        self.assertEqual(command.read_bytes(), (REPO / ".opencode/commands/jiro.md").read_bytes())
+        self.assertEqual(command.read_bytes(), (REPO / "commands/jiro.md").read_bytes())
         self.assertIn("$ARGUMENTS", command.read_text())
         self.assertEqual(
             (self.base / "jiro-manifest.txt").read_text().splitlines(),
-            sorted(path.name for path in (self.checkout / ".opencode/skills").iterdir() if path.is_dir()),
+            sorted(path.name for path in (self.checkout / "skills").iterdir() if path.is_dir()),
         )
         self.assertTrue(os.access(self.checkout / ".git/hooks/post-merge", os.X_OK))
         self.assertEqual(
             (self.base / "agents/chef.md").read_bytes(),
-            (self.checkout / ".opencode/agents/chef.md").read_bytes(),
+            (self.checkout / "agents/chef.md").read_bytes(),
         )
         self.assertFalse((self.base / "skills/maintain-upstream").exists())
 
@@ -70,7 +74,7 @@ class InstallTests(unittest.TestCase):
         command.write_text(old)
         result = self.install()
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(command.read_bytes(), (REPO / ".opencode/commands/jiro.md").read_bytes())
+        self.assertEqual(command.read_bytes(), (REPO / "commands/jiro.md").read_bytes())
         backups = list((self.config / "opencode-jiro-backups").glob("*/commands/jiro.md"))
         self.assertEqual(len(backups), 1)
         self.assertEqual(backups[0].read_text(), old)
@@ -103,7 +107,7 @@ class InstallTests(unittest.TestCase):
     def test_invalid_source_fails_before_destination_changes(self):
         command = self.base / "commands/jiro.md"
         self.write(command, "Keep this.\n")
-        (self.checkout / ".opencode/commands/jiro.md").write_text("Broken wrapper.\n")
+        (self.checkout / "commands/jiro.md").write_text("Broken wrapper.\n")
         result = self.install()
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("validation failed", result.stderr)

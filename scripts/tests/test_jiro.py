@@ -4,7 +4,7 @@ import unittest
 
 
 REPO = Path(__file__).resolve().parents[2]
-SKILL = REPO / ".opencode/skills/jiro/SKILL.md"
+SKILL = REPO / "skills/jiro/SKILL.md"
 RECIPES = SKILL.parent / "references/recipes.md"
 
 
@@ -30,17 +30,17 @@ class JiroStructureTests(unittest.TestCase):
         self.assertEqual(set(routes), set(sections))
 
     def test_relative_links_and_bundled_companions_resolve(self):
-        for file in (SKILL, SKILL.parent / "UPSTREAM.md"):
+        for file in (SKILL,):
             for link in re.findall(r"\]\(([^)]+)\)", file.read_text()):
                 if not link.startswith("https://"):
                     with self.subTest(file=file, link=link):
                         self.assertTrue((file.parent / link).is_file())
         for companion in ("how", "why", "show-me-your-work", "create-verification-skill"):
-            self.assertTrue((REPO / f".opencode/skills/{companion}/SKILL.md").is_file())
+            self.assertTrue((REPO / f"skills/{companion}/SKILL.md").is_file())
             self.assertIn(f"`{companion}`", SKILL.read_text())
 
     def test_command_loads_skill_without_model_or_agent_override(self):
-        text = (REPO / ".opencode/commands/jiro.md").read_text()
+        text = (REPO / "commands/jiro.md").read_text()
         self.assertIn("exact ID `jiro`", text)
         self.assertEqual(text.count("$ARGUMENTS"), 1)
         frontmatter = text.split("---", 2)[1]
@@ -60,7 +60,7 @@ class JiroStructureTests(unittest.TestCase):
         self.assertNotIn("kstack", text)
         self.assertIn("## Recipe book\n", text)
         self.assertIn("## Tools on the rack\n", text)
-        for file in (REPO / ".opencode/skills").glob("*/SKILL.md"):
+        for file in (REPO / "skills").glob("*/SKILL.md"):
             with self.subTest(skill=file.parent.name):
                 self.assertIn(f"[`@{file.parent.name}`]", text)
 

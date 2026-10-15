@@ -2,8 +2,8 @@
 
 Two tools cover Microsoft's separate browser interfaces:
 
-- [`@playwright-mcp`](../../.opencode/skills/playwright-mcp/SKILL.md) uses a connected MCP browser for exploration, reproduction, user-flow checks, and snapshots/screenshots.
-- [`@playwright-cli`](../../.opencode/skills/playwright-cli/SKILL.md) imports Microsoft's official CLI skill and references for named browser sessions, Playwright tests, test generation, tracing, video, storage, and request mocking.
+- [`@playwright-mcp`](../../skills/playwright-mcp/SKILL.md) uses a connected MCP browser for exploration, reproduction, user-flow checks, and snapshots/screenshots.
+- [`@playwright-cli`](../../skills/playwright-cli/SKILL.md) imports Microsoft's official CLI skill and references for named browser sessions, Playwright tests, test generation, tracing, video, storage, and request mocking.
 
 The [MCP repository](https://github.com/microsoft/playwright-mcp) recommends [CLI + skills](https://github.com/microsoft/playwright-cli) for coding agents. Its own `.claude/skills/release.md` is a maintainer-release procedure, not a browser automation skill, and is intentionally not imported.
 
@@ -11,7 +11,7 @@ The [MCP repository](https://github.com/microsoft/playwright-mcp) recommends [CL
 
 No MCP server is configured by this pack. The project-only configuration was removed at the user's request; both skills and their maintenance records remain. Use the CLI skill or the project's existing harness by default. Existing global or inherited MCP settings are untouched.
 
-`install.sh` distributes both skills and their references. It does **not** copy MCP configuration, install npm packages, download browsers, or change global OpenCode settings. The retained [setup recipe](../../.opencode/skills/playwright-mcp/references/setup.md) is opt-in only for an explicit later MCP request. A skill being installed does not mean either browser interface is connected or live-tested.
+`install.sh` distributes both skills and their references. It does **not** copy MCP configuration, install npm packages, download browsers, or change global OpenCode settings. The retained [setup recipe](../../skills/playwright-mcp/references/setup.md) is opt-in only for an explicit later MCP request. A skill being installed does not mean either browser interface is connected or live-tested.
 
 ## Station ownership and evidence
 
@@ -23,7 +23,7 @@ Every CLI worker uses its own named `-s=<task-worker>` session and output direct
 
 ## Maintenance port list
 
-Both sources are registered in the [import map](../upstream-maintenance/references/import-map.json):
+Both sources are registered in [upstream.json](../../upstream.json):
 
 | Import | Repository | Source selection | Imported revision |
 | --- | --- | --- | --- |

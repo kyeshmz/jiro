@@ -1,6 +1,8 @@
 # Working on Jiro
 
-Preserve unrelated edits. Jiro's discoverable skills, commands, and agents live in `.opencode/`. Shared rules live in `skills/skill.md` and recipes in `recipes/`. The mode bundles these through repository-local links. The installer materializes those links so global OpenCode copies are self-contained. General CLI tooling lives in the top-level `scripts/` directory, not `recipes/`.
+Preserve unrelated edits. This repository is an OpenCode configuration directory: skills, commands, and agents live directly in `skills/`, `commands/`, and `agents/`. Do not create a nested `.opencode/` directory here. Shared rules live in `skills/skill.md` and recipes in `recipes/`. The mode bundles these through repository-local links. The installer materializes those links so global OpenCode copies are self-contained. General CLI tooling lives in the top-level `scripts/` directory, not `recipes/`.
+
+`upstream.json` is the only provenance catalog. Keep each import's repository, source pins, adaptation notes, preservation rules, and any bundle checksums there. Do not create per-skill provenance records or checksum manifests. Preserve license files and upstream author metadata beside the content they cover. Inventory checks enforce skill coverage, source identity, and checksums.
 
 ## Required local sync
 

@@ -5,7 +5,7 @@ import unittest
 
 
 REPO = Path(__file__).resolve().parents[3]
-SKILLS = REPO / ".opencode/skills"
+SKILLS = REPO / "skills"
 IDS = ("create-subagent", "delegate", "swarm")
 
 
@@ -40,14 +40,14 @@ class DelegationPackageTests(unittest.TestCase):
         self.assertNotIn("is_background:", template)
 
     def test_imports_have_exact_source_pins_and_records(self):
-        registry = json.loads((REPO / "playbook/upstream-maintenance/references/import-map.json").read_text())
+        registry = json.loads((REPO / "upstream.json").read_text())
         entries = {entry["id"]: entry for entry in registry["imports"]}
         for identifier in IDS:
             with self.subTest(skill=identifier):
                 entry = entries[identifier]
-                record = (REPO / entry["record"]).read_text()
+                record = entry["provenance"]
                 for source in entry["sources"]:
-                    self.assertEqual(source["importedRevision"], "ccb5507cec1546dc88135c1139c811e6c59115ba")
+                    self.assertRegex(source["importedRevision"], r"^[a-f0-9]{40}$")
                     self.assertIn("/" + source["importedRevision"] + "/" + source["path"], record)
 
     def test_local_document_links_resolve(self):

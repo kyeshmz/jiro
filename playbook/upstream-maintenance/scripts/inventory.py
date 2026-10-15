@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -6,6 +7,9 @@ import re
 import subprocess
 import sys
 from urllib.parse import urlparse
+
+
+REGISTRY = "upstream.json"
 
 
 def relative_path(value):
@@ -22,8 +26,8 @@ def contains(root, path):
     return path == root or path.startswith(root + "/")
 
 
-def upstream_for(registry, entry):
-    upstream = entry.get("upstream", registry.get("upstream"))
+def upstream_for(entry):
+    upstream = entry.get("upstream")
     if not isinstance(upstream, dict):
         raise ValueError("each import needs an upstream repository and ref")
     repository = upstream.get("repository")
@@ -53,35 +57,42 @@ def source_pin_recorded(text, upstream, revision, path):
 
 
 def inspect(repo, registry, changed=()):
-    if registry.get("version") != 1 or not registry.get("imports"):
-        raise ValueError("unsupported or empty import map")
-    records = set()
+    if registry.get("version") != 2 or not registry.get("imports"):
+        raise ValueError("unsupported or empty upstream catalog")
     identifiers = set()
-    report = {"imports": [], "unmappedRecords": [], "baselineGaps": [], "errors": []}
+    owners = {}
+    report = {"imports": [], "unmappedSkills": [], "baselineGaps": [], "errors": []}
     for entry in registry["imports"]:
         identifier = entry["id"]
         if identifier in identifiers:
             raise ValueError("duplicate import id")
         identifiers.add(identifier)
-        upstream = upstream_for(registry, entry)
-        record = relative_path(entry["record"])
-        if record in records:
-            raise ValueError("duplicate provenance record")
-        records.add(record)
+        upstream = upstream_for(entry)
+        if "record" in entry:
+            raise ValueError("provenance belongs in upstream.json, not a separate record")
+        provenance = entry.get("provenance")
+        if not isinstance(provenance, str) or not provenance.strip():
+            raise ValueError("each import needs provenance notes")
         roots = [relative_path(root) for root in entry["targetRoots"]]
         if not roots or not entry.get("sources") or not entry.get("preserve"):
             raise ValueError("each import needs targets, sources, and preservation rules")
-        for path in set(roots + [record, relative_path(entry["license"])]):
+        for root in roots:
+            parts = PurePosixPath(root).parts
+            if len(parts) > 1 and parts[0] == "skills":
+                skill = "/".join(parts[:2])
+                if skill in owners and owners[skill] != identifier:
+                    raise ValueError("skill has multiple provenance owners: " + skill)
+                owners[skill] = identifier
+        for path in set(roots + [relative_path(entry["license"])]):
             target = repo / path
             if not target.resolve().is_relative_to(repo.resolve()):
                 raise ValueError("import path escapes the target repository")
             if not target.exists():
                 report["errors"].append("missing target: " + path)
-        record_text = (repo / record).read_text(encoding="utf-8") if (repo / record).is_file() else ""
         for source in entry["sources"]:
             relative_path(source["path"])
-            if source["path"] not in record_text:
-                report["errors"].append("source path missing from provenance: " + record)
+            if source["path"] not in provenance:
+                report["errors"].append("source path missing from provenance: " + identifier)
             for field in ("importedRevision", "reviewedThrough"):
                 revision = source[field]
                 if revision is not None and not re.fullmatch(r"[a-f0-9]{40}|[a-f0-9]{64}", revision):
@@ -89,21 +100,40 @@ def inspect(repo, registry, changed=()):
             revision = source["importedRevision"]
             if revision is None:
                 report["baselineGaps"].append({"id": identifier, "source": source["path"]})
-            elif not source_pin_recorded(record_text, upstream, revision, source["path"]):
-                report["errors"].append("source pin or repository missing from provenance: " + record)
+            elif not source_pin_recorded(provenance, upstream, revision, source["path"]):
+                report["errors"].append("source pin or repository missing from provenance: " + identifier)
+        hashes = entry.get("fileHashes")
+        if hashes is not None:
+            if not isinstance(hashes, dict) or not hashes or len(roots) != 1:
+                raise ValueError("file hashes need one bundle root and a nonempty SHA-256 map")
+            bundle = repo / roots[0]
+            for path, digest in hashes.items():
+                relative_path(path)
+                if not isinstance(digest, str) or not re.fullmatch(r"[a-f0-9]{64}", digest):
+                    raise ValueError("file hashes must be SHA-256 digests")
+                target = bundle / path
+                if not target.resolve().is_relative_to(bundle.resolve()):
+                    raise ValueError("hashed file escapes the bundle")
+                if not target.is_file() or hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+                    report["errors"].append("bundle checksum mismatch: " + roots[0] + "/" + path)
+            actual = {path.relative_to(bundle).as_posix() for path in bundle.rglob("*") if path.is_file()}
+            for path in sorted(actual - set(hashes)):
+                report["errors"].append("unrecorded bundle file: " + roots[0] + "/" + path)
         report["imports"].append({
             "id": identifier,
             "upstream": upstream,
-            "record": record,
             "sources": entry["sources"],
-            "changedTargets": sorted(path for path in changed if any(contains(root, path) for root in roots)),
+            "changedTargets": sorted(path for path in changed if path == REGISTRY or any(contains(root, path) for root in roots)),
         })
     discovered = {
-        path.relative_to(repo).as_posix()
-        for pattern in (".opencode/skills/**/UPSTREAM.md", "playbook/**/*.UPSTREAM.md", "recipes/**/*.UPSTREAM.md")
-        for path in repo.glob(pattern)
+        path.parent.relative_to(repo).as_posix()
+        for path in repo.glob("skills/*/SKILL.md")
     }
-    report["unmappedRecords"] = sorted(discovered - records)
+    report["unmappedSkills"] = sorted(discovered - set(owners))
+    for directory in ("skills", "recipes", "playbook"):
+        for path in (repo / directory).rglob("*"):
+            if path.name.endswith("UPSTREAM.md") or path.name == "import-manifest.json":
+                report["errors"].append("retired provenance file: " + path.relative_to(repo).as_posix())
     return report
 
 
@@ -119,8 +149,9 @@ def git(repo, *args):
 
 def changed_paths(repo, base):
     revision = git(repo, "rev-parse", "--verify", "--end-of-options", base + "^{commit}").decode().strip()
-    tracked = git(repo, "diff", "--no-ext-diff", "--no-textconv", "--name-only", "--no-renames", "-z", revision, "--", ".opencode", "playbook", "recipes")
-    untracked = git(repo, "ls-files", "--others", "--exclude-standard", "-z", "--", ".opencode", "playbook", "recipes")
+    paths = (REGISTRY, "skills", "commands", "agents", "scripts", "opencode.json", "opencode.jsonc", ".opencode", "playbook", "recipes")
+    tracked = git(repo, "diff", "--no-ext-diff", "--no-textconv", "--name-only", "--no-renames", "-z", revision, "--", *paths)
+    untracked = git(repo, "ls-files", "--others", "--exclude-standard", "-z", "--", *paths)
     return sorted({path.decode("utf-8") for path in (tracked + untracked).split(b"\0") if path})
 
 
@@ -131,11 +162,11 @@ def main():
     args = parser.parse_args()
     try:
         repo = Path(git(args.repo, "rev-parse", "--show-toplevel").decode().strip())
-        path = repo / "playbook/upstream-maintenance/references/import-map.json"
+        path = repo / REGISTRY
         registry = json.loads(path.read_text(encoding="utf-8"))
         report = inspect(repo, registry, changed_paths(repo, args.base))
         print(json.dumps(report, indent=2))
-        return 1 if report["errors"] or report["unmappedRecords"] else 0
+        return 1 if report["errors"] or report["unmappedSkills"] else 0
     except (OSError, ValueError, KeyError, TypeError) as error:
         print("inventory failed: " + str(error), file=sys.stderr)
         return 1
