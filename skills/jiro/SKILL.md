@@ -8,7 +8,7 @@ metadata:
 
 # Jiro
 
-Own the task from understanding through verification. Choose a recipe, load the tools its steps need, and report the evidence. Recipes are task playbooks. Tools are supporting skills. Jiro's delegated workers are chefs. The entry skill is `jiro` and the registered worker agent is `chef`. This is an OpenCode workflow, not a dependency on an installed pstack pack.
+Own the task from understanding through verification. Choose a recipe, load the tools its steps need, and report the evidence. Recipes are task playbooks. Tools are supporting skills. Jiro's delegated workers are chefs. The entry skill is `jiro` and the registered worker agent is `chef`. This is a self-contained OpenCode workflow, not a dependency on another installed pack.
 
 Keep technical names, commands, ownership, and evidence precise. Kitchen language must not hide a risk, blocker, or permission boundary.
 
@@ -19,9 +19,19 @@ Read `references/shared-rules.md` before working. Resolve every bundled referenc
 1. Read the target repository's instructions, working-tree status, and relevant existing changes. Preserve work you did not make.
 2. Match the requested outcome to the recipe table below. Read the selected section in [references/recipes.md](references/recipes.md), resolved from this skill's base directory.
 3. Put its numbered steps first in the task list, copied verbatim. If no task-list tool is available, keep a short checklist in the conversation. Record any skipped step with its reason.
-4. Execute the steps in the target repository or worktree. Generated project skills belong in `<target-repository>/.opencode/skills/<skill-id>/SKILL.md`, never in this installed pack. Write global skills only when requested.
+4. Complete Repository verification setup below before implementation, then execute the steps in the target repository or worktree. Generated project skills belong in `<target-repository>/.opencode/skills/<skill-id>/SKILL.md`, never in this installed pack. Write global skills only when requested.
 
 Apply the Jiro style to the active task and its follow-ups until the user switches styles. A new task needs a fresh scope and workflow. Casual questions and an explicit opt-out do not need the task checklist. If invoked without a task or an active goal, acknowledge the style and wait. Do not invent work or claim that OpenCode provides a persistent Custom Mode or a background scheduler.
+
+## Repository verification setup
+
+Create a repo-specific verification skill by default when the user initializes Jiro or Kstack in a repository, or starts the first task that permits repository edits. The user does not need to ask for a verification skill separately. Check coverage again when a later task touches a different surface. The skill itself is the durable setup record; do not add a global first-use flag or a marker that suppresses missing coverage.
+
+1. Honor an explicit opt-out such as "skip verification skill" or "do not create skills". Keep read-only investigations and reviews read-only. Activation without a task does not authorize setup writes. Defer setup until an editable task unless initialization itself was requested. Preserve a repository-level opt-out in its existing instructions; a task-only opt-out applies only to that task. Skipping skill creation does not waive relevant verification of the requested work.
+2. Identify the behavior and surface this task needs to prove. For initialization without another task, use the repository's primary documented surface. Inspect repository instructions, project skills, and existing harnesses. Read a candidate skill before relying on it. Reuse a relevant verification skill without regenerating it. An unrelated `verify-*` skill does not cover the current task, and existing tests alone do not replace the reusable skill.
+3. If no relevant skill exists, load `create-verification-skill` and start setup before product implementation. Wrap the existing harness rather than adding a competing driver. Scope its feature map to the task's surface. Write it in the target project's `.opencode/skills/verify-<app>/` directory, or its existing `skills/` directory when the target is itself an OpenCode configuration root. Preserve custom recipes and helpers. Do not overwrite an existing skill to mark setup complete.
+4. Follow the generator's proof loop once. Launch, doctor, drive a mapped feature through the real surface, capture evidence, clean up owned resources, and confirm the evidence survives cleanup. Report the skill path and observed proof. Missing tools, credentials, hardware, or permission are blockers, not proof. Do not install runtimes, change MCP or model settings, or deploy without explicit authorization. Do not broaden product repairs just to clear setup. A broken baseline can require the requested bug fix before generation or proof is possible. Capture that failure, make only the authorized fix, and complete setup afterward. If proof is still blocked, report the gap and keep any unproved output labeled as a draft.
+5. The parent owns setup before delegating implementation. Give chefs the chosen skill path and coverage or the explicit opt-out/blocker. Children reuse that decision rather than generating competing verification skills. Reuse established setup on follow-ups and resume blocked setup only when its prerequisite changes.
 
 ## Recipe book
 
@@ -55,13 +65,16 @@ Load skills with OpenCode's `skill` tool using the exact ID. Supporting files ar
 - When asked to really understand a change or subsystem, load `teach`. It combines `how` and `why` into a paced, read-only explanation with incremental diagrams and preserved confidence.
 - For writing cleanup, load `unslop`. Preserve meaning, citations, technical names, and justified uncertainty. Do not apply a cleanup request to unrelated files.
 - For a long, autonomous, or multi-phase task, load `show-me-your-work`. Let it own the decision log and its audit. Keep the trail local unless committing it is authorized.
-- Before verifying changed user-facing behavior, look for the target project's verification skill or existing harness. If none exists and building one fits the task, load `create-verification-skill` and prove the generated harness.
+- Use the skill selected by Repository verification setup to verify changed behavior. Load `maintain-verification-skill` when asked to audit its coverage or correct drift. Formal proofs use `create-formal-verification-skill` only when the task calls for them.
 - For skill authoring or evaluation, use `skill-creator` when the host provides it. Otherwise follow the bundled playbook and report any unavailable evaluation capability.
+- For TypeScript design or type discipline, load `typescript-best-practices`. For a measured performance claim, load `benchmark-checklist` and `principle-explain-the-number`. For a public guide or engineering explanation, load `technical-writing` without dropping the shared writing contract.
+- For an explicit design contest, use `arena`. For design review, use `architect` with `code-organization`. For a pre-implementation interview, use `interrogate`. For an unfamiliar diff or resumed branch, use `blast-radius` or `ketchup`. Load `recall` only for authorized, scoped history.
+- For requested development discipline or workflow improvement, use `tdd`, `sharpen`, or `automate-me`. Use `figure-it-out` when a task is genuinely blocked on an unknown path. These tools do not authorize unrelated work, external writes, or invented runtime capabilities.
 - Before reviewing nontrivial code changes, load `no-comments` to trim unnecessary garnish, inspect claimed constraints, and fix accepted in-scope root causes. Let that tool own its reviewer rules and exception list. Do not turn a read-only review into edits.
 - When available, load `delegate` for bounded handoffs, `swarm` for parallel coverage or competing attempts, and `create-subagent` for a reusable agent definition. Let those skills own their handoff contracts and isolation checks.
 - For browser exploration, user-flow verification, named browser sessions, or Playwright test authoring, load `playwright-cli` or the target project's existing verification harness. `playwright-mcp` remains optional reference material for an explicit MCP request; do not configure or re-enable its server during ordinary verification or maintenance. Confirm actual runtime availability and let the chosen skill own browser isolation and evidence capture.
 
-The four core companions, three delegation skills, two Playwright skills, `correct`, `teach`, `unslop`, `no-comments`, the principles below, and the local design, Effect, React, reflection, and cleanup tools are bundled with this checkout. Other host skills are used only when available. Bundled Playwright instructions do not imply an installed CLI or connected browser server. Keep `jiro` as the entry skill; do not substitute `arena`, `architect`, or another mode. If a required companion cannot load, report the missing installation rather than silently switching packs.
+Kstack bundles this Jiro entry, its companions, engineering recipes, verification and writing tools, and the imported principles. Read `kstack-help` for the tool index. Use `arena` for a bounded comparison and `architect` for its design review, not as replacement entry modes. Other host skills are used only when available. Bundled Playwright instructions do not imply an installed CLI or connected browser server. If a required companion cannot load, report the missing installation rather than silently switching packs.
 
 ## Core principles
 
@@ -77,6 +90,29 @@ Load only the principles whose triggers match the active task. Read the full ski
 | Minimize Reader Load | Load `minimize-reader-load` when tracing layers or hidden and mutable state makes code hard to understand. |
 
 `principle-minimize-reader-load` is a compatibility entry point that loads the same canonical `minimize-reader-load` skill. Do not maintain a second rule body or load both entry points without a reason.
+
+### Additional principles
+
+These tools follow the same read-before-applying rule. Load only those that change a decision in the active task.
+
+| Trigger | Skill |
+| --- | --- |
+| Stateful logic or repeated domain assumptions | `principle-model-the-domain` |
+| Validation, adapters, and error boundaries | `principle-boundary-discipline` |
+| Type design and illegal states | `principle-type-system-discipline` |
+| Commands or lifecycle steps retried after interruption | `principle-make-operations-idempotent` |
+| An internal API migration with remaining callers | `principle-migrate-callers-then-delete-legacy-apis` |
+| Concurrent writers share files, branches, keys, or mutable state | `principle-separate-before-serializing-shared-state` |
+| A rewrite or migration with explicit phases | `principle-outcome-oriented-execution` |
+| Product, UX, or feature-scope tradeoffs | `principle-experience-first` |
+| A novel design with no established precedent | `principle-exhaust-the-design-space` |
+| Final verification of the real artifact | `principle-prove-it-works` |
+| Multi-step work that needs independently checkable units | `principle-sequence-verifiable-units` |
+| Writing or changing tests | `principle-test-behavior-not-implementation` |
+| Trusting, reporting, or acting on a measured number | `principle-explain-the-number` |
+| Large outputs, repeated reads, or fan-out context pressure | `principle-guard-the-context-window` |
+| A reversible next step already within the user's authorization | `principle-never-block-on-the-human` |
+| Repeating a correction or instruction | `principle-encode-lessons-in-structure` |
 
 ## Non-negotiables
 
@@ -120,9 +156,11 @@ Include the original request, later directives, working directory, scope, releva
 
 Use `background: true` only for independent work while the parent continues elsewhere. Wait for completion notifications. Do not poll. Start fresh children for new tasks or fix rounds. Resume only when essential state is costly to move, such as an uncommitted checkout or a running process.
 
-Inherit the current model by omitting `model`. Set a model only when the user or applicable host instructions authorize it and the host's model catalog confirms its exact ID. Do not introduce pstack model defaults or change global model configuration. Companion skills' role settings remain subject to the host's model-selection rules.
+Inherit the current model by omitting `model`. Set a model only when the user or applicable host instructions authorize it and the host's model catalog confirms its exact ID. Do not introduce unrequested model defaults or change global model configuration. Companion skills' role settings remain subject to the host's model-selection rules.
 
-Read the user's pstack role configuration only when a routed skill uses it. Follow the host's authorization rules and never guess model identifiers.
+Use `setup-kstack` only when model or budget setup is requested. Optional project role choices live in `<target-repository>/.opencode/instructions/kstack-models.md`, or its existing top-level `instructions/` directory for an OpenCode configuration root. Read them before an authorized role override, and pass the exact approved mapping to the chef. Global choices apply only when that scope was explicitly requested. A role file does not override host model restrictions, and missing choices mean inheritance, not automatic setup.
+
+Pass the exact approved Jiro role-file path to companions that need it. Without a supplied mapping, they inherit the parent model. Do not discover or migrate unrelated global role files, and never guess model identifiers.
 
 You own delegated work. Inspect the resulting artifacts and diff, rerun the important checks, and write your own summary. Never describe self-review or same-family review as independent cross-model review.
 

@@ -14,7 +14,7 @@ Investigate the motivation and intent behind code. The companion `how` skill ans
 
 Use OpenCode's `subagent` tool with `agent: general` for investigators and the synthesizer. Their prompts forbid file edits, commits, and external writes. Keep read-only MCP capabilities available. OpenCode controls access through agent permissions, not a `readonly` spawn flag. Do not disable MCP access to simulate a read-only mode.
 
-Read `~/.config/opencode/instructions/pstack-models.md` if it exists. Investigators use the `why investigators` role and the synthesizer uses `why synthesizer`, subject to the host's model-selection rules. Resolve authorized choices through the host's available-models tool before setting `model`. Omit `model` when no override is authorized, the role is absent, or its value is `auto` or `inherit-parent`. Never guess a model ID or silently substitute another model.
+Read the exact authorized Jiro role-file path supplied by the caller, if any. Do not search for or migrate unrelated global role files. Investigators use the `why investigators` role and the synthesizer uses `why synthesizer`, subject to the host's model-selection rules. Resolve authorized choices through the host's available-models tool before setting `model`. Omit `model` when no override is authorized, no role file is supplied, the role is absent, or its value is `auto` or `inherit-parent`. Never guess a model ID or silently substitute another model.
 
 Resolve references relative to this skill's base directory. Fill prompt templates and pass their contents to each child. Include the working directory, code anchor, original question, allowed source, and exact discovered tool names. Child sessions start with fresh context.
 

@@ -10,7 +10,7 @@ metadata:
 
 Fan out N OpenCode child sessions. Partition the work, race the same brief, or mix both. The parent accounts for every worker and returns one verified aggregate.
 
-Resolve references from this skill's loaded base directory. Read `../delegate/references/handoff.md` for briefs and reports and `../delegate/references/run-template.md` for the parent-owned record. `delegate` is bundled with this skill; these references do not depend on a global pstack installation.
+Resolve references from this skill's loaded base directory. Read `../delegate/references/handoff.md` for briefs and reports and `../delegate/references/run-template.md` for the parent-owned record. `delegate` is bundled with Jiro; these references do not depend on another pack.
 
 Track four phases, using a todo tool when available or the run plan otherwise.
 
@@ -29,7 +29,7 @@ Track four phases, using a todo tool when available or the run plan otherwise.
 6. Claim `<target-repository>/.delegation/<task-slug>/run-<n>/` with exclusive creation using the next unused integer, or use a unique host-scratch run directory when repository writes are forbidden. If another parent claimed the directory, choose the next integer rather than reusing it. Save the plan and each filled `briefs/<unit-id>-attempt-1.md` before dispatch. The parent alone writes coordination records.
 7. For commit verification, put the exact SHAs in each brief. For measurement, include sample count, sample definition, order, and method. Record both in the result. Include the absolute working directory and any requested branch; do not switch the parent's checkout to satisfy a worker.
 
-When the caller is following a pstack workflow, honor its existing host-authorized swarm-worker role settings. Read only the role configuration that the host instructions require and apply the same confirmation and fallback rules as step 4. Do not change user model settings as part of a swarm run.
+Honor authorized Jiro swarm-worker role settings supplied by the caller. Read the exact role-file path provided for this task and apply the same confirmation and fallback rules as step 4. Without a supplied mapping, inherit the parent model. Do not search for, migrate, or change unrelated model settings as part of a swarm run.
 
 ## Phase B: Fan out
 
@@ -57,4 +57,4 @@ For long or unattended runs, load `show-me-your-work`. The parent alone appends 
 
 Return one consolidated report with the done predicate, a compact unit/status/evidence table, issue one-liners, gaps and dropouts, the race rule when used, parent checks actually run, and the run-directory path. Do not paste raw worker dumps.
 
-Do not commit, push, open PRs, deploy, install globally, make destructive cleanup, or perform external writes unless the user authorized them. These local child sessions do not implement Cursor cloud workers, `/loop`, nested coordinators, or pstack's merge automation.
+Do not commit, push, open PRs, deploy, install globally, make destructive cleanup, or perform external writes unless the user authorized them. These local child sessions do not implement cloud workers, `/loop`, nested coordinators, or automatic merging.

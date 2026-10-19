@@ -70,7 +70,7 @@ Correct the log, not the story. The audit never edits or removes a row, even an 
 
 ## Cross-model review of the trail
 
-Before handing back, use OpenCode's `subagent` tool to spawn a `general` reviewer on a different model family from the one that did the work, when the host permits that selection. Self-review is not a substitute. Read `~/.config/opencode/instructions/pstack-models.md` if it exists and honor the host's model-selection constraints. Resolve an authorized model through the host's available-models tool before setting `model`. Never guess a model ID or silently substitute the worker's family.
+Before handing back, use OpenCode's `subagent` tool to spawn a `general` reviewer on a different model family from the one that did the work, when the host permits that selection. Self-review is not a substitute. Read the exact authorized Jiro role-file path supplied by the caller, if any, and honor the host's model-selection constraints. Do not search for or migrate unrelated global role files. Resolve an authorized model through the host's available-models tool before setting `model`. Never guess a model ID or silently substitute the worker's family.
 
 The reviewer receives the audit trail and only this run's session history. Its prompt forbids file edits, commits, and external writes. It flags what the user should pay attention to. It does not redo the work.
 

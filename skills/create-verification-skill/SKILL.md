@@ -12,11 +12,13 @@ Every serious project needs a scripted way to drive the real app and prove behav
 
 OpenCode loads skills through the `skill` tool using the exact skill ID. Supporting files are not loaded automatically. Resolve bundled references relative to this skill's base directory. Write generated files into the target repository, not into this generator's directory or a global installation.
 
+Jiro calls this tool by default during repository initialization or the first editable task without a relevant verification skill. Reuse a matching skill and preserve custom helpers instead of regenerating them. Existing tests are a driver to wrap, not a reason to omit the skill. Follow the task's surface rather than choosing an unrelated app in the same repository. Honor explicit opt-outs and read-only scope. When the target is itself an OpenCode configuration root, use its existing `skills/verify-<app>/` directory instead of creating a nested `.opencode/` directory.
+
 ## 1. Interview the repo, not the user
 
 Answer these from the codebase and only ask the user what you cannot observe:
 
-- **Surface.** What does a user actually touch? A web UI, a CLI/TUI, a desktop app, an API, a mobile app, a library? A repo can have several. Pick the primary one and note the rest.
+- **Surface.** What does a user actually touch? A web UI, a CLI/TUI, a desktop app, an API, a mobile app, a library? A repo can have several. Pick the surface the active task touches, or the primary documented surface for initialization, and note the rest.
 - **Run.** How does the app start locally? Prefer the repo's own documented dev command from package scripts, a Makefile, or the README quickstart. Note ports, env vars, seed data, and auth.
 - **Drive.** How can an agent interact with it programmatically? Prefer existing harnesses such as Playwright/Cypress specs, expect scripts, PTY helpers, curl-able endpoints, or a debug port. Only then pick a generic recipe. Use browser/CDP for web and Electron, a tmux/PTY harness for CLI/TUI, or plain HTTP for services. Confirm the chosen harness is available in the active OpenCode session or through the repo's own commands. Do not assume an MCP integration is installed.
 - **Observe.** What evidence can be captured? Screenshots, terminal transcripts, response bodies, logs, exit codes, and DB state.
@@ -39,7 +41,7 @@ Include these sections, each grounded in what the interview actually found. Leav
 
 ## 3. Seed the feature map
 
-Create `.opencode/skills/verify-<app>/features/README.md` plus one file per user-facing feature you can identify. Aim for the top 3-5 to start, from routes, commands, menus, or docs. Follow the shape in [`references/feature-map-example/`](references/feature-map-example/), with a README index and one file per feature. These are structural examples, not runnable commands for the target app. Replace their app names, commands, selectors, and paths with what the repo actually provides.
+Create `.opencode/skills/verify-<app>/features/README.md` plus one file per relevant user-facing feature you can identify on the selected surface. Aim for the top 3-5 to start when that many exist, from routes, commands, menus, or docs. Do not invent features to meet a count or expand into unrelated applications. Follow the shape in [`references/feature-map-example/`](references/feature-map-example/), with a README index and one file per feature. These are structural examples, not runnable commands for the target app. Replace their app names, commands, selectors, and paths with what the repo actually provides.
 
 Each file answers, from the user's point of view, what the feature is, how to reach it, how to drive it with the harness, and what observable end state proves it works. Use these four H2s in order:
 

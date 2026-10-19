@@ -48,7 +48,7 @@ CASES["principle-minimize-reader-load"] = (
 )
 PACKAGING_ONLY = frozenset({
     "correct", "create-subagent", "delegate", "no-comments", "playwright-cli", "playwright-mcp", "swarm", "teach", "unslop",
-})
+} | (set(json.loads((ROOT / "upstream.json").read_text())["pstackMigration"]["skills"].values()) - set(CASES) - {"jiro"}))
 NOTES = '''import argparse
 import json
 from pathlib import Path

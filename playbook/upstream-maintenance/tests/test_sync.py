@@ -36,6 +36,7 @@ class SyncTests(unittest.TestCase):
             self.assertIn("playbook/upstream-maintenance/scripts/**", policy["protectedPaths"])
             self.assertIn("playbook/**/tests/**", policy["protectedPaths"])
             self.assertEqual(policy["reviewMetadataPaths"], [sync.REGISTRY])
+            self.assertTrue(any("Use Jiro for runtime instructions" in rule for rule in policy["preserve"]))
             self.assertNotIn("model", policy["opencode"])
         self.assertEqual(sync.compile_policy(REPO, REGISTRY["imports"][0])["verification"][0]["args"][0], "playbook/upstream-maintenance/scripts/verify_proposal.py")
 
@@ -57,12 +58,30 @@ class SyncTests(unittest.TestCase):
             with self.subTest(target=target), self.assertRaisesRegex(ValueError, "exact named skill"):
                 sync.compile_policy(REPO, entry)
 
-    def fixture(self):
+    def test_port_overlays_and_conversion_changes_are_selected_as_context(self):
+        entry = next(entry for entry in REGISTRY["imports"] if entry["id"] == "arena")
+        policy = sync.compile_policy(REPO, entry)
+        watched = policy["selections"][0]["upstreamPaths"]
+        for path in ("opencode/skills/arena", "scripts/opencode-transform.py", "scripts/install-opencode.py"):
+            self.assertIn(path, watched)
+            self.assertIn(path + "/**", watched)
+        self.assertEqual(policy["allowSkillEdits"], ["arena"])
+        self.assertNotIn("scripts/**", policy["selections"][0]["targetPaths"])
+
+    def test_reviewed_port_baseline_does_not_claim_an_import_or_bootstrap_at_head(self):
+        entry = next(entry for entry in REGISTRY["imports"] if entry["id"] == "reflect")
+        self.assertIsNone(entry["sources"][0]["importedRevision"])
+        self.assertEqual(entry["sources"][0]["reviewedThrough"], "1215e2ffdc3068c0a89320c16d95a8ba7b7feb99")
+        policy = sync.compile_policy(REPO, entry)
+        self.assertEqual(policy["baselineCommit"], entry["sources"][0]["reviewedThrough"])
+        self.assertNotEqual(policy["baselineCommit"], REGISTRY["pstackMigration"]["revision"])
+
+    def fixture(self, identifiers=("playwright-cli", "playwright-mcp")):
         temp = tempfile.TemporaryDirectory(prefix="skill-sync-", dir=SCRATCH if SCRATCH.is_dir() else None)
         self.addCleanup(temp.cleanup)
         root = Path(temp.name)
         registry = copy.deepcopy(REGISTRY)
-        registry["imports"] = [entry for entry in registry["imports"] if entry["id"] in ("playwright-cli", "playwright-mcp")]
+        registry["imports"] = [entry for entry in registry["imports"] if entry["id"] in identifiers]
         for entry in registry["imports"]:
             for value in entry["targetRoots"]:
                 source = REPO / value
@@ -76,6 +95,22 @@ class SyncTests(unittest.TestCase):
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_text(json.dumps(registry))
         return root, registry
+
+    def test_check_reports_port_context_changes_without_a_model_or_target_scope_expansion(self):
+        root, registry = self.fixture(("arena",))
+        paths = ["scripts/opencode-transform.py", "opencode/skills/arena/SKILL.md"]
+        plan = {"selections": [{"id": "arena"}], "from": registry["imports"][0]["sources"][0]["importedRevision"], "to": "b" * 40, "changedPaths": paths + ["docs/unrelated.md"]}
+        with patch.object(sync, "command", return_value=json.dumps(plan)) as command, patch.dict(os.environ, {}, clear=True):
+            result = sync.run(root, Path("/owned/tool/cli.js"), "check")
+        self.assertEqual(command.call_count, 1)
+        self.assertEqual(command.call_args.args[0][2], "check")
+        self.assertIsNone(result["proposal"])
+        self.assertEqual(result["imports"][0]["paths"], paths)
+        self.assertEqual(result["imports"][0]["repository"], "https://github.com/kyeshmz/opencode-pstack.git")
+        policy = json.loads((root / ".oc-port/policies/arena.json").read_text())
+        self.assertEqual(policy["allowSkillEdits"], ["arena"])
+        self.assertIn("scripts/**", policy["protectedPaths"])
+        self.assertNotIn("scripts/**", policy["selections"][0]["targetPaths"])
 
     def test_check_never_calls_model_and_sync_creates_only_one_proposal(self):
         root, _ = self.fixture()
@@ -138,6 +173,11 @@ class SyncTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "unrelated"):
                 verify_proposal.verify(root, identifier)
             updated["upstream"]["ref"] = entry["upstream"]["ref"]
+            updated["watchPaths"] = ["scripts/unrequested.py"]
+            (root / sync.REGISTRY).write_text(json.dumps(current))
+            with self.assertRaisesRegex(ValueError, "unrelated"):
+                verify_proposal.verify(root, identifier)
+            del updated["watchPaths"]
             updated["sources"][0]["importedRevision"] = "c" * 40
             (root / sync.REGISTRY).write_text(json.dumps(current))
             with self.assertRaisesRegex(ValueError, "actual tested"):

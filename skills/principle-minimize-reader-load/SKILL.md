@@ -1,6 +1,6 @@
 ---
 name: principle-minimize-reader-load
-description: PStack-compatible entry point for Jiro's Minimize Reader Load skill. Use when reviewing tracing layers or hidden and mutable state.
+description: Compatibility entry point for Jiro's Minimize Reader Load skill. Use when reviewing tracing layers or hidden and mutable state.
 license: MIT
 metadata:
   opencode/autoinvoke: false

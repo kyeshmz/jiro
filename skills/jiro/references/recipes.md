@@ -1,6 +1,6 @@
 # Jiro recipe book
 
-Read the recipe selected by Jiro. Copy its numbered steps into the task list before adding task-specific items. These are Jiro-native workflows, not the full pstack playbook collection. Jiro owns the workflow and verifies the work of delegated chefs. Prep establishes the scope, cooking makes the change, and tasting proves the result before serving it.
+Read the recipe selected by Jiro. Copy its numbered steps into the task list before adding task-specific items. This is Jiro's authoritative recipe book. Jiro owns the workflow and verifies the work of delegated chefs. Prep establishes the scope, cooking makes the change, and tasting proves the result before serving it.
 
 ## Investigation
 
@@ -32,7 +32,7 @@ If reproduction is blocked by unavailable credentials, hardware, or data, name t
 1. Define the consumer's observable behavior and the checks that will prove it.
 2. Load `how`. Name the data shape, ownership, caller usage, and boundaries before implementation.
 3. Choose the smallest coherent change. For multiple units, name their dependencies and verification checkpoints.
-4. Implement and verify each unit through the project's public surface. Use an existing harness or load `create-verification-skill` when one is needed and in scope.
+4. Implement and verify each unit through the project's public surface with the skill selected during Jiro's Repository verification setup. Reuse its harness and report any explicit opt-out or blocked coverage.
 5. Inspect the diff and report the consumer impact, maintainer-facing decisions, checks, and open tradeoffs.
 
 ## Refactoring

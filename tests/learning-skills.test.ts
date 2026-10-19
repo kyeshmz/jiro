@@ -5,6 +5,7 @@ import { join, resolve } from "node:path"
 const root = resolve(import.meta.dir, "..")
 const ids = ["correct", "teach", "unslop"]
 const revision = "ccb5507cec1546dc88135c1139c811e6c59115ba"
+const portRevision = "1215e2ffdc3068c0a89320c16d95a8ba7b7feb99"
 const read = (path: string) => readFileSync(join(root, path), "utf8")
 
 test("learning and writing skills are explicitly invoked, licensed, and registered for maintenance", () => {
@@ -22,9 +23,11 @@ test("learning and writing skills are explicitly invoked, licensed, and register
     expect(entry).toMatchObject({
       targetRoots: [`skills/${id}`],
       license: `skills/${id}/LICENSE`,
-      sources: [{ path: `pstack/skills/${id}/SKILL.md`, importedRevision: revision, reviewedThrough: null }],
+      upstream: { repository: "https://github.com/kyeshmz/opencode-pstack.git", ref: "main" },
+      sources: [{ path: `skills/${id}/SKILL.md`, importedRevision: portRevision, reviewedThrough: null }],
     })
     expect(entry.provenance).toContain(`https://github.com/cursor/plugins/blob/${revision}/pstack/skills/${id}/SKILL.md`)
+    expect(entry.provenance).toContain(`https://github.com/kyeshmz/opencode-pstack/blob/${portRevision}/skills/${id}/SKILL.md`)
   }
 })
 

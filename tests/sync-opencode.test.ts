@@ -105,6 +105,24 @@ test("the checkout is a config root without nested OpenCode definitions", () => 
   expect(readdirSync(join(config, "skills")).every((name) => statSync(join(config, "skills", name)).isDirectory())).toBe(true)
 })
 
+test("all migrated pstack tools install with self-contained shared writing rules", () => {
+  const catalog = JSON.parse(readFileSync(join(root, "upstream.json"), "utf8"))
+  const choices = "# User model choices\nswarm workers: inherit-parent\n"
+  write(join(config, "instructions/pstack-models.md"), choices)
+  expect(run().status).toBe(0)
+  for (const id of new Set<string>(Object.values(catalog.pstackMigration.skills))) {
+    expect(existsSync(join(config, "skills", id, "SKILL.md")), id).toBe(true)
+    const shared = join(config, "skills", id, "references/shared-rules.md")
+    if (existsSync(shared)) {
+      expect(lstatSync(shared).isSymbolicLink(), id).toBe(false)
+      expect(readFileSync(shared, "utf8")).toBe(readFileSync(join(root, "skills/skill.md"), "utf8"))
+    }
+  }
+  expect(readFileSync(join(config, "instructions/pstack-models.md"), "utf8")).toBe(choices)
+  expect(existsSync(join(config, "instructions/kstack-models.md"))).toBe(false)
+  expect(run("--check").status).toBe(0)
+})
+
 test("the installer does not fall back to a nested OpenCode source tree", () => {
   mkdirSync(join(checkout, ".opencode"))
   cpSync(join(checkout, "skills"), join(checkout, ".opencode/skills"), { recursive: true })
@@ -202,7 +220,7 @@ test("Jiro is the entry skill and its registered workers are chefs", () => {
 test("Jiro instructions and guides do not retain the retired mode or worker", () => {
   const documents = ["README.md", "playbook/delegation/README.md"]
   for (const kind of ["skills", "commands", "agents"]) {
-    documents.push(...readdirSync(join(root, kind), { recursive: true })
+    documents.push(...readdirSync(join(root, kind), { recursive: true, encoding: "utf8" })
       .filter((path) => path.endsWith(".md"))
       .map((path) => join(kind, path)))
   }

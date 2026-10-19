@@ -24,7 +24,7 @@ Never guess a session ID. If the host does not expose the current ID or the expo
 
 Use OpenCode's `subagent` tool with `agent: general`. Each prompt forbids file edits, commits, and external writes. Keep read-only MCP capabilities available to verify the tickets, chat threads, and traces the history references. OpenCode controls access through agent permissions, not a `readonly` spawn flag. Do not pass Cursor-specific `Task` arguments or disable MCP access to simulate read-only review.
 
-Read `~/.config/opencode/instructions/pstack-models.md` if it exists. Use the role lines below, subject to the host's model-selection rules. Resolve authorized choices through the host's available-models tool before setting `model`. Omit `model` when no override is authorized, the role is absent, or its value is `auto` or `inherit-parent`. Never guess a model ID or silently substitute another model. Report an unavailable requested model rather than claiming it ran.
+Read the exact authorized Jiro role-file path supplied by the caller, if any. Do not search for or migrate unrelated global role files. Use the role lines below, subject to the host's model-selection rules. Resolve authorized choices through the host's available-models tool before setting `model`. Omit `model` when no override is authorized, no role file is supplied, the role is absent, or its value is `auto` or `inherit-parent`. Never guess a model ID or silently substitute another model. Report an unavailable requested model rather than claiming it ran.
 
 | Lens | Role line | Prompt template |
 |---|---|---|

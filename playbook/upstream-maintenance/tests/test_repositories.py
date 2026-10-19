@@ -30,7 +30,22 @@ class UpstreamRepositoryTests(unittest.TestCase):
             self.assertEqual(entries[identifier]["upstream"], {
                 "repository": f"https://github.com/microsoft/{identifier}.git", "ref": "main",
             })
-        self.assertEqual(entries["how"]["upstream"], {"repository": "https://github.com/cursor/plugins.git", "ref": "main"})
+        self.assertEqual(entries["how"]["upstream"], {"repository": "https://github.com/kyeshmz/opencode-pstack.git", "ref": "main"})
+
+    def test_every_pstack_import_follows_the_port_with_native_context(self):
+        port = "https://github.com/kyeshmz/opencode-pstack.git"
+        entries = [entry for entry in REGISTRY["imports"] if entry["upstream"]["repository"] in (port, "https://github.com/cursor/plugins.git")]
+        self.assertTrue(entries)
+        for entry in entries:
+            with self.subTest(identifier=entry["id"]):
+                self.assertEqual(entry["upstream"], {"repository": port, "ref": "main"})
+                self.assertTrue(all(not source["path"].startswith("pstack/") for source in entry["sources"]))
+                self.assertIn("scripts/opencode-transform.py", entry["watchPaths"])
+                self.assertIn("scripts/install-opencode.py", entry["watchPaths"])
+                self.assertTrue(any("Jiro writing" in rule and "first-use verification defaults" in rule for rule in entry["preserve"]))
+        for target in REGISTRY["pstackMigration"]["skills"].values():
+            owner = next(entry for entry in REGISTRY["imports"] if f"skills/{target}" in entry["targetRoots"])
+            self.assertEqual(owner["upstream"]["repository"], port)
 
     def test_incomplete_or_unsafe_override_is_rejected(self):
         overrides = [

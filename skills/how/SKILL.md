@@ -14,7 +14,7 @@ Explore the codebase to answer how something works. Produce architectural explan
 
 Use OpenCode's `subagent` tool. Use `explore` for local code discovery and `general` for explanation. Every child prompt forbids file edits, commits, and external writes. Select a permission-restricted read-only agent when one is available. Do not pass unsupported `readonly` or `subagent_type` arguments.
 
-Read `~/.config/opencode/instructions/pstack-models.md` if it exists. Explorers use the `how explorer` role and explainers use `how explainer`, subject to the host's model-selection rules. Resolve authorized choices through the host's available-models tool before setting `model`. Omit `model` when no override is authorized, the role is absent, or its value is `auto` or `inherit-parent`. Never guess a model ID or silently substitute another model.
+Read the exact authorized Jiro role-file path supplied by the caller, if any. Do not search for or migrate unrelated global role files. Explorers use the `how explorer` role and explainers use `how explainer`, subject to the host's model-selection rules. Resolve authorized choices through the host's available-models tool before setting `model`. Omit `model` when no override is authorized, no role file is supplied, the role is absent, or its value is `auto` or `inherit-parent`. Never guess a model ID or silently substitute another model.
 
 Resolve templates relative to this skill's base directory. Fill their placeholders and pass their contents to each child. Child sessions start with fresh context. Include the original question, working directory, scope, and relevant code paths in every prompt.
 

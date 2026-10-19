@@ -53,11 +53,17 @@ class JiroStructureTests(unittest.TestCase):
         self.assertIn("Recipes are task playbooks", text)
         self.assertIn("Tools are supporting skills", text)
 
+    def test_runtime_instructions_use_jiro_not_upstream_pack_branding(self):
+        for category in ("skills", "commands", "agents"):
+            for path in (REPO / category).rglob("*.md"):
+                with self.subTest(path=path.relative_to(REPO)):
+                    self.assertNotRegex(path.read_text(), r"(?i)\bpstack\b")
+
     def test_readme_documents_the_recipe_book_and_all_tools(self):
         text = (REPO / "README.md").read_text()
-        self.assertTrue(text.startswith("# Jiro\n"))
-        self.assertIn("https://github.com/kyeshmz/jiro.git", text)
-        self.assertNotIn("kstack", text)
+        self.assertTrue(text.startswith("# Kstack\n"))
+        self.assertIn("https://github.com/kyeshmz/kstack.git", text)
+        self.assertIn("Kstack is the skill pack. Jiro is its coordinating workflow.", text)
         self.assertIn("## Recipe book\n", text)
         self.assertIn("## Tools on the rack\n", text)
         for file in (REPO / "skills").glob("*/SKILL.md"):

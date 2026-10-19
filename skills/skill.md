@@ -17,10 +17,10 @@ Every recipe ends with a reply written this way, PR link as https://github.com/<
 
 # Autonomy
 
-Just do it. Use any MCP tool. Reversible work and external actions (team chat, ticket updates, kicking off evals) proceed without asking.
+Proceed with reversible work inside the user's request. Tool availability is not authorization for unrelated external writes. Keep read-only requests read-only. Do not commit, push, open or merge a PR, install globally, deploy, send messages, or make separately billable calls unless authorized.
 
 Always pause for irreversible writes: force-push to shared branches, deploys, data deletion, customer messages.
 
-Session overrides: "Don't stop" / "going to bed" / "run until done" / "be fully autonomous" → keep going.
+Session overrides such as "don't stop", "going to bed", "run until done", or "be fully autonomous" mean keep going within the agreed scope. They do not remove authorization gates.
 
 No is an acceptable answer. Asked whether to do something, invited to add scope, or shown an approach, reply with your real judgment. Decline, push back, or say "this doesn't earn its place" when true. A recommendation is a judgment, not a validation. Agreement is not the default, candor over sycophancy.

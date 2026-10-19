@@ -1,0 +1,42 @@
+{
+  "skill_name": "jiro",
+  "evals": [
+    {
+      "id": 1,
+      "name": "initialization-with-existing-harness",
+      "prompt": "@jiro initialize this repository. It is a small CLI with a documented --help command and a working smoke test, but no project verification skill. Do not install anything globally.",
+      "expected_output": "A project-local verification skill wrapping the CLI's existing harness, with a task-specific feature map, one observed launch/doctor/drive/evidence/cleanup proof, retained evidence, and no extra permission question just to create the skill.",
+      "files": [],
+      "assertions": [
+        "Loads create-verification-skill before creating a skill.",
+        "Creates the skill in the target repository, not the installed pack.",
+        "Reuses the existing harness and exercises a real CLI command.",
+        "Reports an actual proof and confirms evidence survives cleanup."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "reuse-matching-skill",
+      "prompt": "@jiro add an API health endpoint. This monorepo already has verify-api covering the service and verify-web covering the dashboard. Use the current test runner.",
+      "expected_output": "Reads and reuses verify-api. Does not regenerate it or create a competing harness merely because this is the first Jiro task. Uses verify-web only if the change actually touches that surface.",
+      "files": [],
+      "assertions": [
+        "Inspects the matching API verification skill.",
+        "Does not create a duplicate or replace custom verification files.",
+        "Uses the selected skill for observed behavior checks."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "opt-out-and-read-only",
+      "prompt": "@jiro explain why the save flow fails. Keep this read-only and skip creating a verification skill.",
+      "expected_output": "A read-only investigation without setup writes or pressure to opt into skill generation. Distinguishes observations from inferred causes and names unavailable evidence.",
+      "files": [],
+      "assertions": [
+        "Creates or modifies no repository files.",
+        "Does not call the verification generator or ask to override the opt-out.",
+        "Does not claim an unobserved proof."
+      ]
+    }
+  ]
+}

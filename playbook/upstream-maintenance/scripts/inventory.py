@@ -26,6 +26,16 @@ def contains(root, path):
     return path == root or path.startswith(root + "/")
 
 
+def watched_paths(entry):
+    context = entry.get("watchPaths", [])
+    if not isinstance(context, list):
+        raise ValueError("watch paths must be a list of repository-relative paths")
+    context = [relative_path(path) for path in context]
+    if len(context) != len(set(context)) or any(re.search(r"[\*?\[\]]", path) for path in context):
+        raise ValueError("watch paths must be unique exact files or directories")
+    return list(dict.fromkeys([relative_path(source["path"]) for source in entry["sources"]] + context))
+
+
 def upstream_for(entry):
     upstream = entry.get("upstream")
     if not isinstance(upstream, dict):
@@ -76,6 +86,7 @@ def inspect(repo, registry, changed=()):
         roots = [relative_path(root) for root in entry["targetRoots"]]
         if not roots or not entry.get("sources") or not entry.get("preserve"):
             raise ValueError("each import needs targets, sources, and preservation rules")
+        watched = watched_paths(entry)
         for root in roots:
             parts = PurePosixPath(root).parts
             if len(parts) > 1 and parts[0] == "skills":
@@ -90,18 +101,16 @@ def inspect(repo, registry, changed=()):
             if not target.exists():
                 report["errors"].append("missing target: " + path)
         for source in entry["sources"]:
-            relative_path(source["path"])
             if source["path"] not in provenance:
                 report["errors"].append("source path missing from provenance: " + identifier)
             for field in ("importedRevision", "reviewedThrough"):
                 revision = source[field]
                 if revision is not None and not re.fullmatch(r"[a-f0-9]{40}|[a-f0-9]{64}", revision):
                     raise ValueError("source revisions must be immutable commit hashes or null")
-            revision = source["importedRevision"]
-            if revision is None:
+                if revision is not None and not source_pin_recorded(provenance, upstream, revision, source["path"]):
+                    report["errors"].append("source pin or repository missing from provenance: " + identifier)
+            if source["importedRevision"] is None and source["reviewedThrough"] is None:
                 report["baselineGaps"].append({"id": identifier, "source": source["path"]})
-            elif not source_pin_recorded(provenance, upstream, revision, source["path"]):
-                report["errors"].append("source pin or repository missing from provenance: " + identifier)
         hashes = entry.get("fileHashes")
         if hashes is not None:
             if not isinstance(hashes, dict) or not hashes or len(roots) != 1:
@@ -123,6 +132,7 @@ def inspect(repo, registry, changed=()):
             "id": identifier,
             "upstream": upstream,
             "sources": entry["sources"],
+            "watchedPaths": watched,
             "changedTargets": sorted(path for path in changed if path == REGISTRY or any(contains(root, path) for root in roots)),
         })
     discovered = {

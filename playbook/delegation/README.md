@@ -1,6 +1,6 @@
 # Chefs and workstations
 
-Jiro carries pstack's core delegation patterns without requiring its full persona or cloud orchestration stack. Chefs are Jiro's OpenCode worker agents. Jiro assigns each chef a bounded station, checks its output, and owns the result. The entry skill is `jiro`, the command is `/jiro`, and the registered worker agent is `chef`. Invoke these tools explicitly in OpenCode.
+Jiro provides bounded local delegation without requiring a cloud orchestration stack. Chefs are Jiro's OpenCode worker agents. Jiro assigns each chef a bounded station, checks its output, and owns the result. The entry skill is `jiro`, the command is `/jiro`, and the registered worker agent is `chef`. Invoke these tools explicitly in OpenCode.
 
 ## Tools and prep notes
 
@@ -33,9 +33,9 @@ Agent definitions and skills are different artifacts:
 
 `install.sh` distributes bundled skills, references, the `/jiro` command, and the registered `chef` worker directly from root-level `skills/`, `commands/`, and `agents/`. The `.opencode/` example above describes generated artifacts in a target project, not this config-directory checkout. It does not install generated project agents. A generated chef or other specialized agent becomes usable only after OpenCode discovers its definition and advertises its ID; a file write alone is not a successful launch.
 
-## How pstack writes the handoff
+## How Jiro writes the handoff
 
-pstack's Orchestrate brief names `GOAL`, `SCOPE`, `CONTEXT`, `ACCEPTANCE`, `VERIFY`, `TIMEBOX`, `FORBIDDEN`, `REPORT`, and `STANDING`. Jiro keeps those fields and adds `UNIT`, `WORKDIR`, and `SKILLS`. The filled [handoff contract](../../skills/delegate/references/handoff.md) is saved before dispatch, so a child does not need the parent conversation.
+Jiro's brief names `GOAL`, `SCOPE`, `CONTEXT`, `ACCEPTANCE`, `VERIFY`, `TIMEBOX`, `FORBIDDEN`, `REPORT`, `STANDING`, `UNIT`, `WORKDIR`, and `SKILLS`. The filled [handoff contract](../../skills/delegate/references/handoff.md) is saved before dispatch, so a child does not need the parent conversation.
 
 The parent's [run plan](../../skills/delegate/references/run-template.md) records dependencies, owned files and resources, agent and model policy, actual session IDs, worker statuses, parent acceptance, and evidence pointers. Each attempt gets separate brief and report files. The parent alone edits the plan and shared trail. Workers edit only their assigned artifacts.
 
@@ -43,18 +43,18 @@ Reports use `PASS`, `ISSUES`, or `BLOCKED`. A PASS is provisional until the pare
 
 The [`chef` wrapper](../../agents/chef.md) tells the parent when to select it through its description and loads `jiro` before work. Jiro templates use OpenCode `mode: subagent` and permission rules rather than Cursor-specific fields.
 
-## Related pstack skills and playbooks
+## Related Jiro tools and upstream references
 
-These are upstream design references, not additional bundled Jiro capabilities. Sources are recorded in the [pstack source tree](https://github.com/cursor/plugins/tree/ccb5507cec1546dc88135c1139c811e6c59115ba/pstack) and the single [upstream.json](../../upstream.json) catalog.
+This table compares Jiro's tools with selected upstream designs. Historical sources are recorded in the [upstream source tree](https://github.com/cursor/plugins/tree/ccb5507cec1546dc88135c1139c811e6c59115ba/pstack) and the single [upstream.json](../../upstream.json) catalog. Use Jiro's local instructions, not an upstream persona or runtime contract.
 
 | Upstream skill or playbook | Delegation role | How it records work | Included here? |
 | --- | --- | --- | --- |
 | Entry workflow and skill-reading agent wrapper | Choose workflows and route workers through a style wrapper. | Skill and agent Markdown; fresh-task and strict-resume rules. | Adapted as `@jiro` and `chef`. |
 | `swarm` | Parallel coverage or races. | Briefs, PASS / ISSUES / BLOCKED receipts, and one aggregate report. | Adapted as `@swarm`. |
-| `arena` | Competing artifacts, base selection, and grafting. | Isolated candidates and a synthesis note naming base, grafts, rejections, dropouts, and verification. | No dedicated arena workflow. |
-| `architect` | Design through multiple candidates before implementation. | Usage/type sketch or module map, plus a rationale package and synthesis decision. | No. |
-| `interrogate` | Independent adversarial reviewers. | Intent, Reviewers, Act On, Consider, Noted, Dismissed, and Agreement Map in one verdict. | No. |
-| `figure-it-out` | Design an auditable workflow for an unusual task. | Written phase list, decision trail, and VERIFIED / NOT VERIFIED / INCONCLUSIVE assessments. | No. |
+| `arena` | Competing artifacts, base selection, and grafting. | Isolated candidates and a synthesis note naming base, grafts, rejections, dropouts, and verification. | Adapted as `@arena`. |
+| `architect` | Design through multiple candidates before implementation. | Usage/type sketch or module map, plus a rationale package and synthesis decision. | Adapted as `@architect`, using `code-organization`. |
+| `interrogate` | Independent adversarial reviewers. | Intent, Reviewers, Act On, Consider, Noted, Dismissed, and Agreement Map in one verdict. | Adapted as `@interrogate`. |
+| `figure-it-out` | Design an auditable workflow for an unusual task. | Written phase list, decision trail, and VERIFIED / NOT VERIFIED / INCONCLUSIVE assessments. | Adapted as `@figure-it-out`. |
 | Multi-phase plan | Prepare a multi-phase or multi-PR program. | Markdown checklist with dependencies, file edits, unit/live/perf checks, review gates, and appendices. | No. |
 | Orchestrate | Run a standing multi-day program. | `preferences.md`, `overview.md`, `units.tsv`, `frontier.json`, `ledger.tsv`, `inbox/`, `gates.md`, `decisions.tsv`, and derived `status.md` in the agent store. | Brief, ownership, and evidence patterns only; no runtime or merge automation. |
 

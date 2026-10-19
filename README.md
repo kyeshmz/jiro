@@ -1,6 +1,6 @@
-# Jiro
+# Kstack
 
-Verified engineering workflows for OpenCode.
+Verified engineering workflows for OpenCode. Kstack is the skill pack. Jiro is its coordinating workflow.
 
 Bring Jiro a task. It picks a recipe, gathers the right tools, and verifies the result before serving it. **Recipes** are task playbooks. **Tools** are reusable OpenCode skills. **Chefs** are Jiro's delegated workers. Jiro checks their work and owns the result. The entry skill is `jiro`, the command is `/jiro`, and the registered worker agent is `chef`.
 
@@ -11,8 +11,8 @@ OpenCode supplies the models, tools, permissions, and runtime capabilities. Jiro
 Use an existing OpenCode V2 installation. This checkout's sync CLI uses Bun and Commander. Bash and Git are also required for installation and Git hooks. Sync locking works on macOS and Linux without `flock`.
 
 ```bash
-git clone https://github.com/kyeshmz/jiro.git
-cd jiro
+git clone https://github.com/kyeshmz/kstack.git
+cd kstack
 bun install
 ./install.sh
 ./install.sh --check
@@ -24,7 +24,7 @@ One [upstream.json](upstream.json) catalog identifies the source repository, sou
 
 - Changed or removed owned entries are archived in the neighboring `opencode-jiro-backups/` directory. Repeated syncs do not replace identical files or create another backup.
 - Unrelated skills, commands, agents, and settings are preserved. Source definitions are validated before replacing owned entries.
-- Unowned custom or symlinked commands are preserved. Use the matching `@skill-id` to load the skill directly in that case. Ownership manifests and generated-wrapper markers identify managed wrappers for upgrade. Selected pstack-generated wrappers are backed up and replaced with Jiro's versions.
+- Unowned custom or symlinked commands are preserved. Use the matching `@skill-id` to load the skill directly in that case. Ownership manifests and generated-wrapper markers identify managed wrappers for upgrade. Recognized upstream-generated wrappers are backed up and replaced with Jiro's versions.
 - Separate manifests track skills, commands, and agents. Legacy skill ownership is recognized on upgrade. Owned directories are exact mirrors, including removal of stale resources. `--check` fails when definitions or ownership manifests differ.
 
 Installation does not configure MCP servers, install browser runtimes, register generated project agents, or change model settings. `bun install` installs only this checkout's sync and test dependencies.
@@ -33,7 +33,7 @@ This checkout uses OpenCode's configuration-directory layout: `skills/`, `comman
 
 ### Restock
 
-Run these commands from the `jiro` checkout.
+Run these commands from the Kstack checkout.
 
 ```bash
 git pull
@@ -60,6 +60,12 @@ Open OpenCode in the repository you want to work on.
 
 `@jiro <task>` loads the same entry skill directly. With no supplied task, `/jiro` uses the active conversation or asks what to work on.
 
+### First use in a repository
+
+`/jiro initialize this repository` creates and proves a repo-specific verification skill by default. The first task that permits edits does the same if no relevant skill exists. Jiro uses the task's actual UI, CLI, API, or library surface, wraps existing harnesses, and writes `.opencode/skills/verify-<app>/` in the target repository. An OpenCode configuration-root repository uses its existing `skills/` directory instead.
+
+Existing relevant skills are reused. An unrelated verification skill does not suppress setup for another surface. Read-only questions and activation without a task do not create files. Say "skip verification skill" to opt out for a task, or put that preference in repository instructions to keep it for the project. Missing tools or credentials are reported as blockers, never as successful proof. The global installer distributes instructions; it does not initialize the repository it happens to run in.
+
 Three focused commands also work without invoking the whole Jiro workflow:
 
 | Command | Use it when |
@@ -85,11 +91,50 @@ Long runs add a local decision trail. User-facing changes are checked through th
 
 Jiro and delegation inherit the active model by default. Companion skills may honor existing host-authorized role settings. Overrides require authorization and confirmed model IDs.
 
-Invoking a skill does not authorize commits, pushes, PRs, merges, deployments, global installation, deletion, or unrelated external writes. Jiro is an instruction pack, not a persistent mode, scheduler, cloud-agent runtime, or full pstack mirror.
+Invoking a skill does not authorize commits, pushes, PRs, merges, deployments, global installation, deletion, or unrelated external writes. Jiro is an instruction pack, not a persistent mode, scheduler, cloud-agent runtime, or automatic upstream mirror.
 
 ## Tools on the rack
 
 Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, and `composition-patterns` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, and `/unslop` have bundled slash-command wrappers.
+
+### Jiro tool coverage
+
+The pinned source-coverage map in `upstream.json` accounts for all 55 original source skill IDs. Twenty use existing Jiro equivalents. Thirty-five are newly adapted tools. Existing Jiro, React, Effect, browser, delegation, and cleanup work remains in place. This is an adapted tool pack, not a second competing mode or a byte-for-byte mirror.
+
+Load the imported tools with `@<skill-id>` or the `skill` tool. The full index is [`@kstack-help`](skills/kstack-help/SKILL.md).
+
+| Area | Imported tools |
+| --- | --- |
+| Design and investigation | [`@architect`](skills/architect/SKILL.md), [`@arena`](skills/arena/SKILL.md), [`@blast-radius`](skills/blast-radius/SKILL.md), [`@figure-it-out`](skills/figure-it-out/SKILL.md), [`@interrogate`](skills/interrogate/SKILL.md), [`@ketchup`](skills/ketchup/SKILL.md), [`@recall`](skills/recall/SKILL.md). |
+| Planning and improvement | [`@automate-me`](skills/automate-me/SKILL.md), [`@benchmark-checklist`](skills/benchmark-checklist/SKILL.md), [`@sharpen`](skills/sharpen/SKILL.md), [`@tdd`](skills/tdd/SKILL.md). |
+| Verification | [`@create-formal-verification-skill`](skills/create-formal-verification-skill/SKILL.md), [`@maintain-verification-skill`](skills/maintain-verification-skill/SKILL.md). |
+| Writing and TypeScript | [`@in-your-own-words`](skills/in-your-own-words/SKILL.md), [`@technical-writing`](skills/technical-writing/SKILL.md), [`@typescript-best-practices`](skills/typescript-best-practices/SKILL.md). |
+| Bot controls | [`@make-bot-ui`](skills/make-bot-ui/SKILL.md) uses an existing authorized backend. |
+| Pack guidance | [`@kstack-help`](skills/kstack-help/SKILL.md), [`@setup-kstack`](skills/setup-kstack/SKILL.md). |
+| Additional principles | Boundary discipline, structural enforcement, design-space exploration, experience first, number validation, context management, idempotency, caller migration, domain modeling, human-independent progress, outcome focus, real-artifact proof, state isolation, verifiable units, behavioral tests, and type discipline. Each retains its `principle-*` ID. |
+
+The old source mode maps to `jiro`, its help maps to `kstack-help`, and model setup maps to `setup-kstack`. Imported tools read the shared writing contract. They use concise, evidence-backed replies, preserve read-only scope, and leave commits, publishing, deployments, global installation, and destructive actions behind explicit authorization gates. Model setup is optional and does not change your choices during installation.
+
+Supporting examples are not proof that a runtime, backend, browser, model, or credential exists. Tests validate coverage, metadata, resource paths, style routing, and installation. Live behavior across every imported workflow remains unverified.
+
+The additional principles are individually available:
+
+- [`@principle-boundary-discipline`](skills/principle-boundary-discipline/SKILL.md) keeps validation at trust boundaries.
+- [`@principle-encode-lessons-in-structure`](skills/principle-encode-lessons-in-structure/SKILL.md) replaces repeated instructions with enforcement.
+- [`@principle-exhaust-the-design-space`](skills/principle-exhaust-the-design-space/SKILL.md) compares distinct prototypes.
+- [`@principle-experience-first`](skills/principle-experience-first/SKILL.md) puts consumer experience ahead of implementation convenience.
+- [`@principle-explain-the-number`](skills/principle-explain-the-number/SKILL.md) checks what a measurement actually measures.
+- [`@principle-guard-the-context-window`](skills/principle-guard-the-context-window/SKILL.md) bounds inspection and handoffs.
+- [`@principle-make-operations-idempotent`](skills/principle-make-operations-idempotent/SKILL.md) makes repeated and interrupted work converge.
+- [`@principle-migrate-callers-then-delete-legacy-apis`](skills/principle-migrate-callers-then-delete-legacy-apis/SKILL.md) completes internal API migrations.
+- [`@principle-model-the-domain`](skills/principle-model-the-domain/SKILL.md) encodes valid states and ownership.
+- [`@principle-never-block-on-the-human`](skills/principle-never-block-on-the-human/SKILL.md) keeps authorized reversible work moving.
+- [`@principle-outcome-oriented-execution`](skills/principle-outcome-oriented-execution/SKILL.md) converges on an explicit migration target.
+- [`@principle-prove-it-works`](skills/principle-prove-it-works/SKILL.md) checks the real artifact.
+- [`@principle-separate-before-serializing-shared-state`](skills/principle-separate-before-serializing-shared-state/SKILL.md) removes shared writers before adding locks.
+- [`@principle-sequence-verifiable-units`](skills/principle-sequence-verifiable-units/SKILL.md) ends each unit at an observed check.
+- [`@principle-test-behavior-not-implementation`](skills/principle-test-behavior-not-implementation/SKILL.md) tests the consumer's contract.
+- [`@principle-type-system-discipline`](skills/principle-type-system-discipline/SKILL.md) makes illegal states harder to represent.
 
 | Tool | Job in the kitchen |
 | --- | --- |
@@ -178,7 +223,7 @@ The `playwright-mcp` entry in [upstream.json](upstream.json) documents a histori
 | `recipes/` | Existing authoring, evaluation, refactoring, cleanup, and smoke workflows. |
 | `tests/`, `scripts/tests/` | Bun behavior checks and imported Python package checks. |
 
-`agents/chef.md` defines and installs a scoped chef, Jiro's worker agent, under the exact ID `chef`. Each chef loads `jiro` before working and returns its changes with evidence. Routed skills keep their own agent procedures, and Jiro still reviews every artifact. Jiro does not require another mode, an installed pstack pack, `arena`, or `architect`.
+`agents/chef.md` defines and installs a scoped chef, Jiro's worker agent, under the exact ID `chef`. Each chef loads `jiro` before working and returns its changes with evidence. Routed skills keep their own agent procedures, and Jiro still reviews every artifact. Jiro does not require another mode or skill pack. Its bundled `arena` and `architect` tools are used only when the task calls for them.
 
 Shared writing, comment, and autonomy rules live in `skills/skill.md`. Existing [skill authoring](recipes/authoring-a-skill.md), [evaluation](recipes/eval.md), [refactoring](recipes/refactoring.md), and [cleanup](recipes/worktree-cleanup.md) recipes are bundled through repository-local links. Some standalone recipes use optional unbundled `skill-creator` or `arena` tooling. Report those gaps rather than substituting another pack.
 
@@ -210,7 +255,7 @@ python3 scripts/smoke-skills.py --skill minimize-reader-load --timeout 180
 
 The mode runner activates `@jiro` through OpenCode's native skill API and verifies the registered `/jiro` template. It confirms the full skill and shared-rule reads. The twenty-case Python runner checks individual local entry points against isolated fixtures. Nine tools covering delegation, comment review, Playwright, correction, teaching, and writing cleanup have packaging checks and scenario material, but no live cases in that runner. The three new command scenarios are in [tests/learning-skills.scenarios.json](tests/learning-skills.scenarios.json). Both runners use `opencode/muse-spark-1.3-contributor-free` by default, with no model fallback or user-setting changes. Explicit model options select only the test run's model. Provider rejection is a blocker, not a passing test.
 
-The individual runner's `--dry-run` lists those nine coverage gaps as `NOT_RUN`. A full live run stops before invoking OpenCode while those cases are missing. Use `--skill` to select a supported subset; a subset pass is not a full-bundle live pass.
+The individual runner's `--dry-run` lists those nine coverage gaps and all 35 newly imported tools as `NOT_RUN`. The source-coverage map supplies the imported IDs without pretending there are live scenarios for them. A full live run stops before invoking OpenCode while those cases are missing. Use `--skill` to select a supported subset; a subset pass is not a full-bundle live pass. The first-use verification scenarios in [tests/first-use-verification.scenarios.json](tests/first-use-verification.scenarios.json) cover initialization, skill reuse, and read-only opt-out behavior. Scenario definitions are not observed agent runs.
 
 Reports retain `summary.json` under `/tmp/opencode/` by default. Transcripts are inspected in memory, fixtures are isolated, and detailed artifacts are retained only when requested. Worktree cleanup is audit-only. Cleanup verifies recorded session IDs, run ownership, unchanged session families, and inactivity before removing disposable sessions. Active, moved, changed, or unverified sessions are held. The mode runner's `--delete-session` and individual runner's `--delete-sessions` are optional cleanup flags, not blanket deletion approval.
 
@@ -218,11 +263,13 @@ Reports retain `summary.json` under `/tmp/opencode/` by default. Transcripts are
 
 Follow the [upstream-maintenance playbook](playbook/upstream-maintenance/README.md) when changing imported recipes or tools, or reviewing upstream changes. Keep [upstream.json](upstream.json), license files, and preservation rules aligned.
 
+The OC updater follows `kyeshmz/opencode-pstack` as Jiro's upstream engineering source, including native overlays and conversion changes. It adapts those updates to Jiro rather than following Cursor directly or replacing the local workflow. Historical baselines are mapped to port commits or explicitly reviewed; they are not reset to HEAD. React, Effect, and the two Playwright sources remain independent. See the [tracking policy](playbook/upstream-maintenance/AUTOMATION.md).
+
 The inventory reads local metadata without fetching or executing upstream code. Add `--base main` to compare against that local ref. Documentation commits and npm runtime versions are separate pins. The cleanup playbook's original source revision remains unknown; its helper's pin does not establish that baseline.
 
 Maintenance is repository-only, not an installed skill. The [automatic updater](playbook/upstream-maintenance/AUTOMATION.md) checks registered upstreams daily and prepares tested draft update PRs through `oc-port-agent`, using an explicit opt-in for named skill folders. MCP configuration remains removed, and proposals require review before merging.
 
-The workflow must be published on the default branch and configured with a reviewed updater commit, model choice, and provider secret before it is active. The import map supplies per-import policies and independent checkpoints for pstack and both Microsoft sources. No GitHub App backend or automatic merging is configured.
+The workflow must be published on the default branch and configured with a reviewed updater commit, model choice, and provider secret before it is active. The import map supplies per-import policies and independent checkpoints for Jiro's engineering, React, Effect, and browser sources. No GitHub App backend or automatic merging is configured.
 
 ### Clear the counters safely
 

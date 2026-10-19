@@ -24,7 +24,7 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(report["unmappedSkills"], [])
         self.assertEqual(report["baselineGaps"], [{
             "id": "worktree-cleanup",
-            "source": "pstack/skills/poteto-mode/playbooks/worktree-cleanup.md",
+            "source": "skills/poteto-mode/playbooks/worktree-cleanup.md",
         }])
 
     def test_local_changes_are_scoped_to_each_import(self):
@@ -58,6 +58,31 @@ class InventoryTests(unittest.TestCase):
         registry = copy.deepcopy(REGISTRY)
         registry["imports"][0]["sources"][0]["path"] = "pstack/skills/not-the-recorded-source"
         self.assertTrue(inventory.inspect(REPO, registry)["errors"])
+
+    def test_reviewed_source_without_a_port_import_has_a_known_comparison_baseline(self):
+        registry = copy.deepcopy(REGISTRY)
+        entry = registry["imports"][0]
+        source = entry["sources"][0]
+        reviewed = "a" * 40
+        source["importedRevision"] = None
+        source["reviewedThrough"] = reviewed
+        repository = entry["upstream"]["repository"].removesuffix(".git")
+        entry["provenance"] += f"\nReviewed [{source['path']}]({repository}/blob/{reviewed}/{source['path']}).\n"
+        report = inventory.inspect(REPO, registry)
+        self.assertFalse(any(gap["id"] == entry["id"] for gap in report["baselineGaps"]))
+        self.assertEqual(report["errors"], [])
+
+    def test_reviewed_pin_requires_matching_repository_and_source_evidence(self):
+        registry = copy.deepcopy(REGISTRY)
+        registry["imports"][0]["sources"][0]["reviewedThrough"] = "f" * 40
+        self.assertTrue(inventory.inspect(REPO, registry)["errors"])
+
+    def test_watch_paths_are_bounded_repository_relative_paths(self):
+        for paths in ("scripts/convert.py", ["../outside"], ["/outside"], ["scripts/**"], ["scripts/convert.py", "scripts/convert.py"]):
+            registry = copy.deepcopy(REGISTRY)
+            registry["imports"][0]["watchPaths"] = paths
+            with self.subTest(paths=paths), self.assertRaises(ValueError):
+                inventory.inspect(REPO, registry)
 
     def test_unregistered_import_is_reported(self):
         with tempfile.TemporaryDirectory() as directory:
