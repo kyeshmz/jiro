@@ -2274,6 +2274,31 @@
         "scripts/install-opencode.py",
         "scripts/opencode-transform.py"
       ]
+    },
+    {
+      "id": "test-audit",
+      "upstream": {
+        "repository": "https://github.com/openclaw/openclaw.git",
+        "ref": "main"
+      },
+      "targetRoots": [
+        "skills/test-audit"
+      ],
+      "license": "skills/test-audit/LICENSE",
+      "sources": [
+        {
+          "path": ".agents/skills/test-audit",
+          "importedRevision": "6f638fd0aa42b91267bb5056ccb25df7e64b3101",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the authoring gate, junk patterns, retention bar, candidate evidence, validation, and eight-step campaign workflow intact.",
+        "Treat OpenClaw commands, scripts, CI lanes, and Telegram lessons as examples; use the target repository's own tooling and report missing equivalents.",
+        "Keep read-only audits read-only, delete tests or seams only within the requested scope, and leave commits, pushes, PRs, and merges behind explicit authorization.",
+        "Resolve CAMPAIGN.md and references from the loaded skill base, and preserve the OpenClaw Foundation MIT notice."
+      ],
+      "provenance": "# Upstream source\n\nAdapted from [OpenClaw's test-audit skill](https://github.com/openclaw/openclaw/tree/6f638fd0aa42b91267bb5056ccb25df7e64b3101/.agents/skills/test-audit) in `openclaw/openclaw`.\n\nThe source revision on the `main` branch is `6f638fd0aa42b91267bb5056ccb25df7e64b3101`. The upstream directory contains three files, all imported. The repository's [MIT license](https://github.com/openclaw/openclaw/blob/6f638fd0aa42b91267bb5056ccb25df7e64b3101/LICENSE) is reproduced in [LICENSE](skills/test-audit/LICENSE) with the OpenClaw Foundation copyright notice. No NOTICE file covers the directory.\n\n| Local file | Upstream source | Treatment |\n| --- | --- | --- |\n| [SKILL.md](skills/test-audit/SKILL.md) | [SKILL.md](https://github.com/openclaw/openclaw/blob/6f638fd0aa42b91267bb5056ccb25df7e64b3101/.agents/skills/test-audit/SKILL.md) | Adapted. Modified-file notice and OpenCode section added. |\n| [CAMPAIGN.md](skills/test-audit/CAMPAIGN.md) | [CAMPAIGN.md](https://github.com/openclaw/openclaw/blob/6f638fd0aa42b91267bb5056ccb25df7e64b3101/.agents/skills/test-audit/CAMPAIGN.md) | One sentence adapted to label the Telegram lessons as OpenClaw examples. |\n| [references/audit.md](skills/test-audit/references/audit.md) | [references/audit.md](https://github.com/openclaw/openclaw/blob/6f638fd0aa42b91267bb5056ccb25df7e64b3101/.agents/skills/test-audit/references/audit.md) | Validation section adapted. |\n\n## Take / adapt / skip\n\n**Take.** The authoring gate, junk patterns, retention bar, candidate evidence workflow, validation and handoff rules, and the eight-step whole-subsystem campaign with its R/F/C/D ledger, keeper suites, preservation review, and mutation checks.\n\n**Adapt.** The frontmatter keeps `name: test-audit` and the upstream trigger text, names the `@test-audit` entry, and adds `license: MIT` and `metadata.opencode/autoinvoke: false`. Jiro routes test audits and test-value reviews to it. An OpenCode section resolves bundled files from the loaded skill base, runs work in the target repository, labels OpenClaw tooling as examples, and keeps read-only and authorization gates. OpenClaw-only links are replaced. The [boundary and cost guide](https://github.com/openclaw/openclaw/blob/6f638fd0aa42b91267bb5056ccb25df7e64b3101/docs/help/testing/writing-tests.md) becomes the target repository's testing guide plus `principle-test-behavior-not-implementation`. The [proof policy](https://github.com/openclaw/openclaw/blob/6f638fd0aa42b91267bb5056ccb25df7e64b3101/.agents/skills/openclaw-testing/SKILL.md) becomes the target repository's proof policy plus `principle-prove-it-works`. OpenClaw's autoreview step becomes a skeptical final review, with `interrogate` when independent reviewers are permitted. Vitest, `scripts/check-changed.mjs`, and `pnpm deadcode:*` remain as labeled OpenClaw examples beside generic instructions.\n\n**Skip.** OpenClaw's linked testing docs, `openclaw-testing` skill, Crabbox and Testbox routing, and maintainer landing workflow. They were read at the pinned revision as context only and are not bundled. No upstream script, installer, or test was executed.\n\nLive agent behavior is untested. Static checks cover frontmatter, license text, catalog identity, and bundled link resolution. Skill discovery follows the [OpenCode V2 skills documentation](https://opencode.ai/v2/docs/skills).\n"
     }
   ]
 }

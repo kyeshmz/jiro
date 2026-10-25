@@ -78,6 +78,7 @@ Start with Jiro for a nontrivial end-to-end task. Name a focused skill directly 
 | Partition independent coverage or declare a race. | [@swarm](../swarm/SKILL.md). |
 | Review a diff skeptically with permitted independent reviewers. | [@interrogate](../interrogate/SKILL.md). |
 | Fix a bug through a cheap, reliable failing test. | [@tdd](../tdd/SKILL.md). |
+| Gate new tests or prune duplicate and implementation-coupled proof. | [@test-audit](../test-audit/SKILL.md). |
 | Apply TypeScript modeling and boundary rules. | [@typescript-best-practices](../typescript-best-practices/SKILL.md). |
 | Review comments and remove unsupported garnish. | [@no-comments](../no-comments/SKILL.md). |
 | Remove AI writing tells without changing meaning. | [@unslop](../unslop/SKILL.md). |
