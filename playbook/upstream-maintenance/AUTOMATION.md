@@ -1,6 +1,6 @@
 # Automatic upstream skill updates
 
-The [workflow](../../.github/workflows/upstream-skills.yml) checks registered sources daily at 08:23 UTC and can be run manually. It uses the single [upstream.json](../../upstream.json) catalog. Jiro's upstream engineering source is `kyeshmz/opencode-pstack`, not `cursor/plugins` directly. Playwright follows its two Microsoft repositories. React guidance follows `wholeearthrobotics/agent-skills`, and Effect guidance follows `anomalyco/opencode`. It creates at most one tested **draft update PR** per run. It never auto-merges, restores MCP configuration, or mirrors an entire upstream pack.
+The [workflow](../../.github/workflows/upstream-skills.yml) checks registered sources daily at 08:23 UTC and can be run manually. It uses the single [upstream.json](../../upstream.json) catalog. Jiro's upstream engineering source is `kyeshmz/opencode-pstack`, not `cursor/plugins` directly. Playwright follows its two Microsoft repositories. React guidance follows `wholeearthrobotics/agent-skills`, Effect guidance follows `anomalyco/opencode`, and test-audit guidance follows `openclaw/openclaw`. It creates at most one tested **draft update PR** per run. It never auto-merges, restores MCP configuration, or mirrors an entire upstream pack.
 
 ## Follow the OpenCode port
 
