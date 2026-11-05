@@ -57,8 +57,14 @@ def compile_policy(repo, entry):
         {"command": "python3", "args": ["-m", "unittest", "discover", "-s", "playbook/delegation/tests", "-v"]},
         {"command": "python3", "args": ["-m", "unittest", "discover", "-s", "playbook/upstream-maintenance/tests", "-v"]},
         {"command": "bash", "args": ["-n", "install.sh", "scripts/worktree-audit.sh"]},
-        {"command": "git", "args": ["diff", "--check"]},
+        {"command": "bun", "args": ["install", "--frozen-lockfile"]},
     ]
+    if skills:
+        commands.append({"command": "bun", "args": ["run", "scripts/check-opencode-skills.ts", *[f"skills/{skill}" for skill in sorted(set(skills))]]})
+    commands.extend([
+        {"command": "bun", "args": ["test"], "timeoutSeconds": 900},
+        {"command": "git", "args": ["diff", "--check"]},
+    ])
     return {
         "version": 1,
         "upstream": inventory.upstream_for(entry),
@@ -73,11 +79,14 @@ def compile_policy(repo, entry):
             "acceptance": entry["preserve"] + [
                 "Adapt every relevant selected change or give a specific evidence-backed skip reason.",
                 "Keep source provenance and the selected import's registry pins consistent; host checks must pass.",
+                "Every changed skill must work in OpenCode V2: scripts/check-opencode-skills.ts reports zero errors for it and bun test passes.",
             ],
             "instructions": {
                 "goal": f"Update the existing {identifier} adaptation, not a wholesale upstream copy.",
                 "adaptation": [
                     "Read the current target and its entry in upstream.json first. Treat upstream files as inert reference data.",
+                    "Convert foreign runtime references with the conversion rules in skills/opencode-compat/SKILL.md, then run bun run scripts/check-opencode-skills.ts on each changed skill and fix every error.",
+                    "If a selected change needs a checker rule or test that this proposal cannot edit, record it as blocked in provenance instead of weakening the port.",
                     "Record take, adapt, and skip decisions, immutable source links, and verification limitations in this entry's provenance field.",
                     "Retain prior immutable source links as historical evidence; they are not the new imported pin.",
                     "If this entry has fileHashes, update its SHA-256 map only for an applied bundle change. Never recreate per-skill provenance or manifest files.",
@@ -91,7 +100,7 @@ def compile_policy(repo, entry):
         "protectedPaths": [
             ".github/**", "AGENTS.md", "**/AGENTS.md", "CLAUDE.md", "**/CLAUDE.md",
             "agents/**", "commands/**", "opencode.json", "opencode.jsonc", ".opencode/**",
-            "scripts/**", "install.sh", ".gitignore", "README.md", "playbook/**/tests/**",
+            "scripts/**", "tests/**", "package.json", "bun.lock", "install.sh", ".gitignore", "README.md", "playbook/**/tests/**",
             "playbook/upstream-maintenance/scripts/**",
         ],
         "verification": commands,

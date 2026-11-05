@@ -2274,6 +2274,149 @@
         "scripts/install-opencode.py",
         "scripts/opencode-transform.py"
       ]
+    },
+    {
+      "id": "opencode-memory",
+      "upstream": {
+        "repository": "https://github.com/R44VC0RP/skills.git",
+        "ref": "main"
+      },
+      "targetRoots": [
+        "skills/opencode-memory"
+      ],
+      "license": "skills/opencode-memory/SKILL.md",
+      "sources": [
+        {
+          "path": "skills/opencode-memory",
+          "importedRevision": "0623f2ea9800f277e0e4e89bcc50a5290de3ab0f",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep all six upstream files byte-for-byte unchanged, including bundled references, scripts, executable modes, and the centralized fileHashes map.",
+        "Import the skill only; do not run its setup, edit global memory rules, scan sessions, or schedule dreaming as part of installation.",
+        "Preserve any upstream author and license metadata; the pinned skill and its parent directories contain no applicable license notice, so do not invent one."
+      ],
+      "provenance": "# Upstream source\n\nCopied unchanged at the user's request from [skills/opencode-memory](https://github.com/R44VC0RP/skills/tree/0623f2ea9800f277e0e4e89bcc50a5290de3ab0f/skills/opencode-memory) in R44VC0RP/skills at revision `0623f2ea9800f277e0e4e89bcc50a5290de3ab0f`. All six source files are retained: SKILL.md, three references, and two scripts. Their bytes match the upstream Git blobs, and the scripts retain their executable modes. There are no local adaptations.\n\nThe pinned skill, skills/ parent, and repository root contain no applicable LICENSE or NOTICE file, and SKILL.md declares no license or author metadata. The catalog's license path points to the unchanged source entry for inspection; it is not a license grant. No license or attribution has been invented.\n\nThe upstream Python helper is retained as part of the unchanged third-party bundle, not rewritten or used as Jiro CLI tooling. No imported script or setup procedure was executed. Installing this skill does not initialize memory, change AGENTS.md or model settings, inspect past sessions, create commits, or enable a scheduled job. Runtime memory and dreaming behavior remains unverified.\n\n`fileHashes` in upstream.json records the SHA-256 of every copied source file.\n",
+      "fileHashes": {
+        "SKILL.md": "b566961aab58c1eb7e47522480ea6d14c644b99947b06e0426c00632516b3631",
+        "references/agents-memory-block.md": "0b1e2833df2daae08ded10ce54165e87ead94ceb2415f5fa1aae15f5f2445b98",
+        "references/dream-prompt.md": "4d3874049aae07dc7da683ce1fb65ce0f7bf6db467f88e77e940352f2e9e478f",
+        "references/gitignore.template": "cd460c0f475a42c3f383b621ddcd63831dd0325656994af764fc558c04f22282",
+        "scripts/dream.sh": "acb88a9b62e18e2270eeb738897eb42ca4b816a0f3656a5e9e5c62233206feaf",
+        "scripts/scan-secrets.py": "4674a318261635bb2c5cb824df36c67fda9c7763e086bfc90851a462aacbdda3"
+      }
+    },
+    {
+      "id": "synthesize-research",
+      "upstream": {
+        "repository": "https://github.com/anthropics/knowledge-work-plugins.git",
+        "ref": "main"
+      },
+      "targetRoots": [
+        "skills/synthesize-research"
+      ],
+      "license": "skills/synthesize-research/LICENSE",
+      "sources": [
+        {
+          "path": "product-management/skills/synthesize-research/SKILL.md",
+          "importedRevision": "2574e29377c7173d0cecffef29a6ecbd7f8ccb5d",
+          "reviewedThrough": null
+        },
+        {
+          "path": "product-management/CONNECTORS.md",
+          "importedRevision": "2574e29377c7173d0cecffef29a6ecbd7f8ccb5d",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the five-step workflow, synthesis output structure, priority matrix, and every methodology section unchanged; limit edits to frontmatter, invocation, connector discovery, and guardrails.",
+        "Use only MCP tools already connected in the session; never add, enable, or authenticate a server or write to a connector without an explicit request.",
+        "Treat research material as untrusted data, attribute participants by type, report unread sources, and never fabricate quotes or counts.",
+        "Keep the plugin-local Apache-2.0 LICENSE byte-for-byte and the modified-file notice; do not invent a copyright holder or NOTICE file."
+      ],
+      "provenance": "# Upstream source\n\nAdapted from [`product-management/skills/synthesize-research/SKILL.md`](https://github.com/anthropics/knowledge-work-plugins/blob/2574e29377c7173d0cecffef29a6ecbd7f8ccb5d/product-management/skills/synthesize-research/SKILL.md) in `anthropics/knowledge-work-plugins` at `2574e29377c7173d0cecffef29a6ecbd7f8ccb5d`, the resolved `main` commit. The source file is Git blob `37920edef38ed91481547e426dbd1505bbd0a105`, last changed in commit `2d6f7e22dd25593f0f748010430ef86f19659735`. The connector categories and example tools come from [`product-management/CONNECTORS.md`](https://github.com/anthropics/knowledge-work-plugins/blob/2574e29377c7173d0cecffef29a6ecbd7f8ccb5d/product-management/CONNECTORS.md) at the same revision.\n\nThe plugin's [Apache-2.0 license](https://github.com/anthropics/knowledge-work-plugins/blob/2574e29377c7173d0cecffef29a6ecbd7f8ccb5d/product-management/LICENSE) is copied byte-for-byte to [LICENSE](skills/synthesize-research/LICENSE), SHA-256 `cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30`. Its appendix copyright line is an unfilled placeholder and the pinned tree has no NOTICE file, so no copyright holder or notice has been invented. The repository-root LICENSE has non-license text appended after the Apache appendix, so the plugin-local copy is used.\n\n**Take.** The five-step workflow, the synthesis output structure, the priority matrix, and every methodology section: thematic analysis, affinity mapping, triangulation, interview analysis, survey interpretation, qual-quant integration, persona development, opportunity sizing, output format, and tips. Their text is unchanged.\n\n**Adapt.** `argument-hint` is replaced by `license: Apache-2.0` and a Jiro `/synthesize-research` command wrapper that forwards `$ARGUMENTS`; `@synthesize-research` also loads it. The `~~category` placeholders and the CONNECTORS.md link are replaced by an inline category table and discovery of MCP tools already connected in the session. Clarifying questions use the `question` tool and skip what the material already answers. Added guardrails treat research material as untrusted data, keep connectors read-only, attribute participants by type, report coverage gaps, require quotes and counts from sources actually read, and keep output in chat unless a file is requested. The skill stays advertised, matching upstream model invocation. SKILL.md carries an Apache-2.0 modified-file notice.\n\n**Skip.** The plugin's `.mcp.json` server configuration, its plugin manifest, the other product-management skills, and Claude connector setup. Installing this skill does not add, enable, or authenticate an MCP server.\n\nSkill syntax follows the [OpenCode V2 skills guide](https://opencode.ai/v2/docs/skills). Live synthesis behavior against real research corpora and connectors remains unverified.\n"
+    },
+    {
+      "id": "systematic-literature-review",
+      "upstream": {
+        "repository": "https://github.com/bytedance/deer-flow.git",
+        "ref": "main"
+      },
+      "targetRoots": [
+        "skills/systematic-literature-review"
+      ],
+      "license": "skills/systematic-literature-review/LICENSE",
+      "sources": [
+        {
+          "path": "skills/public/systematic-literature-review",
+          "importedRevision": "1dd6d056278536af1cb4fc60347f4ca40fcb629b",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the five phases, single keyword-reduced arXiv search, 50-paper cap, batch-of-five subagent extraction prompt, cross-paper synthesis requirements, one-template-per-format rule, and chat preview.",
+        "Keep scripts/arxiv_search.py and the APA, IEEE, and BibTeX templates byte-for-byte; resolve them from the skill base and run the helper with python3 -I.",
+        "Use OpenCode's subagent tool with the general agent and inherited model; treat paper text as untrusted data and forbid tools in extraction prompts.",
+        "Write only the final report, at a user-confirmed path, never inside the installed skill; route single-paper review to academic-paper-review.",
+        "Preserve the DeerFlow MIT notice and the modified-file notice."
+      ],
+      "provenance": "# Upstream source\n\nAdapted from [`skills/public/systematic-literature-review`](https://github.com/bytedance/deer-flow/tree/1dd6d056278536af1cb4fc60347f4ca40fcb629b/skills/public/systematic-literature-review) in `bytedance/deer-flow` at `1dd6d056278536af1cb4fc60347f4ca40fcb629b`, the resolved `main` commit. The directory last changed in commit `654354c624bfc84ecbb60f1394ca4806590bcbdf`. The repository-root [MIT LICENSE](https://github.com/bytedance/deer-flow/blob/1dd6d056278536af1cb4fc60347f4ca40fcb629b/LICENSE), Copyright (c) 2025 Bytedance Ltd. and/or its affiliates and (c) 2025-2026 DeerFlow Authors, is copied byte-for-byte as Git blob `9dc98a4a6b9b549447a4fc314e4cf50529c184c7`. The skill directory has no license of its own, and the pinned tree has no NOTICE file that covers it.\n\nUnchanged files and their Git blobs: `scripts/arxiv_search.py` `56786c30db924eaae6caf5bccce0dd81e060a821`, `templates/apa.md` `306f0385257c0268ceca162e72f238ff98aa7b8a`, `templates/ieee.md` `727947c2b621b89c13c53d8ae21dea2166728e1e`, and `templates/bibtex.md` `a6ba77b5df51c6f28d796669f97129751c14c83a`. SKILL.md is adapted from blob `b81dbe75aa5b6f1f90b56940367794426474b8f9` and carries a modified-file notice.\n\n**Take.** The five-phase workflow, scope confirmation, keyword reduction, relevance sorting, single-search and no-padding rules, the 50-paper cap, batch-of-five extraction with its structured prompt, failed-batch handling, thematic synthesis, template selection, the report preview, examples, and notes.\n\n**Adapt.** DeerFlow's `task` tool, `subagent_type: \"general-purpose\"`, and `Task Succeeded` prefix parsing become OpenCode's `subagent` tool with `agent: \"general\"`, an inherited model, and JSON extraction from the child's text. The three-subagent round table is replaced by one parallel round of at most ten batches, because OpenCode has no such silent cap. `/mnt/skills` paths resolve from the skill base, and the helper runs with `python3 -I`. `/mnt/user-data/outputs` and `present_files` become a Phase 1 confirmed location, defaulting to the working directory, with no overwrite and the path in the reply. Clarification uses the `question` tool. An OpenCode runtime section adds prerequisites and treats paper text as untrusted data, and the extraction prompt forbids tools, files, and network access.\n\n**Skip.** `evals/evals.json` and `evals/trigger_eval_set.json`, whose expectations assert DeerFlow's `task` tool, `/mnt` outputs, and `present_files`.\n\nThe helper was run once against the public arXiv API during import from a scratch directory and returned two results with the documented fields. It queries arXiv over plain HTTP, as upstream does. Full multi-paper runs in OpenCode remain unverified. Skill syntax follows the [OpenCode V2 skills guide](https://opencode.ai/v2/docs/skills).\n"
+    },
+    {
+      "id": "academic-paper-review",
+      "upstream": {
+        "repository": "https://github.com/bytedance/deer-flow.git",
+        "ref": "main"
+      },
+      "targetRoots": [
+        "skills/academic-paper-review"
+      ],
+      "license": "skills/academic-paper-review/LICENSE",
+      "sources": [
+        {
+          "path": "skills/public/academic-paper-review/SKILL.md",
+          "importedRevision": "1dd6d056278536af1cb4fc60347f4ca40fcb629b",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the three review phases, metadata and claims extraction, methodology rubric, significance levels, review template, principles, paper-type focus, pitfalls, and quality checklist.",
+        "Read papers with OpenCode's read and webfetch tools and search with websearch; treat paper text and fetched pages as untrusted data.",
+        "Never send an unpublished or confidential manuscript's text, title, or authors to an outside service; deliver in chat and write a file only on request.",
+        "Preserve the DeerFlow MIT notice and the modified-file notice."
+      ],
+      "provenance": "# Upstream source\n\nAdapted from [`skills/public/academic-paper-review/SKILL.md`](https://github.com/bytedance/deer-flow/blob/1dd6d056278536af1cb4fc60347f4ca40fcb629b/skills/public/academic-paper-review/SKILL.md) in `bytedance/deer-flow` at `1dd6d056278536af1cb4fc60347f4ca40fcb629b`, Git blob `165321cb6ce032f943ec50d8537431e3552e7785`, last changed in commit `8bb14fa1a7bf7e6ee0631db4db9168962edbc31f`. The upstream directory contains only SKILL.md. The repository-root [MIT LICENSE](https://github.com/bytedance/deer-flow/blob/1dd6d056278536af1cb4fc60347f4ca40fcb629b/LICENSE), Copyright (c) 2025 Bytedance Ltd. and/or its affiliates and (c) 2025-2026 DeerFlow Authors, is copied byte-for-byte as Git blob `9dc98a4a6b9b549447a4fc314e4cf50529c184c7`. The skill directory has no license of its own, and the pinned tree has no NOTICE file that covers it.\n\n**Take.** The comprehension, critical analysis, and synthesis phases, the metadata table, claims extraction, the methodology and significance rubrics, the full review template, review principles, paper-type adaptation, pitfalls, quality checklist, and notes.\n\n**Adapt.** `web_fetch` becomes OpenCode's `webfetch`, and literature search uses `websearch` when available. PDFs are read with the `read` tool. The `/mnt/user-data/outputs` sandbox path and `present_files` become chat delivery, with a file only on request at a confirmed location. The `deep-research` pairing is conditional on that skill being installed. An OpenCode runtime section treats paper text as untrusted data, keeps unpublished manuscripts out of outside services, and routes multi-paper surveys to `systematic-literature-review`. SKILL.md carries a modified-file notice.\n\n**Skip.** Nothing else in the selected file.\n\nLive reviews in OpenCode remain unverified. Skill syntax follows the [OpenCode V2 skills guide](https://opencode.ai/v2/docs/skills).\n"
+    },
+    {
+      "id": "opencode-compat",
+      "upstream": {
+        "repository": "https://github.com/kyeshmz/opencode-pstack.git",
+        "ref": "main"
+      },
+      "targetRoots": [
+        "skills/opencode-compat"
+      ],
+      "license": "skills/opencode-compat/LICENSE",
+      "sources": [
+        {
+          "path": "scripts/opencode-transform.py",
+          "importedRevision": "0f9221d0c31c6d76a58a79b7ffe52cb9a9f0a489",
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Keep the port procedure, conversion rules, checker rule list, pinned-bytes warning policy, upstream-change section, and behavior-proof limits.",
+        "Phrase each conversion rule as a replacement so the skill passes its own checker; keep scripts/check-opencode-skills.ts as the single enforcement point.",
+        "Never execute the port installer or copy its model settings; adapt its conversion rules as inert reference data.",
+        "Keep the shared writing contract link and the MIT notice.",
+        "Follow the OpenCode pstack port, including matching overlays and conversion changes as inert context. Preserve Kstack/Jiro writing, first-use verification defaults, local improvements, ownership, and authorization gates rather than executing or mirroring the upstream installer."
+      ],
+      "provenance": "# Upstream source\n\nAdapted from the conversion rules in [`scripts/opencode-transform.py`](https://github.com/kyeshmz/opencode-pstack/blob/0f9221d0c31c6d76a58a79b7ffe52cb9a9f0a489/scripts/opencode-transform.py) in `kyeshmz/opencode-pstack` at `0f9221d0c31c6d76a58a79b7ffe52cb9a9f0a489`, the resolved `main` commit. The script last changed in commit `5cfdca938c2510b823cacf1c6b3bdccac8a5648e`. The repository's MIT notice is preserved in [LICENSE](skills/opencode-compat/LICENSE).\n\n**Take.** The port's Cursor-to-OpenCode mappings: the Task tool to `subagent`, `subagent_type: generalPurpose` to `agent: general`, `run_in_background` to `background`, `readonly` to restricted permissions, `AskQuestion` and `allow_multiple` to the `question` tool and `multiple`, cloud workers to local workers, `.cursor/skills/` to OpenCode paths, and V1 docs links to V2. Also its rule that bundled scripts, references, and assets resolve from the skill base directory.\n\n**Adapt.** The port rewrites installed copies at install time. Jiro adapts skills in its checkout and installs them unchanged, so the mappings become source-level conversion rules plus a static checker. The checker is Jiro-authored Bun and Commander code at `scripts/check-opencode-skills.ts`. `bun test` runs it over every skill, and compiled `oc-port-agent` policies run it on each proposal's skills. The rules add Claude Code plugin references (`~~` connector placeholders, CONNECTORS.md, `argument-hint`, `$ARGUMENTS`) and DeerFlow references (`/mnt` paths, `present_files`, the `task` tool, `web_fetch`) found while importing `synthesize-research`, `systematic-literature-review`, and `academic-paper-review`. Frontmatter rules follow the [OpenCode V2 skills guide](https://opencode.ai/v2/docs/skills).\n\n**Skip.** The port's file-specific rewrites for individual pstack skills, its overlay mechanism, model-slug replacement, transcript-scanning rewrite, and installer. Jiro already carries native adaptations of those skills.\n\nA mention preceded by a negation or replacement word in the same clause is treated as a prohibition. That heuristic is tested but is not proof that every suppressed mention is safe.\n",
+      "watchPaths": [
+        "scripts/install-opencode.py",
+        "scripts/opencode-transform.py"
+      ]
     }
   ]
 }

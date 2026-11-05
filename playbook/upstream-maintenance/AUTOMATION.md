@@ -1,6 +1,6 @@
 # Automatic upstream skill updates
 
-The [workflow](../../.github/workflows/upstream-skills.yml) checks registered sources daily at 08:23 UTC and can be run manually. It uses the single [upstream.json](../../upstream.json) catalog. Jiro's upstream engineering source is `kyeshmz/opencode-pstack`, not `cursor/plugins` directly. Playwright follows its two Microsoft repositories. React guidance follows `wholeearthrobotics/agent-skills`, and Effect guidance follows `anomalyco/opencode`. It creates at most one tested **draft update PR** per run. It never auto-merges, restores MCP configuration, or mirrors an entire upstream pack.
+The [workflow](../../.github/workflows/upstream-skills.yml) checks registered sources daily at 08:23 UTC and can be run manually. It uses the single [upstream.json](../../upstream.json) catalog. Jiro's upstream engineering source is `kyeshmz/opencode-pstack`, not `cursor/plugins` directly. Playwright follows its two Microsoft repositories. React guidance follows `wholeearthrobotics/agent-skills`, and Effect guidance follows `anomalyco/opencode`. Research synthesis follows `anthropics/knowledge-work-plugins`, and the literature-review and paper-review skills follow `bytedance/deer-flow`. It creates at most one tested **draft update PR** per run. It never auto-merges, restores MCP configuration, or mirrors an entire upstream pack.
 
 ## Follow the OpenCode port
 
@@ -28,9 +28,9 @@ Local changes alone do not activate a GitHub workflow. Publish the reviewed skil
 | --- | --- | --- |
 | `OC_PORT_AGENT_REF` | Actions variable | Full published commit SHA containing `--config`, explicit bootstrap baselines, and `allowSkillEdits`. Floating branches are rejected. |
 | `OC_PORT_MODEL` | Actions variable | Operator-selected `provider/model#variant`, confirmed available to that provider. No model is guessed. |
-| `OPENCODE_API_KEY` | Actions secret | Provider credential for the selected model. Never commit it or put it in a workflow input. |
-| `OC_PORT_API_KEY_ENV` | Optional Actions variable | Provider environment name, default `OPENCODE_API_KEY`; examples include `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`. |
 | `OC_PORT_GITHUB_TOKEN` | Optional Actions secret | Narrow target-repository contents/PR token. Otherwise the workflow uses `github.token`. |
+
+The model credential is not a repository setting. Each sync run requests a GitHub Actions OIDC token for the audience `opencode-always-on` and exchanges it at `https://opencode-always-on.kye-324.workers.dev/github/credentials` for `OPENCODE_API_KEY`, which it masks before use. The Worker holds the only copy of the key and returns it only to allowlisted workflow files on `refs/heads/main`, matched by repository and owner ID, on GitHub-hosted runners, for scheduled, dispatched, or push events. Set or rotate the key once on that Worker. Add a repository by adding its workflow to the Worker's `GITHUB_WORKFLOWS` allowlist.
 
 Enable GitHub Actions' permission to create pull requests when using the default token. A dedicated token can also let proposed PRs trigger other CI; the default Actions token normally does not. No secret values are needed in source files.
 
@@ -42,7 +42,7 @@ Start with a manual **check** run. It fetches public upstream refs and compares 
 2. Check each source against its reviewed/imported pin, or its merged, independently namespaced updater checkpoint. A reviewed-only pin is a valid comparison baseline, not an assertion that the source was imported. Validate immutable evidence links for both pins. Missing baselines and mismatched per-source baselines are reported as blocked, never silently reset to HEAD. The cleanup playbook's existing unknown baseline remains blocked.
 3. If no selected skill paths changed, stop without calling a model or creating a checkpoint-only PR.
 4. If an `oc-port/` PR is already open, wait for its review instead of opening another. Otherwise adapt one pending import in an isolated worktree through the restricted updater.
-5. Enforce closed file scope, explicit-invocation metadata, no symlinks or nested skill registration, and unchanged unrelated registry metadata. Check new source pins against the actual fetched head and immutable provenance links. Run the package and maintenance tests, Bash syntax, and whitespace checks.
+5. Enforce closed file scope, explicit-invocation metadata, no symlinks or nested skill registration, and unchanged unrelated registry metadata. Check new source pins against the actual fetched head and immutable provenance links. Run the package and maintenance tests, Bash syntax, `bun install --frozen-lockfile`, the OpenCode compatibility checker on the entry's skills, `bun test`, and whitespace checks. The checker, tests, and package manifest are protected paths, so a proposal cannot weaken them. The porting agent converts foreign runtime references with the rules in `skills/opencode-compat/SKILL.md`. A change that needs a new checker rule is recorded as blocked for a human.
 6. Only after checks pass, the host writes a new checkpoint in the proposal branch and opens a draft PR. It takes effect when a human reviews and merges the proposal. Failed checks preserve the proposal for inspection and never advance the caller's checkpoint.
 
 Skill bodies are adapted as inert reference data, not loaded as instructions for the updater. Only exact named `skills/<id>/` targets are approved in this configuration-directory checkout. Root-level `agents/`, `commands/`, and OpenCode/MCP configuration, workflow files, trusted verification scripts/tests, and updater state remain protected, as do legacy `.opencode/` paths. The explicit policy opt-in is supported by `oc-port-agent`; it is not a wrapper bypass of that tool's host gates.

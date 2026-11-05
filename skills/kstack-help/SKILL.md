@@ -100,6 +100,10 @@ Start with Jiro for a nontrivial end-to-end task. Name a focused skill directly 
 | Reduce layers and hidden or mutable state. | [@minimize-reader-load](../minimize-reader-load/SKILL.md). |
 | Verify browser flows with an available local runtime. | [@playwright-cli](../playwright-cli/SKILL.md). |
 | Audit finished worktrees before approved removal. | [@worktree-cleanup](../worktree-cleanup/SKILL.md). |
+| Synthesize user research into ranked findings. | [@synthesize-research](../synthesize-research/SKILL.md). |
+| Survey academic literature across many papers. | [@systematic-literature-review](../systematic-literature-review/SKILL.md). |
+| Peer-review a single academic paper. | [@academic-paper-review](../academic-paper-review/SKILL.md). |
+| Port a third-party skill to OpenCode and check it. | [@opencode-compat](../opencode-compat/SKILL.md). |
 | Find their way around this pack. | `@kstack-help`. |
 
 For another installed skill, read its frontmatter and route by its description. Do not claim a tool is installed solely because this table names it. Report missing companions rather than substituting another pack.

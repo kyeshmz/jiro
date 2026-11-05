@@ -95,7 +95,7 @@ Invoking a skill does not authorize commits, pushes, PRs, merges, deployments, g
 
 ## Tools on the rack
 
-Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, and `composition-patterns` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, and `/unslop` have bundled slash-command wrappers.
+Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, `composition-patterns`, `synthesize-research`, `systematic-literature-review`, `academic-paper-review`, and `opencode-compat` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, `/unslop`, and `/synthesize-research` have bundled slash-command wrappers.
 
 ### Jiro tool coverage
 
@@ -160,6 +160,10 @@ The additional principles are individually available:
 | [`@effect`](skills/effect/SKILL.md) | Guide Effect v4 services, schemas, layers, workflows, and scoped tests. |
 | [`@react-best-practices`](skills/react-best-practices/SKILL.md) | Review React performance, data fetching, bundle size, and rendering. |
 | [`@composition-patterns`](skills/composition-patterns/SKILL.md) | Design component APIs, compound components, providers, and explicit variants. |
+| [`@synthesize-research`](skills/synthesize-research/SKILL.md) | Turn interviews, surveys, and feedback into ranked findings and recommendations. |
+| [`@systematic-literature-review`](skills/systematic-literature-review/SKILL.md) | Survey arXiv papers on a topic and synthesize themes with APA, IEEE, or BibTeX citations. |
+| [`@academic-paper-review`](skills/academic-paper-review/SKILL.md) | Write a structured peer review of one paper. |
+| [`@opencode-compat`](skills/opencode-compat/SKILL.md) | Port a third-party skill to OpenCode V2 and prove it with the compatibility checker. |
 | [`@principle-foundational-thinking`](skills/principle-foundational-thinking/SKILL.md) | Choose core data structures, access patterns, and ownership before logic. |
 | [`@principle-redesign-from-first-principles`](skills/principle-redesign-from-first-principles/SKILL.md) | Integrate a requirement as a day-one assumption and deliver incrementally. |
 | [`@principle-attack-the-premise`](skills/principle-attack-the-premise/SKILL.md) | Challenge a premise after repeated fixes fail and require a per-actor census. |
@@ -170,6 +174,8 @@ The additional principles are individually available:
 | [`@worktree-cleanup`](skills/worktree-cleanup/SKILL.md) | Audit finished worktrees and remove only approved paths with fresh usage checks. |
 
 Supporting references and helpers live beside each `SKILL.md`. Resolve them from the loaded skill's base directory. Installing instructions does not supply the tools, credentials, or integrations they describe.
+
+`scripts/check-opencode-skills.ts` checks skills for OpenCode V2 frontmatter, tool names, paths, installable links, bundled resources, and helper syntax. `bun test` runs it over every skill, and each automatic upstream-update proposal must pass it for the skills it changes. Run `bun run scripts/check-opencode-skills.ts skills/<id>` while porting. It checks references, not live behavior.
 
 The six core principles are loaded only when their triggers match. The reader-load compatibility entry points share one authoritative body. Effect work checks the target's version and source APIs rather than cloning Effect or assuming OpenCode's test layout.
 
@@ -253,9 +259,9 @@ python3 scripts/smoke-skills.py --dry-run
 python3 scripts/smoke-skills.py --skill minimize-reader-load --timeout 180
 ```
 
-The mode runner activates `@jiro` through OpenCode's native skill API and verifies the registered `/jiro` template. It confirms the full skill and shared-rule reads. The twenty-case Python runner checks individual local entry points against isolated fixtures. Nine tools covering delegation, comment review, Playwright, correction, teaching, and writing cleanup have packaging checks and scenario material, but no live cases in that runner. The three new command scenarios are in [tests/learning-skills.scenarios.json](tests/learning-skills.scenarios.json). Both runners use `opencode/muse-spark-1.3-contributor-free` by default, with no model fallback or user-setting changes. Explicit model options select only the test run's model. Provider rejection is a blocker, not a passing test.
+The mode runner activates `@jiro` through OpenCode's native skill API and verifies the registered `/jiro` template. It confirms the full skill and shared-rule reads. The twenty-case Python runner checks individual local entry points against isolated fixtures. Nine tools covering delegation, comment review, Playwright, correction, teaching, and writing cleanup have packaging checks and scenario material, but no live cases in that runner. The research synthesis, literature review, paper review, and OpenCode compatibility tools have packaging checks only. The three new command scenarios are in [tests/learning-skills.scenarios.json](tests/learning-skills.scenarios.json). Both runners use `opencode/muse-spark-1.3-contributor-free` by default, with no model fallback or user-setting changes. Explicit model options select only the test run's model. Provider rejection is a blocker, not a passing test.
 
-The individual runner's `--dry-run` lists those nine coverage gaps and all 35 newly imported tools as `NOT_RUN`. The source-coverage map supplies the imported IDs without pretending there are live scenarios for them. A full live run stops before invoking OpenCode while those cases are missing. Use `--skill` to select a supported subset; a subset pass is not a full-bundle live pass. The first-use verification scenarios in [tests/first-use-verification.scenarios.json](tests/first-use-verification.scenarios.json) cover initialization, skill reuse, and read-only opt-out behavior. Scenario definitions are not observed agent runs.
+The individual runner's `--dry-run` lists those coverage gaps and all 35 newly imported tools as `NOT_RUN`. The source-coverage map supplies the imported IDs without pretending there are live scenarios for them. A full live run stops before invoking OpenCode while those cases are missing. Use `--skill` to select a supported subset; a subset pass is not a full-bundle live pass. The first-use verification scenarios in [tests/first-use-verification.scenarios.json](tests/first-use-verification.scenarios.json) cover initialization, skill reuse, and read-only opt-out behavior. Scenario definitions are not observed agent runs.
 
 Reports retain `summary.json` under `/tmp/opencode/` by default. Transcripts are inspected in memory, fixtures are isolated, and detailed artifacts are retained only when requested. Worktree cleanup is audit-only. Cleanup verifies recorded session IDs, run ownership, unchanged session families, and inactivity before removing disposable sessions. Active, moved, changed, or unverified sessions are held. The mode runner's `--delete-session` and individual runner's `--delete-sessions` are optional cleanup flags, not blanket deletion approval.
 
@@ -269,7 +275,7 @@ The inventory reads local metadata without fetching or executing upstream code. 
 
 Maintenance is repository-only, not an installed skill. The [automatic updater](playbook/upstream-maintenance/AUTOMATION.md) checks registered upstreams daily and prepares tested draft update PRs through `oc-port-agent`, using an explicit opt-in for named skill folders. MCP configuration remains removed, and proposals require review before merging.
 
-The workflow must be published on the default branch and configured with a reviewed updater commit, model choice, and provider secret before it is active. The import map supplies per-import policies and independent checkpoints for Jiro's engineering, React, Effect, and browser sources. No GitHub App backend or automatic merging is configured.
+The workflow must be published on the default branch and configured with a reviewed updater commit and model choice before it is active. The model credential comes from the shared `opencode-always-on` Worker through GitHub OIDC, so the repository stores no provider secret. The import map supplies per-import policies and independent checkpoints for Jiro's engineering, React, Effect, and browser sources. No GitHub App backend or automatic merging is configured.
 
 ### Clear the counters safely
 

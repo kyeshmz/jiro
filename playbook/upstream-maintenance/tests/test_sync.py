@@ -188,12 +188,46 @@ class SyncTests(unittest.TestCase):
         self.assertIn("schedule:", workflow)
         self.assertIn("workflow_dispatch:", workflow)
         self.assertIn("vars.OC_PORT_AGENT_REF", workflow)
-        self.assertIn("secrets.OPENCODE_API_KEY", workflow)
+        self.assertNotIn("secrets.OPENCODE_API_KEY", workflow)
+        self.assertNotIn("OC_PORT_API_KEY", workflow)
+        self.assertIn("id-token: write", workflow)
+        fetch = workflow.index("Fetch the shared OpenCode credential")
+        self.assertLess(fetch, workflow.index("sync.py sync"))
+        self.assertIn("audience=opencode-always-on", workflow)
+        self.assertLess(workflow.index('::add-mask::$key'), workflow.index('>> "$GITHUB_ENV"'))
         self.assertIn("vars.OC_PORT_MODEL", workflow)
         self.assertIn("sync.py sync", workflow)
         self.assertNotIn("pull_request_target", workflow)
         self.assertNotIn("--auto", workflow)
         self.assertNotIn("pr merge", workflow)
+        setup_bun = workflow.index("oven-sh/setup-bun@")
+        self.assertRegex(workflow[setup_bun:], r"\Aoven-sh/setup-bun@[a-f0-9]{40}\n")
+        self.assertLess(setup_bun, workflow.index("sync.py sync"))
+
+    def test_every_port_proposal_must_pass_the_opencode_compatibility_check(self):
+        compiled = []
+        for entry in REGISTRY["imports"]:
+            try:
+                policy = sync.compile_policy(REPO, entry)
+            except ValueError:
+                continue
+            compiled.append(entry["id"])
+            with self.subTest(entry=entry["id"]):
+                commands = [[command["command"], *command["args"]] for command in policy["verification"]]
+                checker = ["bun", "run", "scripts/check-opencode-skills.ts", *[f"skills/{skill}" for skill in policy["allowSkillEdits"]]]
+                if policy["allowSkillEdits"]:
+                    self.assertIn(checker, commands)
+                    self.assertLess(commands.index(["bun", "install", "--frozen-lockfile"]), commands.index(checker))
+                    self.assertLess(commands.index(checker), commands.index(["bun", "test"]))
+                else:
+                    self.assertNotIn(checker[:3], [command[:3] for command in commands])
+                self.assertLess(commands.index(["bun", "install", "--frozen-lockfile"]), commands.index(["bun", "test"]))
+                self.assertTrue(any("check-opencode-skills.ts reports zero errors" in rule for rule in policy["selections"][0]["acceptance"]))
+                self.assertTrue(any("skills/opencode-compat/SKILL.md" in step for step in policy["selections"][0]["instructions"]["adaptation"]))
+                for protected in ("scripts/**", "tests/**", "package.json", "bun.lock"):
+                    self.assertIn(protected, policy["protectedPaths"])
+        for identifier in ("synthesize-research", "systematic-literature-review", "academic-paper-review", "opencode-compat"):
+            self.assertIn(identifier, compiled)
 
 
 if __name__ == "__main__":

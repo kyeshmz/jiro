@@ -1,0 +1,23 @@
+# Dependencies and generated files
+node_modules/
+package-lock.json
+bun.lock
+
+# Credentials and machine-local state: never commit
+secrets/
+*secret*
+*token*
+auth.json
+mcp-auth.json
+service*.json
+remote-management.json
+
+# Hand-made backups (git replaces them; they may contain old inline secrets)
+*.bak*
+*.backup*
+*-backup-*
+
+# Dream job runtime state
+memory/.dream.lock/
+memory/.dream-state
+memory/dreams/*.log

@@ -78,20 +78,31 @@ test("installs Jiro, its command, Chef, and self-contained references", () => {
   for (const relative of [
     "upstream.json",
     "commands/jiro.md", "agents/chef.md",
-    "commands/correct.md", "commands/teach.md", "commands/unslop.md",
+    "commands/correct.md", "commands/teach.md", "commands/unslop.md", "commands/synthesize-research.md",
     "skills/correct/SKILL.md", "skills/correct/LICENSE",
     "skills/teach/SKILL.md", "skills/teach/LICENSE",
     "skills/unslop/SKILL.md", "skills/unslop/LICENSE",
     "skills/jiro/SKILL.md",
     "skills/jiro/references/shared-rules.md", "skills/jiro/references/refactoring.md",
     "skills/jiro/references/authoring-a-skill.md", "skills/jiro/references/eval.md",
+    "skills/opencode-memory/SKILL.md",
+    "skills/opencode-memory/references/agents-memory-block.md",
+    "skills/opencode-memory/references/dream-prompt.md",
+    "skills/opencode-memory/references/gitignore.template",
+    "skills/opencode-memory/scripts/dream.sh",
+    "skills/opencode-memory/scripts/scan-secrets.py",
+    "skills/synthesize-research/SKILL.md", "skills/synthesize-research/LICENSE",
+    "skills/systematic-literature-review/scripts/arxiv_search.py",
+    "skills/systematic-literature-review/templates/apa.md",
+    "skills/academic-paper-review/SKILL.md",
+    "skills/opencode-compat/SKILL.md", "skills/opencode-compat/references/shared-rules.md",
   ]) {
     const installed = join(config, relative)
     expect(readFileSync(installed, "utf8")).toBe(readFileSync(join(root, relative), "utf8"))
     expect(lstatSync(installed).isSymbolicLink()).toBe(false)
   }
   expect(readFileSync(join(config, "jiro-manifest.txt"), "utf8")).toContain("jiro\n")
-  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\njiro.md\nteach.md\nunslop.md\n")
+  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\njiro.md\nsynthesize-research.md\nteach.md\nunslop.md\n")
   expect(readFileSync(join(config, "jiro-agents-manifest.txt"), "utf8")).toBe("chef.md\n")
   expect(readFileSync(join(config, "opencode.json"), "utf8")).toBe('{"model":"provider/user-choice"}\n')
 })
@@ -235,7 +246,7 @@ test("preserves an unowned custom Jiro command without claiming ownership", () =
   write(command, "My custom command.\n")
   expect(run().stdout).toContain("preserved custom /jiro command")
   expect(readFileSync(command, "utf8")).toBe("My custom command.\n")
-  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\nteach.md\nunslop.md\n")
+  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\nsynthesize-research.md\nteach.md\nunslop.md\n")
   expect(run("--check").status).toBe(0)
 })
 
@@ -265,7 +276,7 @@ test("preserves custom and symlinked companion commands without claiming ownersh
   expect(readFileSync(join(config, "commands/correct.md"), "utf8")).toBe("My correction command.\n")
   expect(lstatSync(join(config, "commands/teach.md")).isSymbolicLink()).toBe(true)
   expect(readFileSync(target, "utf8")).toBe("Personal teaching command.\n")
-  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("jiro.md\nunslop.md\n")
+  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("jiro.md\nsynthesize-research.md\nunslop.md\n")
   expect(run("--check").status).toBe(0)
 })
 

@@ -21,6 +21,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      id-token: write
     steps:
       - name: Require a published, reviewed updater revision
         env:
@@ -53,6 +54,10 @@ jobs:
         run: |
           npm ci
           npm test
+      - name: Set up Bun for Jiro's compatibility check and tests
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+        with:
+          bun-version: '1.4.3'
       - name: Install pinned OpenCode V2
         if: github.event_name == 'schedule' || inputs.mode == 'sync'
         run: npm install --global @opencode/cli@2.0.26
@@ -60,6 +65,18 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.OC_PORT_GITHUB_TOKEN || github.token }}
         run: gh auth setup-git
+      - name: Fetch the shared OpenCode credential
+        if: github.event_name == 'schedule' || inputs.mode == 'sync'
+        env:
+          CREDENTIALS_URL: https://opencode-always-on.kye-324.workers.dev/github/credentials
+        run: |
+          set -euo pipefail
+          oidc=$(curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=opencode-always-on" | jq -r .value)
+          echo "::add-mask::$oidc"
+          key=$(curl -fsS -X POST -H "Authorization: Bearer $oidc" "$CREDENTIALS_URL" | jq -r '.env.OPENCODE_API_KEY // empty')
+          if [[ -z "$key" ]]; then echo 'The credential service returned no OPENCODE_API_KEY.' >&2; exit 1; fi
+          echo "::add-mask::$key"
+          echo "OPENCODE_API_KEY=$key" >> "$GITHUB_ENV"
       - name: Check or update imported skills
         env:
           MODE: ${{ inputs.mode || 'sync' }}
@@ -67,8 +84,6 @@ jobs:
           TARGET_BASE: ${{ github.event.repository.default_branch }}
           GH_TOKEN: ${{ secrets.OC_PORT_GITHUB_TOKEN || github.token }}
           OC_PORT_MODEL: ${{ vars.OC_PORT_MODEL }}
-          OC_PORT_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
-          OC_PORT_API_KEY_ENV: ${{ vars.OC_PORT_API_KEY_ENV || 'OPENCODE_API_KEY' }}
         run: |
           if [[ "$MODE" == 'check' ]]; then
             python3 playbook/upstream-maintenance/scripts/sync.py check --tool .tools/oc-port-agent/dist/src/cli.js
