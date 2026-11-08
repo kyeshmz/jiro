@@ -25,6 +25,9 @@ class InventoryTests(unittest.TestCase):
         self.assertEqual(report["baselineGaps"], [{
             "id": "worktree-cleanup",
             "source": "skills/poteto-mode/playbooks/worktree-cleanup.md",
+        }, {
+            "id": "slides",
+            "source": "skills/slides",
         }])
 
     def test_local_changes_are_scoped_to_each_import(self):

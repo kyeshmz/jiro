@@ -48,7 +48,7 @@ CASES["principle-minimize-reader-load"] = (
 )
 PACKAGING_ONLY = frozenset({
     "correct", "create-subagent", "delegate", "no-comments", "playwright-cli", "playwright-mcp", "swarm", "teach", "unslop",
-    "synthesize-research", "systematic-literature-review", "academic-paper-review", "opencode-compat",
+    "synthesize-research", "systematic-literature-review", "academic-paper-review", "opencode-compat", "opencode-memory", "test-audit", "slides",
 } | (set(json.loads((ROOT / "upstream.json").read_text())["pstackMigration"]["skills"].values()) - set(CASES) - {"jiro"}))
 NOTES = '''import argparse
 import json
