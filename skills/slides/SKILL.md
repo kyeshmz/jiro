@@ -1,0 +1,169 @@
+---
+name: slides
+description: Create slide decks and presentations, write a draft outline first, show it for approval, then build the deck. Use when the user mentions slides, slide deck, presentation, deck, pitch deck, Google Slides, or Keynote, or asks to make slides for a talk, update, proposal, or review, even when no file format is named.
+license: MIT
+---
+
+# Slides
+
+Build a short presentation the user can approve before any file is made. The rule for this skill is draft first, build second, and keep every slide light on text.
+
+Read `references/shared-rules.md` from this skill's reported base directory. Resolve every bundled reference from that directory, not the shell working directory.
+
+## When to use this skill
+
+Use this skill when the user wants slides or a presentation. That includes a pitch, an update, a walkthrough, a proposal, a status report, and a teaching deck. Also use it when the user says make me a deck or turn this into slides. Also use it when the user wants a deck they can paste into Google Slides or Keynote later. Do not use it for a plain document or a chat summary unless the user asks for slides.
+
+## Quick start
+
+Run it like this:
+
+```text
+/slides Turn the Q3 results into a 10 slide update for the team.
+```
+
+Or load it directly:
+
+```text
+@slides Make a 5 slide pitch for the new onboarding flow.
+```
+
+The first step is always a draft. The draft goes in chat. No deck file is made before the user approves the draft.
+
+## Workflow
+
+### 1. Assess and gather the brief
+
+Assess the deck from context. Do not ask what the deck is about or who the audience is. Infer the subject and the likely audience from the request, the conversation, and any supplied files or links. Use that assessment in the draft header.
+
+Ask one round only with the `question` tool when it is available. Ask only for details that context cannot settle:
+
+- Goal. What decision or outcome the slides should drive.
+- Length. How many slides and how long the talk runs, when the request states none.
+- Format. Default to a browser-ready HTML deck and a companion Markdown source. Support other requested formats with available tools.
+- Sources. Which notes, files, numbers, or links to ground the slides in, when none are supplied.
+- Style. Tone, branding, and any must avoid content.
+
+State the assessed subject and audience in the draft header so the user can correct them in one pass. When the context is truly thin, make the lightest honest assessment and flag the uncertainty in the draft. Do not turn the topic or the audience into a direct question.
+
+### 2. Write the draft and show it
+
+Show the draft in chat before building anything. The draft is the contract for the deck. The user approves the story, not the styling.
+
+Use this structure for the draft:
+
+```markdown
+# Deck title
+
+Audience. Goal. Slide count. Format. Paste target or none.
+
+## Slide 1. Title
+Takeaway. One sentence the slide must land.
+Bullets. Up to 4 short bullets.
+Speaker notes. What to say out loud. Keep script detail here.
+References. Sources and comments for every claim on this slide.
+Visual. Chart, screenshot, diagram, or none.
+```
+
+Keep the same fields on every slide. The draft must show the full arc in order. Title slide, problem or context, evidence or walkthrough, decision or next step, and closing. Put the ask or the decision early when the deck is a pitch or a proposal.
+
+Titles are allowed. One title per slide. Subtitles are not allowed. Do not add a subtitle line under the deck title or under any slide title. Do not add a subtitle field to the draft template. If extra framing is needed, put it in speaker notes or in the first bullet.
+
+Never use a bottom sentence. Do not add a sentence at the bottom of a slide to describe or summarize the slide or the deck. The bottom area stays empty except for a short source label or a slide number when needed. A source label is not a bottom sentence. A source label names where the claim came from in a few words. A bottom sentence retells the point in prose and never appears.
+
+Show the draft in the chat reply. Then stop and wait for approval. Use the `question` tool with these choices when it is available.
+
+- Approve draft and build
+- Revise draft first
+- Build a shorter version
+
+Do not build files while the draft is unapproved. Do not rename an unapproved draft as final.
+
+### 3. Enforce the text limit
+
+Every slide carries minimal text. Talk is spoken. Slides carry the point, not the script.
+
+- There is no 40 word max. Judge each slide by format, not by a single word count for all slides.
+- Prose paragraphs stay minimal. A paragraph on a slide is a sign to split or move detail into speaker notes.
+- Lists are treated differently. A bunch of words that belong in a list can carry more total words when each item stays short and scannable. Judge a list by whether a reader can scan it at a glance, not by word count alone.
+- Hard cap is 500 words per slide. Anything over 500 words on one slide is too much and must be split into several slides before building.
+- Split when a slide mixes two ideas, runs past 4 bullets, or needs a paragraph to explain itself. The fix is more slides, not smaller font.
+- Move detail into speaker notes. Notes can carry the full explanation. Visible text stays short.
+- Cut filler sentences. Each bullet should be a scannable phrase or a short claim with evidence.
+- Ordered content goes in its own boxes. When items deserve order, such as steps, sequence, or rank, place each item in its own rounded box with its number. Do not stack all ordered items into one bullet list in the visual deck.
+- Never add a bottom sentence. Do not place a closing or summary sentence at the bottom of any slide.
+
+Check the draft against this limit and say the word count, the format call, or the split decision for any slide near the cap. List heavy slides need a scannability call. The build must keep the same cap.
+
+### 4. Add references and comments to every slide
+
+Every factual claim needs a source. The source lives in the slide comments and in the speaker notes.
+
+- Give every slide a References field in the draft. List the source for each bullet and each number. Use a short label on the slide and a full comment in the notes.
+- Map each claim to its source in the draft. Vague credit like sources above is not enough. Each bullet or number should be traceable to one named source.
+- In the built deck, embed the same comments in speaker notes on every slide. In HTML, add an HTML comment per slide and a notes section with the full reference. In PPTX, add the full reference to speaker notes.
+- Keep the visible footer small. Put a short source label in the footer when the claim needs visible credit. The label names the source in a few words. It never summarizes the slide. Keep full links and notes in the comments.
+- Label estimates as estimates. Say who estimated and from what data when that is known.
+- Flag any claim with no source at draft time. Do not build around an ungrounded claim.
+
+### 5. Revise on feedback
+
+Apply the change to the draft and show the revised draft again. Keep the same show and approve loop until the user approves or asks you to proceed with a noted gap.
+
+When the user corrects tone, audience, or length, update the draft header so the approved version states the final choice.
+
+### 6. Build the deck
+
+Build only after approval. Build to the approved draft. Do not add new claims in the build step.
+
+Output rules:
+
+- Default output is a browser-ready HTML deck and a companion Markdown source. Keep the same slide order, visible wording, speaker notes, and references in both. Use a heading for each slide, standard Markdown lists, and `---` between slides. Keep notes and references labeled separately from visible slide text.
+- Use ordinary semantic lists and native circular bullets. Do not use decorative or custom bullet glyphs. In HTML use `ul` and `li` with standard disc markers. In an editable presentation use native bullet lists.
+- Make the HTML copy friendly with separate title and content elements and simple lists. Markdown preserves text and list structure, not visual layout or editable slide objects. Explain that the user may need to recreate formatting and copy notes into the target application. Do not claim that pasting or importing preserves layout or separate text boxes unless tested in the target application.
+- For Google Slides or Keynote, provide the Markdown and HTML. Give concise copy steps. State which target applications and import or paste behaviors were actually tested.
+- Add a PPTX build when the user asks for it or needs to edit in PowerPoint. Use a checked local toolchain for PPTX generation. Check what is installed before claiming it exists.
+- Save to a path the user confirms. Never write into the installed skill directory.
+- Match the approved slide order and titles. Each slide title is the takeaway where possible. Do not add subtitles in the build. Do not add a bottom summary sentence in the build.
+- Keep visible text under the same limit as the draft. Speaker notes carry the script.
+- Add a visual where the draft calls for one. Use a simple chart, table, or diagram. Label every number with its source or mark it as an estimate from the draft.
+- Give slide boxes, cards, and callouts rounded corners. Do not chamfer their corners.
+- Keep title and content in 2 different text boxes. Each slide has one title box and one content box as separate boxes. Do not place the title and the bullets in the same box. The title box holds the title only. The content box holds bullets, lists, or visuals.
+
+### 7. Show the result
+
+Show the user what was built. Report what the proof shows.
+
+- List each output file path.
+- Show the final slide list in chat.
+- Share a preview when a browser tool is available. A screenshot of the first slide or the slide list is enough to prove the file renders.
+- Name the text limit check result. State the max words on any slide and any splits you made.
+- Name the title rule check. Confirm titles are present and subtitles are absent.
+- Name the bottom sentence check. Confirm no bottom summary sentence appears on any slide.
+- Name the box check. Confirm boxes have rounded corners and title and content sit in separate elements or text boxes.
+- Confirm standard list bullets and the companion Markdown source. Report any copy or import behavior that was not tested.
+- Name the references check. Confirm each slide has comments with sources.
+- Give the paste steps when the user wants Google Slides or Keynote. Keep the steps short.
+- Say what remains unproved. Missing images, unverified numbers, or untested rendering are gaps, not proof.
+
+Check that the files exist, the visual deck renders, and both outputs match the approved draft. Report untested paste or import behavior as a limitation.
+
+## Guardrails
+
+- Draft first. No deck before explicit approval.
+- Minimal text on every slide. Over 500 words means split.
+- Titles allowed. Subtitles banned.
+- Never use a bottom summary sentence.
+- Rounded boxes. No chamfered corners.
+- Use standard native bullets, not custom bullet glyphs.
+- Include a companion Markdown source by default.
+- Title and content in 2 different text boxes.
+- References and comments on every slide. No claim without a source.
+- Prefer copy-friendly output. Verify target-app paste behavior before claiming it works.
+- Keep chat as the home for drafts unless the user asks for a file.
+- Do not edit the installed pack or global config unless asked.
+- Do not commit, push, open a PR, or deploy unless asked.
+
+## Reply
+
+Lead with the draft or the finished deck path. For a draft reply, show the draft itself and the approval question. For a finished reply, list the files, the slide list, the word count check, the title and references checks, and the paste steps when they apply.

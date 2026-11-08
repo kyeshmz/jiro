@@ -95,7 +95,7 @@ Invoking a skill does not authorize commits, pushes, PRs, merges, deployments, g
 
 ## Tools on the rack
 
-Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, `composition-patterns`, `synthesize-research`, `systematic-literature-review`, `academic-paper-review`, and `opencode-compat` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, `/unslop`, and `/synthesize-research` have bundled slash-command wrappers.
+Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, `composition-patterns`, `synthesize-research`, `systematic-literature-review`, `academic-paper-review`, `opencode-compat`, and `slides` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, and `/slides` have bundled slash-command wrappers.
 
 ### Jiro tool coverage
 
@@ -164,6 +164,7 @@ The additional principles are individually available:
 | [`@systematic-literature-review`](skills/systematic-literature-review/SKILL.md) | Survey arXiv papers on a topic and synthesize themes with APA, IEEE, or BibTeX citations. |
 | [`@academic-paper-review`](skills/academic-paper-review/SKILL.md) | Write a structured peer review of one paper. |
 | [`@opencode-compat`](skills/opencode-compat/SKILL.md) | Port a third-party skill to OpenCode V2 and prove it with the compatibility checker. |
+| [`@slides`](skills/slides/SKILL.md) | Draft slides first, show them for approval, then build the deck with minimal text per slide. |
 | [`@principle-foundational-thinking`](skills/principle-foundational-thinking/SKILL.md) | Choose core data structures, access patterns, and ownership before logic. |
 | [`@principle-redesign-from-first-principles`](skills/principle-redesign-from-first-principles/SKILL.md) | Integrate a requirement as a day-one assumption and deliver incrementally. |
 | [`@principle-attack-the-premise`](skills/principle-attack-the-premise/SKILL.md) | Challenge a premise after repeated fixes fail and require a per-actor census. |
@@ -220,7 +221,7 @@ The `playwright-mcp` entry in [upstream.json](upstream.json) documents a histori
 | `skills/` | The tool rack. Skills, references, helpers, licenses, and shared rules. |
 | `upstream.json` | The single source-repository catalog, pins, provenance notes, preservation rules, and bundle checksums. |
 | `skills/jiro/references/recipes.md` | The recipe book. Task workflows and verification steps. |
-| `commands/` | `/jiro`, `/correct`, `/teach`, and `/unslop` wrappers. |
+| `commands/` | `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, and `/slides` wrappers. |
 | `agents/` | Registered OpenCode worker definitions, including Chef. |
 | `install.sh` | Global skill and command installer. |
 | `scripts/sync-opencode.ts` | The Bun and Commander owner of installation, backups, ownership manifests, and hook setup. |

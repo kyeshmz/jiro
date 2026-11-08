@@ -104,6 +104,7 @@ Start with Jiro for a nontrivial end-to-end task. Name a focused skill directly 
 | Survey academic literature across many papers. | [@systematic-literature-review](../systematic-literature-review/SKILL.md). |
 | Peer-review a single academic paper. | [@academic-paper-review](../academic-paper-review/SKILL.md). |
 | Port a third-party skill to OpenCode and check it. | [@opencode-compat](../opencode-compat/SKILL.md). |
+| Create slides with a draft for approval first. | [@slides](../slides/SKILL.md). |
 | Find their way around this pack. | `@kstack-help`. |
 
 For another installed skill, read its frontmatter and route by its description. Do not claim a tool is installed solely because this table names it. Report missing companions rather than substituting another pack.

@@ -102,7 +102,7 @@ test("installs Jiro, its command, Chef, and self-contained references", () => {
     expect(lstatSync(installed).isSymbolicLink()).toBe(false)
   }
   expect(readFileSync(join(config, "jiro-manifest.txt"), "utf8")).toContain("jiro\n")
-  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\njiro.md\nsynthesize-research.md\nteach.md\nunslop.md\n")
+  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\njiro.md\nslides.md\nsynthesize-research.md\nteach.md\nunslop.md\n")
   expect(readFileSync(join(config, "jiro-agents-manifest.txt"), "utf8")).toBe("chef.md\n")
   expect(readFileSync(join(config, "opencode.json"), "utf8")).toBe('{"model":"provider/user-choice"}\n')
 })
@@ -246,7 +246,7 @@ test("preserves an unowned custom Jiro command without claiming ownership", () =
   write(command, "My custom command.\n")
   expect(run().stdout).toContain("preserved custom /jiro command")
   expect(readFileSync(command, "utf8")).toBe("My custom command.\n")
-  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\nsynthesize-research.md\nteach.md\nunslop.md\n")
+  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("correct.md\nslides.md\nsynthesize-research.md\nteach.md\nunslop.md\n")
   expect(run("--check").status).toBe(0)
 })
 
@@ -276,7 +276,7 @@ test("preserves custom and symlinked companion commands without claiming ownersh
   expect(readFileSync(join(config, "commands/correct.md"), "utf8")).toBe("My correction command.\n")
   expect(lstatSync(join(config, "commands/teach.md")).isSymbolicLink()).toBe(true)
   expect(readFileSync(target, "utf8")).toBe("Personal teaching command.\n")
-  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("jiro.md\nsynthesize-research.md\nunslop.md\n")
+  expect(readFileSync(join(config, "jiro-commands-manifest.txt"), "utf8")).toBe("jiro.md\nslides.md\nsynthesize-research.md\nunslop.md\n")
   expect(run("--check").status).toBe(0)
 })
 
