@@ -48,6 +48,8 @@ test("slides is a licensed Jiro native tool with draft first approval", () => {
   expect(skill).toContain("Never use a bottom sentence")
   expect(skill).toContain("rounded box")
   expect(skill).toContain("Rounded boxes. No chamfered corners.")
+  expect(skill).toContain("Plain slide canvas and unfilled title")
+  expect(skill).toContain("Reserve background fills for content boxes")
   expect(skill).toContain("native circular bullets")
   expect(skill).toContain("companion Markdown source")
   expect(skill).toContain("not visual layout or editable slide objects")

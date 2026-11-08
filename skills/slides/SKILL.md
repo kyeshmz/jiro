@@ -128,6 +128,7 @@ Output rules:
 - Keep visible text under the same limit as the draft. Speaker notes carry the script.
 - Add a visual where the draft calls for one. Use a simple chart, table, or diagram. Label every number with its source or mark it as an estimate from the draft.
 - Give slide boxes, cards, and callouts rounded corners. Do not chamfer their corners.
+- Use a plain slide canvas and an unfilled title text box. Reserve background fills for content boxes that group items such as bullets or numbered steps. Do not add a decorative title banner or other filled background elements.
 - Keep title and content in 2 different text boxes. Each slide has one title box and one content box as separate boxes. Do not place the title and the bullets in the same box. The title box holds the title only. The content box holds bullets, lists, or visuals.
 
 ### 7. Show the result
@@ -141,6 +142,7 @@ Show the user what was built. Report what the proof shows.
 - Name the title rule check. Confirm titles are present and subtitles are absent.
 - Name the bottom sentence check. Confirm no bottom summary sentence appears on any slide.
 - Name the box check. Confirm boxes have rounded corners and title and content sit in separate elements or text boxes.
+- Check that the title has no background fill and that filled boxes are used only to group content.
 - Confirm standard list bullets and the companion Markdown source. Report any copy or import behavior that was not tested.
 - Name the references check. Confirm each slide has comments with sources.
 - Give the paste steps when the user wants Google Slides or Keynote. Keep the steps short.
@@ -155,6 +157,7 @@ Check that the files exist, the visual deck renders, and both outputs match the 
 - Titles allowed. Subtitles banned.
 - Never use a bottom summary sentence.
 - Rounded boxes. No chamfered corners.
+- Plain slide canvas and unfilled title. Background fills only on content boxes that group items.
 - Use standard native bullets, not custom bullet glyphs.
 - Include a companion Markdown source by default.
 - Title and content in 2 different text boxes.
