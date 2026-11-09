@@ -69,7 +69,7 @@ Keep the same fields on every slide. The draft must show the full arc in order. 
 
 Titles are allowed. One title per slide. Subtitles are not allowed. Do not add a subtitle line under the deck title or under any slide title. Do not add a subtitle field to the draft template. If extra framing is needed, put it in speaker notes or in the first bullet.
 
-Never use a bottom sentence. Do not add a sentence at the bottom of a slide to describe or summarize the slide or the deck. The bottom area stays empty except for a short source label or a slide number when needed. A source label is not a bottom sentence. A source label names where the claim came from in a few words. A bottom sentence retells the point in prose and never appears.
+Never use a footer. Do not add a bottom sentence to describe or summarize the slide or the deck, and do not add a source label or attribution line at the bottom. The bottom area is empty except for a slide number when needed. Sources live in speaker notes and slide comments only, never as visible text at the bottom.
 
 Show the draft in the chat reply. Then stop and wait for approval. Use the `question` tool with these choices when it is available.
 
@@ -91,7 +91,7 @@ Every slide carries minimal text. Talk is spoken. Slides carry the point, not th
 - Move detail into speaker notes. Notes can carry the full explanation. Visible text stays short.
 - Cut filler sentences. Each bullet should be a scannable phrase or a short claim with evidence.
 - Ordered content goes in its own boxes. When items deserve order, such as steps, sequence, or rank, place each item in its own rounded box with its number. Do not stack all ordered items into one bullet list in the visual deck.
-- Never add a bottom sentence. Do not place a closing or summary sentence at the bottom of any slide.
+- Never add a footer. Do not place a bottom sentence, source label, or attribution line at the bottom of any slide. Slide number is the only allowed bottom element.
 
 Check the draft against this limit and say the word count, the format call, or the split decision for any slide near the cap. List heavy slides need a scannability call. The build must keep the same cap.
 
@@ -99,10 +99,10 @@ Check the draft against this limit and say the word count, the format call, or t
 
 Every factual claim needs a source. The source lives in the slide comments and in the speaker notes.
 
-- Give every slide a References field in the draft. List the source for each bullet and each number. Use a short label on the slide and a full comment in the notes.
+- Give every slide a References field in the draft. List the source for each bullet and each number in the draft. Keep sources in comments and speaker notes only. Do not put a short label on the slide.
 - Map each claim to its source in the draft. Vague credit like sources above is not enough. Each bullet or number should be traceable to one named source.
 - In the built deck, embed the same comments in speaker notes on every slide. In HTML, add an HTML comment per slide and a notes section with the full reference. In PPTX, add the full reference to speaker notes.
-- Keep the visible footer small. Put a short source label in the footer when the claim needs visible credit. The label names the source in a few words. It never summarizes the slide. Keep full links and notes in the comments.
+- Do not add a visible footer. Attribution lives only in slide comments and speaker notes. Keep full links and notes in the comments, never as visible footer text.
 - Label estimates as estimates. Say who estimated and from what data when that is known.
 - Flag any claim with no source at draft time. Do not build around an ungrounded claim.
 
@@ -124,9 +124,9 @@ Output rules:
 - For Google Slides or Keynote, provide the Markdown and HTML. Give concise copy steps. State which target applications and import or paste behaviors were actually tested.
 - Add a PPTX build when the user asks for it or needs to edit in PowerPoint. Use a checked local toolchain for PPTX generation. Check what is installed before claiming it exists.
 - Save to a path the user confirms. Never write into the installed skill directory.
-- Match the approved slide order and titles. Each slide title is the takeaway where possible. Do not add subtitles in the build. Do not add a bottom summary sentence in the build.
+- Match the approved slide order and titles. Each slide title is the takeaway where possible. Do not add subtitles in the build. Do not add a footer or bottom summary sentence in the build.
 - Keep visible text under the same limit as the draft. Speaker notes carry the script.
-- Add a visual where the draft calls for one. Use a simple chart, table, or diagram. Label every number with its source or mark it as an estimate from the draft.
+- Add a visual where the draft calls for one. Use a simple chart, table, or diagram. In speaker notes and comments, name the source for every number or mark it as an estimate from the draft. Do not label numbers with visible footer text.
 - Give slide boxes, cards, and callouts rounded corners. Do not chamfer their corners.
 - Use a plain slide canvas and an unfilled title text box. Reserve background fills for content boxes that group items such as bullets or numbered steps. Do not add a decorative title banner or other filled background elements.
 - Keep title and content in 2 different text boxes. Each slide has one title box and one content box as separate boxes. Do not place the title and the bullets in the same box. The title box holds the title only. The content box holds bullets, lists, or visuals.
@@ -140,7 +140,7 @@ Show the user what was built. Report what the proof shows.
 - Share a preview when a browser tool is available. A screenshot of the first slide or the slide list is enough to prove the file renders.
 - Name the text limit check result. State the max words on any slide and any splits you made.
 - Name the title rule check. Confirm titles are present and subtitles are absent.
-- Name the bottom sentence check. Confirm no bottom summary sentence appears on any slide.
+- Name the footer check. Confirm no footer element appears on any slide. Slide number is the only bottom element when needed.
 - Name the box check. Confirm boxes have rounded corners and title and content sit in separate elements or text boxes.
 - Check that the title has no background fill and that filled boxes are used only to group content.
 - Confirm standard list bullets and the companion Markdown source. Report any copy or import behavior that was not tested.
@@ -155,7 +155,7 @@ Check that the files exist, the visual deck renders, and both outputs match the 
 - Draft first. No deck before explicit approval.
 - Minimal text on every slide. Over 500 words means split.
 - Titles allowed. Subtitles banned.
-- Never use a bottom summary sentence.
+- Never use a footer. No bottom sentence, no source label, no attribution line. Slide number is the only bottom element.
 - Rounded boxes. No chamfered corners.
 - Plain slide canvas and unfilled title. Background fills only on content boxes that group items.
 - Use standard native bullets, not custom bullet glyphs.
