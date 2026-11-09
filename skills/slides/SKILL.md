@@ -129,7 +129,17 @@ Output rules:
 - Add a visual where the draft calls for one. Use a simple chart, table, or diagram. In speaker notes and comments, name the source for every number or mark it as an estimate from the draft. Do not label numbers with visible footer text.
 - Give slide boxes, cards, and callouts rounded corners. Do not chamfer their corners.
 - Use a plain slide canvas and an unfilled title text box. Reserve background fills for content boxes that group items such as bullets or numbered steps. Do not add a decorative title banner or other filled background elements.
-- Keep title and content in 2 different text boxes. Each slide has one title box and one content box as separate boxes. Do not place the title and the bullets in the same box. The title box holds the title only. The content box holds bullets, lists, or visuals.
+- Keep the title separate from body text and visuals. Use a content-sized text box for the title and for each independent body block, label, or caption. Grouping frames and layout containers are separate from these text boxes.
+
+#### Fit text boxes to their content
+
+Always size every text box to its actual content plus modest, consistent padding. This applies to titles, body text, lists, labels and captions in HTML, PowerPoint, Google Slides and other presentation formats. Tight bounds make text easier to select, move and edit without invisible boxes overlapping neighbouring content.
+
+- Preserve the intended font size. Resize the box to fit the text, rather than shrinking text to fit a fixed box. If the content cannot fit on the slide at a readable size, shorten it or split the slide.
+- Measure using the actual font, weight, size, line spacing, paragraph spacing, bullet indents and internal margins. Fit single-line boxes to the text width and height. For multiline text, choose the width for the intended wrapping, then fit the height to the wrapped content. Leave only padding and a small font-metric tolerance around the text.
+- Put alignment and spacing in the surrounding layout. Do not use oversized text boxes, empty paragraphs or arbitrary minimum heights to position text. Cards and group frames may be larger for visual grouping; their text boxes still fit their own content.
+- In HTML, measure the text-bearing element rather than its enclosing grid cell or card. In editable exports, write measured text-box dimensions and use resize-shape-to-fit-text when the format supports it. Do not rely on shrink-to-fit or on the receiving application to repair the dimensions.
+- Refit after wording, font or wrapping changes. Inspect rendered text bounds against the box interior for clipping, overlap and excessive empty space. Repeat this check after a requested target-app import when that app is available, and report an untested import honestly.
 
 ### 7. Show the result
 
@@ -142,6 +152,7 @@ Show the user what was built. Report what the proof shows.
 - Name the title rule check. Confirm titles are present and subtitles are absent.
 - Name the footer check. Confirm no footer element appears on any slide. Slide number is the only bottom element when needed.
 - Name the box check. Confirm boxes have rounded corners and title and content sit in separate elements or text boxes.
+- Name the text-box fit check. Confirm text boxes fit their content with appropriate padding at the intended font size, without clipping or oversized empty bounds.
 - Check that the title has no background fill and that filled boxes are used only to group content.
 - Confirm standard list bullets and the companion Markdown source. Report any copy or import behavior that was not tested.
 - Name the references check. Confirm each slide has comments with sources.
@@ -160,7 +171,7 @@ Check that the files exist, the visual deck renders, and both outputs match the 
 - Plain slide canvas and unfilled title. Background fills only on content boxes that group items.
 - Use standard native bullets, not custom bullet glyphs.
 - Include a companion Markdown source by default.
-- Title and content in 2 different text boxes.
+- Keep title and body text separate. Fit every text box to its content and padding; preserve readable font sizes.
 - References and comments on every slide. No claim without a source.
 - Prefer copy-friendly output. Verify target-app paste behavior before claiming it works.
 - Keep chat as the home for drafts unless the user asks for a file.

@@ -40,7 +40,7 @@ test("slides is a licensed Jiro native tool with draft first approval", () => {
   expect(skill).toContain("Ordered content goes in its own boxes")
   expect(skill).toContain("Assess the deck from context")
   expect(skill).toContain("Do not ask what the deck is about")
-  expect(skill).toContain("2 different text boxes")
+  expect(skill).toContain("Keep the title separate from body text and visuals")
   expect(skill).toContain("Show the draft in chat")
   expect(skill).toContain("wait for approval")
   expect(skill).toContain("Titles are allowed")
