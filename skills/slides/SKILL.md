@@ -48,7 +48,7 @@ State the assessed subject and audience in the draft header so the user can corr
 
 ### 2. Write the draft and show it
 
-Show the draft in chat before building anything. The draft is the contract for the deck. The user approves the story, not the styling.
+Run the `humanizer` skill on every line of visible slide text before the line enters the draft. That covers titles, bullets, table cells, captions, and numbered steps. Re-run it on any line a revision touches. Speaker notes can stay plain. Then show the draft in chat before building anything. The draft is the contract for the deck. The user approves the story, not the styling.
 
 Use this structure for the draft:
 
@@ -69,7 +69,7 @@ Keep the same fields on every slide. The draft must show the full arc in order. 
 
 Titles are allowed. One title per slide. Subtitles are not allowed. Do not add a subtitle line under the deck title or under any slide title. Do not add a subtitle field to the draft template. If extra framing is needed, put it in speaker notes or in the first bullet.
 
-Never use a footer. Do not add a bottom sentence to describe or summarize the slide or the deck, and do not add a source label or attribution line at the bottom. The bottom area is empty except for a slide number when needed. Sources live in speaker notes and slide comments only, never as visible text at the bottom.
+Never use a footer. Do not add a bottom sentence to describe or summarize the slide or the deck, and do not add a source label or attribution line at the bottom. The bottom area is empty except for a slide number when needed. Sources live in slide comments only, never as visible text and never in the speaker notes.
 
 Show the draft in the chat reply. Then stop and wait for approval. Use the `question` tool with these choices when it is available.
 
@@ -95,20 +95,21 @@ Every slide carries minimal text. Talk is spoken. Slides carry the point, not th
 
 Check the draft against this limit and say the word count, the format call, or the split decision for any slide near the cap. List heavy slides need a scannability call. The build must keep the same cap.
 
-### 4. Add references and comments to every slide
+### 4. Put references in slide comments
 
-Every factual claim needs a source. The source lives in the slide comments and in the speaker notes.
+Every factual claim needs a source, and the source lives in the deck's source comments. It does not go on the slide and it does not go in the speaker notes.
 
-- Give every slide a References field in the draft. List the source for each bullet and each number in the draft. Keep sources in comments and speaker notes only. Do not put a short label on the slide.
+- Give every slide a References field in the draft. List the source for each bullet and each number in the draft. Do not put a short label on the slide.
 - Map each claim to its source in the draft. Vague credit like sources above is not enough. Each bullet or number should be traceable to one named source.
-- In the built deck, embed the same comments in speaker notes on every slide. In HTML, add an HTML comment per slide and a notes section with the full reference. In PPTX, add the full reference to speaker notes.
-- Do not add a visible footer. Attribution lives only in slide comments and speaker notes. Keep full links and notes in the comments, never as visible footer text.
+- In the built HTML, add one comment per slide that carries the full references. File a licence credit for every third-party image in the same comment.
+- Keep speaker notes for the script, the caveats, and what to say out loud. Do not paste references into them.
+- Never add a visible footer, source label, or attribution line. Attribution lives only in the comments.
 - Label estimates as estimates. Say who estimated and from what data when that is known.
 - Flag any claim with no source at draft time. Do not build around an ungrounded claim.
 
 ### 5. Revise on feedback
 
-Apply the change to the draft and show the revised draft again. Keep the same show and approve loop until the user approves or asks you to proceed with a noted gap.
+Apply the change to the draft and show the revised draft again. Run the `humanizer` skill on every new or edited visible line before showing it. Keep the same show and approve loop until the user approves or asks you to proceed with a noted gap.
 
 When the user corrects tone, audience, or length, update the draft header so the approved version states the final choice.
 
@@ -118,7 +119,7 @@ Build only after approval. Build to the approved draft. Do not add new claims in
 
 Output rules:
 
-- Default output is a browser-ready HTML deck and a companion Markdown source. Keep the same slide order, visible wording, speaker notes, and references in both. Use a heading for each slide, standard Markdown lists, and `---` between slides. Keep notes and references labeled separately from visible slide text.
+- Default output is a browser-ready HTML deck and a companion Markdown source. Keep the same slide order, visible wording, and speaker notes in both. References live only in the HTML comments. Use a heading for each slide, standard Markdown lists, and `---` between slides. Keep speaker notes labeled separately from visible slide text.
 - Use ordinary semantic lists and native circular bullets. Do not use decorative or custom bullet glyphs. In HTML use `ul` and `li` with standard disc markers. In an editable presentation use native bullet lists.
 - Make the HTML copy friendly with separate title and content elements and simple lists. Markdown preserves text and list structure, not visual layout or editable slide objects. Explain that the user may need to recreate formatting and copy notes into the target application. Do not claim that pasting or importing preserves layout or separate text boxes unless tested in the target application.
 - For Google Slides or Keynote, provide the Markdown and HTML. Give concise copy steps. State which target applications and import or paste behaviors were actually tested.
@@ -126,7 +127,7 @@ Output rules:
 - Save to a path the user confirms. Never write into the installed skill directory.
 - Match the approved slide order and titles. Each slide title is the takeaway where possible. Do not add subtitles in the build. Do not add a footer or bottom summary sentence in the build.
 - Keep visible text under the same limit as the draft. Speaker notes carry the script.
-- Add a visual where the draft calls for one. Use a simple chart, table, or diagram. In speaker notes and comments, name the source for every number or mark it as an estimate from the draft. Do not label numbers with visible footer text.
+- Add a visual where the draft calls for one. Use a simple chart, table, or diagram. In the slide comments, name the source for every number or mark it as an estimate from the draft. Do not label numbers with visible footer text.
 - Give slide boxes, cards, and callouts rounded corners. Do not chamfer their corners.
 - Use a plain slide canvas and an unfilled title text box. Reserve background fills for content boxes that group items such as bullets or numbered steps. Do not add a decorative title banner or other filled background elements.
 - Keep the title separate from body text and visuals. Use a content-sized text box for the title and for each independent body block, label, or caption. Grouping frames and layout containers are separate from these text boxes.
@@ -164,6 +165,7 @@ Check that the files exist, the visual deck renders, and both outputs match the 
 ## Guardrails
 
 - Draft first. No deck before explicit approval.
+- Humanize first. Every visible slide line passes through the `humanizer` skill before it appears in a draft, a revision, or the build.
 - Minimal text on every slide. Over 500 words means split.
 - Titles allowed. Subtitles banned.
 - Never use a footer. No bottom sentence, no source label, no attribution line. Slide number is the only bottom element.
