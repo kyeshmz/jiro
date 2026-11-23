@@ -2441,7 +2441,8 @@
         "Never use a bottom sentence. Do not add a summary sentence at the bottom of any slide.",
         "Use rounded corners on slide boxes, cards, and callouts. Do not use chamfered corners.",
         "Show the draft in chat with title, takeaway, bullets, speaker notes, references, and visual for each slide, then wait for approval with the question tool when available.",
-        "Add references and comments to every slide. Map each claim to a named source and embed full references in speaker notes and HTML comments with a short visible footer label.",
+        "Add references to every slide. Map each claim to a named source and keep full references and image licence credits in one HTML comment per slide, never on the slide and never in speaker notes.",
+        "Run the humanizer skill on every visible slide line before it enters a draft, and again on any line a revision touches.",
         "Build only after approval to the approved order and titles. Provide browser-ready HTML and a companion Markdown source by default. Use standard native bullets and report unverified Google Slides and Keynote import or paste behavior.",
         "Resolve resources from the loaded skill base, ground claims in supplied sources, label estimates, and retain the MIT notice.",
         "Use a plain slide canvas and unfilled title. Reserve background fills for content boxes grouping bullets or ordered items."

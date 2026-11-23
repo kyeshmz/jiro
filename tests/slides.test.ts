@@ -27,7 +27,7 @@ test("slides is a licensed Jiro native tool with draft first approval", () => {
     "### 1. Assess and gather the brief",
     "### 2. Write the draft and show it",
     "### 3. Enforce the text limit",
-    "### 4. Add references and comments to every slide",
+    "### 4. Put references in slide comments",
     "### 5. Revise on feedback",
     "### 6. Build the deck",
     "### 7. Show the result",
@@ -41,7 +41,7 @@ test("slides is a licensed Jiro native tool with draft first approval", () => {
   expect(skill).toContain("Assess the deck from context")
   expect(skill).toContain("Do not ask what the deck is about")
   expect(skill).toContain("Keep the title separate from body text and visuals")
-  expect(skill).toContain("Show the draft in chat")
+  expect(skill).toContain("show the draft in chat before building anything")
   expect(skill).toContain("wait for approval")
   expect(skill).toContain("Titles are allowed")
   expect(skill).toContain("Subtitles are not allowed")
@@ -58,6 +58,11 @@ test("slides is a licensed Jiro native tool with draft first approval", () => {
   expect(skill).not.toContain("Each slide box, card, and callout uses chamfered corners")
   expect(skill).toContain("References field")
   expect(skill).toContain("speaker notes")
+  expect(skill).toContain("Sources live in slide comments only, never as visible text and never in the speaker notes.")
+  expect(skill).toContain("Do not paste references into them.")
+  expect(skill).toContain("References live only in the HTML comments.")
+  expect(skill).not.toContain("embed the same comments in speaker notes")
+  expect(skill).toContain("Run the `humanizer` skill on every line of visible slide text")
   expect(skill).toContain("Google Slides")
   expect(skill).toContain("Keynote")
   expect(skill).toContain("Do not claim that pasting or importing preserves layout")
