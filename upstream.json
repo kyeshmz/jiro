@@ -2500,6 +2500,34 @@
         "Preserve the upstream Apache-2.0 license in skills/drawio/LICENSE and the bundled reference attribution."
       ],
       "provenance": "# Upstream source\n\nAdapted from the [JGraph Draw.io skill](https://github.com/jgraph/drawio-mcp/blob/639186a5cdaea5a0d47215f5f404ac7b76ccf634/plugins/claude-code/skills/drawio/SKILL.md) in `jgraph/drawio-mcp`.\n\nThe source revision on the `main` branch is `639186a5cdaea5a0d47215f5f404ac7b76ccf634`. The upstream skill directory contains `SKILL.md` plus `scripts/find-shapes.js`; the shared directory contains `mermaid-reference.md`, `xml-essentials.md`, and `xml-reference.md`. All are imported and vendored under `skills/drawio/` as `references/` and `scripts/`. The repository Apache-2.0 license is preserved in [LICENSE](skills/drawio/LICENSE).\n\nThe Mermaid versus XML authoring choice, ELK layout presets and custom layout JSON, browser URL generation, repair pass, and shape icon lookup are preserved. The port removes WSL2 and Windows-native CLI detection, registry lookups, PowerShell scripting, cmd.exe opening and URL handling, VS Code and Cursor extension opening, and the MCP create_diagram inline-viewer path. CLI detection is macOS and Linux only, opening uses open or xdg-open, and bundled references replace remote fetching so the skill works offline.\n\nThe upstream repository is a runtime reference, not a vendored dependency of Jiro. Importing or installing this skill does not clone it. Skill discovery follows the [OpenCode V2 skills documentation](https://opencode.ai/v2/docs/skills).\n"
+    },
+    {
+      "id": "bitwarden",
+      "targetRoots": [
+        "skills/bitwarden"
+      ],
+      "license": "skills/bitwarden/LICENSE",
+      "sources": [
+        {
+          "path": "skills/bitwarden",
+          "importedRevision": null,
+          "reviewedThrough": null
+        }
+      ],
+      "preserve": [
+        "Check tools.bitwarden.status before any vault call and continue only when it is unlocked.",
+        "Never ask for, accept, or type the master password, and never run bw login or bw unlock for the user.",
+        "Never return raw list, item, create_item, or edit_item results. They contain passwords, TOTP secrets, notes, and card data. Return only identifying fields.",
+        "Prefer using a secret inside one execute block, then shell redirection through the bitwarden-mcp session file, and show a value in chat only when the user explicitly asks to see it.",
+        "Never type a secret literally into a command, file, or tool argument, and never send one to a commit, PR, issue, log, scheduled prompt, subagent prompt, or another MCP server unless the user named that destination.",
+        "Ask before delete, permanent delete, move, any Send, device approval, member confirmation, and organization administration, naming the exact objects.",
+        "Installing the server changes global OpenCode configuration and needs explicit authorization. Never write BW_SESSION or organization API secrets into opencode.json."
+      ],
+      "upstream": {
+        "repository": "https://github.com/kyeshmz/jiro.git",
+        "ref": "main"
+      },
+      "provenance": "# Upstream source\n\nJiro native skill at skills/bitwarden. No upstream import. It is authored in the Jiro checkout under the user request for a skill that uses the Bitwarden MCP server installed from the kyeshmz/dotfiles chezmoi hook run_once_after_opencode-bitwarden-mcp.sh. Tool names and argument shapes come from [bitwarden/mcp-server](https://github.com/bitwarden/mcp-server) 2026.7.0 as advertised in OpenCode Code Mode. The finding that list and get item return whole items with secrets comes from that release's handlers, which return the bw CLI JSON output verbatim. No upstream code or text was copied. The MIT notice matches the other Jiro native skills in [LICENSE](skills/bitwarden/LICENSE).\n\n**Take.** Status check first. User-run login and unlock. Filtered listing. Three ordered ways to use a secret. Generate and store in one block. Explicit gates on destructive, sharing, and administrative tools. Install through the dotfiles hook.\n\n**Adapt.** OpenCode V2 frontmatter with name and description for discovery. Shared rules load from references/shared-rules.md. Code Mode examples call tools.bitwarden directly.\n\n**Skip.** The skill installs nothing itself, configures no MCP server, and stores no credential.\n\nVerified against a connected but unauthenticated server, where status returned unauthenticated. Live list, get, create, and edit results against an unlocked vault remain unverified.\n"
     }
   ]
 }

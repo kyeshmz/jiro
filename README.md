@@ -95,7 +95,7 @@ Invoking a skill does not authorize commits, pushes, PRs, merges, deployments, g
 
 ## Tools on the rack
 
-Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, `composition-patterns`, `synthesize-research`, `systematic-literature-review`, `academic-paper-review`, `opencode-compat`, and `slides` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, and `/slides` have bundled slash-command wrappers.
+Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, `composition-patterns`, `synthesize-research`, `systematic-literature-review`, `academic-paper-review`, `opencode-compat`, `slides`, and `bitwarden` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, and `/slides` have bundled slash-command wrappers.
 
 ### Jiro tool coverage
 
@@ -166,6 +166,7 @@ The additional principles are individually available:
 | [`@opencode-compat`](skills/opencode-compat/SKILL.md) | Port a third-party skill to OpenCode V2 and prove it with the compatibility checker. |
 | [`@opencode-memory`](skills/opencode-memory/SKILL.md) | Plan an OpenCode memory setup and learning loop with user approval. |
 | [`@slides`](skills/slides/SKILL.md) | Draft slides first, show them for approval, then build the deck with minimal text per slide. |
+| [`@bitwarden`](skills/bitwarden/SKILL.md) | Use, generate, and store Bitwarden vault secrets through the Bitwarden MCP server without leaking them into chat, files, or commits. |
 | [`@principle-foundational-thinking`](skills/principle-foundational-thinking/SKILL.md) | Choose core data structures, access patterns, and ownership before logic. |
 | [`@principle-redesign-from-first-principles`](skills/principle-redesign-from-first-principles/SKILL.md) | Integrate a requirement as a day-one assumption and deliver incrementally. |
 | [`@principle-attack-the-premise`](skills/principle-attack-the-premise/SKILL.md) | Challenge a premise after repeated fixes fail and require a per-actor census. |
