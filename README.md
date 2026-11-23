@@ -95,7 +95,7 @@ Invoking a skill does not authorize commits, pushes, PRs, merges, deployments, g
 
 ## Tools on the rack
 
-Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, `composition-patterns`, `synthesize-research`, `systematic-literature-review`, `academic-paper-review`, `opencode-compat`, `slides`, and `bitwarden` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, and `/slides` have bundled slash-command wrappers.
+Most skills are explicitly invoked. The local `code-organization`, `minimize-reader-load`, `worktree-cleanup`, `effect`, `react-best-practices`, `composition-patterns`, `synthesize-research`, `systematic-literature-review`, `academic-paper-review`, `opencode-compat`, `slides`, and `bitwarden` skills are also advertised for relevant tasks. Jiro loads companions as its workflow requires. `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, `/slides`, and `/bitwarden` have bundled slash-command wrappers.
 
 ### Jiro tool coverage
 
@@ -224,7 +224,7 @@ The `playwright-mcp` entry in [upstream.json](upstream.json) documents a histori
 | `skills/` | The tool rack. Skills, references, helpers, licenses, and shared rules. |
 | `upstream.json` | The single source-repository catalog, pins, provenance notes, preservation rules, and bundle checksums. |
 | `skills/jiro/references/recipes.md` | The recipe book. Task workflows and verification steps. |
-| `commands/` | `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, and `/slides` wrappers. |
+| `commands/` | `/jiro`, `/correct`, `/teach`, `/unslop`, `/synthesize-research`, `/slides`, and `/bitwarden` wrappers. |
 | `agents/` | Registered OpenCode worker definitions, including Chef. |
 | `install.sh` | Global skill and command installer. |
 | `scripts/sync-opencode.ts` | The Bun and Commander owner of installation, backups, ownership manifests, and hook setup. |

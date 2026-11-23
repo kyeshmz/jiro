@@ -68,7 +68,21 @@ test("bitwarden gates destructive, sharing, and administrative tools", () => {
   expect(skill).toContain("run_once_after_opencode-bitwarden-mcp.sh")
 })
 
+test("bitwarden command wrapper forwards the exact ID and arguments", () => {
+  const command = read("commands/bitwarden.md")
+  expect(command).toContain("<!-- jiro:command -->")
+  expect(command).toContain('id: "bitwarden"')
+  expect(command).toContain("exact ID `bitwarden`")
+  expect(command.match(/\$ARGUMENTS/g)).toHaveLength(1)
+  expect(command).toContain("tools.bitwarden.status()")
+  expect(command).toContain("Never ask for the master password")
+  expect(command).toContain("Ask before deleting, moving, or sharing anything")
+  expect(command.split("---", 3)[1]).not.toMatch(/^(agent|model|subtask):/m)
+  expect(command).not.toMatch(/[–—]/)
+})
+
 test("bitwarden is indexed for users", () => {
   expect(read("README.md")).toContain("[`@bitwarden`](skills/bitwarden/SKILL.md)")
   expect(read("skills/kstack-help/SKILL.md")).toContain("[@bitwarden](../bitwarden/SKILL.md)")
+  expect(read("README.md")).toContain("`/bitwarden`")
 })
